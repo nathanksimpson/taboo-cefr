@@ -1,0 +1,15 @@
+{
+  "name": "taboo-cefr",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Classroom Taboo game with CEFR-levelled vocabulary decks",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "node scripts/check-cards.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}
