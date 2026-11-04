@@ -9,7 +9,7 @@ for (const [lvl, txt] of Object.entries(RAW)) {
     const t = l.slice(i + 1).split(',').map(s => s.trim().toLowerCase());
     if (seen.has(w)) { console.log('DUP', w, seen.get(w), lvl); bad++; }
     seen.set(w, lvl);
-    if (t.length < 4) { console.log('SHORT', l); bad++; }
+    if (t.length !== 3) { console.log('SHORT', l); bad++; }
     if (t.includes(w)) { console.log('SELF', l); bad++; }
     if (new Set(t).size !== t.length) { console.log('REPEAT', l); bad++; }
   }

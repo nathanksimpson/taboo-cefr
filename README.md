@@ -35,7 +35,7 @@ Both windows must be in the **same browser on the same computer** — they sync 
 ### Managing cards
 **Cards** (top right) opens the card manager: browse each level, search, untick cards to exclude them, add your own cards to any level or to *My cards*, and **Export / Import** a JSON file to move your cards and exclusions to another computer. These are saved in the browser's local storage.
 
-To change the built-in decks, edit `public/js/cards.js` (one card per line: `word: taboo, taboo, taboo, taboo`) and run `npm run check` to catch duplicates.
+To change the built-in decks, edit `public/js/cards.js` (one card per line: `word: taboo, taboo, taboo`) and run `npm run check` to catch duplicates.
 
 ## Deploying to Cloudflare
 

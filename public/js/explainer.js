@@ -29,6 +29,9 @@ function renderSetup() {
     ? `${n} cards in play from ${settings.sets.map(SET_LABEL).join(', ')}.`
     : 'Pick at least one set.';
   $('#start').disabled = n === 0;
+  $('#setup-summary').textContent = n
+    ? `${n} cards · ${settings.teams.length} teams · ${settings.seconds}s turns`
+    : 'Pick at least one card set to start.';
 
   $('#team-count').textContent = settings.teams.length;
   const names = $('#team-names');

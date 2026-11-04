@@ -1,974 +1,974 @@
 // Built-in card decks, one per CEFR level.
-// Format: one card per line ->  target word: taboo, taboo, taboo, taboo
+// Format: one card per line ->  target word: taboo, taboo, taboo
 // Levels follow common CEFR word lists (approximate — move any card you disagree with).
 
 export const RAW = {
 A1: `
-apple: fruit, red, tree, eat
-baby: young, cry, mother, small
-bag: carry, school, backpack, put
-ball: round, play, kick, throw
-banana: yellow, fruit, monkey, peel
-bathroom: shower, toilet, wash, room
-beach: sand, sea, summer, swim
-bear: big, animal, honey, teddy
-bed: sleep, bedroom, night, pillow
-bicycle: ride, wheels, pedal, bike
-bird: fly, wings, feathers, tweet
-birthday: cake, party, age, present
-blue: color, sky, sea, red
-boat: water, sail, ship, sea
-book: read, pages, story, library
-box: square, put, carry, gift
-bread: toast, sandwich, bakery, eat
-breakfast: morning, eat, meal, lunch
-brother: sister, family, boy, sibling
-bus: stop, ride, driver, school
-cake: birthday, sweet, chocolate, bake
-camera: photo, picture, take, phone
-candy: sweet, sugar, chocolate, children
-car: drive, wheels, road, vehicle
-carrot: orange, vegetable, rabbit, eat
-cat: pet, meow, dog, kitten
-chair: sit, table, legs, seat
-cheese: milk, pizza, mouse, yellow
-chicken: bird, egg, farm, meat
-chocolate: sweet, brown, candy, cake
-city: big, town, buildings, Seoul
-classroom: school, teacher, students, desk
-clock: time, hour, wall, watch
-coffee: drink, hot, cup, morning
-cold: hot, winter, ice, weather
-computer: laptop, internet, screen, keyboard
-cook: kitchen, food, chef, make
-cookie: sweet, bake, chocolate, milk
-cow: milk, farm, moo, animal
-dance: music, move, party, feet
-dentist: teeth, doctor, mouth, brush
-desk: table, school, chair, work
-doctor: hospital, sick, nurse, medicine
-dog: pet, bark, cat, puppy
-door: open, close, house, key
-dress: wear, girl, clothes, skirt
-duck: bird, quack, water, swim
-ear: hear, listen, head, two
-egg: chicken, breakfast, yolk, white
-elephant: big, trunk, gray, animal
-eye: see, face, look, two
-family: mother, father, children, home
-farm: animals, cow, farmer, country
-father: dad, mother, parent, man
-fire: hot, burn, red, smoke
-fish: water, swim, sea, eat
-flower: rose, garden, plant, smell
-foot: feet, leg, shoe, walk
-football: soccer, ball, kick, goal
-friend: best, buddy, play, together
-fruit: apple, banana, eat, healthy
-game: play, win, fun, video
-garden: flowers, plants, grow, yard
-glasses: eyes, see, wear, sunglasses
-grandmother: grandma, old, family, grandfather
-green: color, grass, tree, leaf
-guitar: music, play, strings, instrument
-hair: head, long, short, brush
-hamburger: burger, bread, meat, fast food
-hand: fingers, five, arm, hold
-happy: smile, sad, glad, feel
-hat: head, wear, cap, sun
-head: hair, face, body, top
-holiday: vacation, trip, travel, rest
-homework: school, teacher, study, do
-horse: ride, animal, farm, pony
-hospital: doctor, nurse, sick, building
-hot: cold, sun, summer, warm
-house: home, live, building, room
-ice cream: cold, sweet, cone, summer
-jacket: coat, wear, cold, zipper
-juice: orange, drink, fruit, apple
-key: door, lock, open, car
-kitchen: cook, food, room, fridge
-lemon: yellow, sour, fruit, juice
-library: books, read, quiet, borrow
-lion: king, animal, jungle, roar
-lunch: eat, noon, meal, breakfast
-milk: cow, white, drink, cereal
-money: pay, buy, cash, bank
-monkey: banana, animal, zoo, climb
-moon: night, sky, stars, sun
-morning: breakfast, wake up, early, night
-mother: mom, father, parent, woman
-mountain: high, climb, hill, top
-mouth: teeth, eat, talk, face
-movie: film, cinema, watch, actor
-music: song, listen, sing, sound
-name: call, what, first, family
-night: dark, sleep, moon, day
-noodles: ramen, eat, long, soup
-nose: smell, face, breathe, eyes
-orange: fruit, color, juice, round
-park: trees, play, walk, grass
-party: birthday, music, dance, fun
-pen: write, ink, pencil, paper
-pencil: write, eraser, pen, draw
-phone: call, smartphone, text, mobile
-piano: music, keys, play, instrument
-picture: photo, draw, painting, image
-pig: pink, animal, farm, oink
-pizza: cheese, Italy, slice, eat
-plane: fly, airport, sky, travel
-police: officer, crime, car, help
-rabbit: bunny, ears, carrot, hop
-rain: water, umbrella, wet, weather
-red: color, blood, apple, fire
-restaurant: eat, food, waiter, menu
-rice: eat, white, Korea, bowl
-river: water, flow, lake, boat
-run: fast, race, legs, jog
-sad: cry, happy, unhappy, tears
-salt: pepper, white, taste, sea
-sandwich: bread, lunch, ham, cheese
-school: student, teacher, class, learn
-sea: ocean, water, beach, waves
-shirt: wear, clothes, buttons, T-shirt
-shoe: foot, wear, sneaker, walk
-shop: buy, store, sell, money
-shower: water, wash, bathroom, clean
-sing: song, voice, music, singer
-sister: brother, family, girl, sibling
-sleep: bed, night, tired, dream
-snow: winter, white, cold, snowman
-sock: foot, shoe, wear, pair
-song: sing, music, listen, singer
-sport: game, play, team, soccer
-spoon: eat, fork, soup, chopsticks
-spring: season, flowers, summer, winter
-star: sky, night, shine, moon
-student: school, learn, teacher, class
-summer: hot, season, beach, vacation
-sun: hot, sky, light, day
-supermarket: shop, food, buy, store
-swim: water, pool, sea, fish
-table: chair, eat, desk, legs
-taxi: car, driver, ride, yellow
-teacher: school, student, class, teach
-teeth: mouth, brush, dentist, white
-television: TV, watch, show, screen
-tiger: stripes, animal, cat, orange
-tired: sleep, energy, rest, sleepy
-toilet: bathroom, restroom, flush, paper
-tomato: red, vegetable, ketchup, sauce
-toothbrush: teeth, brush, toothpaste, clean
-towel: dry, bath, shower, wet
-toy: play, children, game, doll
-train: station, subway, ride, tracks
-tree: leaves, green, wood, forest
-umbrella: rain, wet, open, weather
-vegetable: carrot, healthy, green, eat
-walk: feet, legs, slow, run
-watch: time, wrist, clock, see
-water: drink, wet, clear, river
-weekend: Saturday, Sunday, week, rest
-window: glass, open, house, look
-winter: cold, snow, season, summer
-zoo: animals, cage, visit, lion
+apple: fruit, red, tree
+baby: young, cry, mother
+bag: carry, school, backpack
+ball: round, play, kick
+banana: yellow, fruit, monkey
+bathroom: shower, toilet, wash
+beach: sand, sea, summer
+bear: big, animal, honey
+bed: sleep, bedroom, night
+bicycle: ride, wheels, pedal
+bird: fly, wings, feathers
+birthday: cake, party, age
+blue: color, sky, sea
+boat: water, sail, ship
+book: read, pages, story
+box: square, put, carry
+bread: toast, sandwich, bakery
+breakfast: morning, eat, meal
+brother: sister, family, boy
+bus: stop, ride, driver
+cake: birthday, sweet, chocolate
+camera: photo, picture, take
+candy: sweet, sugar, chocolate
+car: drive, wheels, road
+carrot: orange, vegetable, rabbit
+cat: pet, meow, dog
+chair: sit, table, legs
+cheese: milk, pizza, mouse
+chicken: bird, egg, farm
+chocolate: sweet, brown, candy
+city: big, town, buildings
+classroom: school, teacher, students
+clock: time, hour, wall
+coffee: drink, hot, cup
+cold: hot, winter, ice
+computer: laptop, internet, screen
+cook: kitchen, food, chef
+cookie: sweet, bake, chocolate
+cow: milk, farm, moo
+dance: music, move, party
+dentist: teeth, doctor, mouth
+desk: table, school, chair
+doctor: hospital, sick, nurse
+dog: pet, bark, cat
+door: open, close, house
+dress: wear, girl, clothes
+duck: bird, quack, water
+ear: hear, listen, head
+egg: chicken, breakfast, yolk
+elephant: big, trunk, gray
+eye: see, face, look
+family: mother, father, children
+farm: animals, cow, farmer
+father: dad, mother, parent
+fire: hot, burn, red
+fish: water, swim, sea
+flower: rose, garden, plant
+foot: feet, leg, shoe
+football: soccer, ball, kick
+friend: best, buddy, play
+fruit: apple, banana, eat
+game: play, win, fun
+garden: flowers, plants, grow
+glasses: eyes, see, wear
+grandmother: grandma, old, family
+green: color, grass, tree
+guitar: music, play, strings
+hair: head, long, short
+hamburger: burger, bread, meat
+hand: fingers, five, arm
+happy: smile, sad, glad
+hat: head, wear, cap
+head: hair, face, body
+holiday: vacation, trip, travel
+homework: school, teacher, study
+horse: ride, animal, farm
+hospital: doctor, nurse, sick
+hot: cold, sun, summer
+house: home, live, building
+ice cream: cold, sweet, cone
+jacket: coat, wear, cold
+juice: orange, drink, fruit
+key: door, lock, open
+kitchen: cook, food, room
+lemon: yellow, sour, fruit
+library: books, read, quiet
+lion: king, animal, jungle
+lunch: eat, noon, meal
+milk: cow, white, drink
+money: pay, buy, cash
+monkey: banana, animal, zoo
+moon: night, sky, stars
+morning: breakfast, wake up, early
+mother: mom, father, parent
+mountain: high, climb, hill
+mouth: teeth, eat, talk
+movie: film, cinema, watch
+music: song, listen, sing
+name: call, what, first
+night: dark, sleep, moon
+noodles: ramen, eat, long
+nose: smell, face, breathe
+orange: fruit, color, juice
+park: trees, play, walk
+party: birthday, music, dance
+pen: write, ink, pencil
+pencil: write, eraser, pen
+phone: call, smartphone, text
+piano: music, keys, play
+picture: photo, draw, painting
+pig: pink, animal, farm
+pizza: cheese, Italy, slice
+plane: fly, airport, sky
+police: officer, crime, car
+rabbit: bunny, ears, carrot
+rain: water, umbrella, wet
+red: color, blood, apple
+restaurant: eat, food, waiter
+rice: eat, white, Korea
+river: water, flow, lake
+run: fast, race, legs
+sad: cry, happy, unhappy
+salt: pepper, white, taste
+sandwich: bread, lunch, ham
+school: student, teacher, class
+sea: ocean, water, beach
+shirt: wear, clothes, buttons
+shoe: foot, wear, sneaker
+shop: buy, store, sell
+shower: water, wash, bathroom
+sing: song, voice, music
+sister: brother, family, girl
+sleep: bed, night, tired
+snow: winter, white, cold
+sock: foot, shoe, wear
+song: sing, music, listen
+sport: game, play, team
+spoon: eat, fork, soup
+spring: season, flowers, summer
+star: sky, night, shine
+student: school, learn, teacher
+summer: hot, season, beach
+sun: hot, sky, light
+supermarket: shop, food, buy
+swim: water, pool, sea
+table: chair, eat, desk
+taxi: car, driver, ride
+teacher: school, student, class
+teeth: mouth, brush, dentist
+television: TV, watch, show
+tiger: stripes, animal, cat
+tired: sleep, energy, rest
+toilet: bathroom, restroom, flush
+tomato: red, vegetable, ketchup
+toothbrush: teeth, brush, toothpaste
+towel: dry, bath, shower
+toy: play, children, game
+train: station, subway, ride
+tree: leaves, green, wood
+umbrella: rain, wet, open
+vegetable: carrot, healthy, green
+walk: feet, legs, slow
+watch: time, wrist, clock
+water: drink, wet, clear
+weekend: Saturday, Sunday, week
+window: glass, open, house
+winter: cold, snow, season
+zoo: animals, cage, visit
 `,
 
 A2: `
-accident: car, crash, hurt, ambulance
-actor: movie, film, play, star
-adventure: exciting, journey, explore, travel
-advertisement: ad, TV, sell, commercial
-alarm: clock, wake, ring, loud
-ambulance: hospital, emergency, siren, sick
-angry: mad, upset, shout, feel
-ankle: foot, leg, twist, joint
-apartment: flat, building, live, rent
-backpack: bag, school, carry, shoulders
-bakery: bread, cake, bake, shop
-balloon: air, party, pop, float
-bank: money, save, account, ATM
-barber: hair, cut, haircut, shop
-battery: power, charge, phone, energy
-beard: face, hair, man, shave
-bill: pay, restaurant, money, check
-blanket: bed, warm, cover, sleep
-boring: interesting, fun, sleepy, dull
-bridge: river, cross, over, road
-bucket: water, carry, pail, sand
-calendar: date, month, day, year
-camping: tent, outside, fire, nature
-castle: king, queen, princess, old
-ceiling: roof, room, top, floor
-celebrate: party, birthday, happy, special
-cereal: breakfast, milk, bowl, morning
-champion: winner, first, trophy, best
-cheap: expensive, price, money, low
-chef: cook, kitchen, restaurant, food
-chopsticks: eat, Korea, two, spoon
-cinema: movie, theater, film, watch
-cloud: sky, white, rain, gray
-coach: team, train, sport, teacher
-coin: money, round, metal, change
-comb: hair, brush, teeth, neat
-competition: contest, win, prize, compete
-concert: music, band, singer, stage
-cough: sick, throat, cold, sneeze
-cousin: family, aunt, uncle, relative
-crowd: people, many, group, busy
-cupboard: kitchen, cabinet, shelf, plates
-customer: buy, shop, store, client
-dangerous: safe, careful, risk, hurt
-delicious: tasty, food, yummy, eat
-dessert: sweet, after, cake, meal
-diary: write, journal, daily, secret
-dictionary: words, meaning, book, look up
-dinosaur: extinct, old, big, T-rex
-dishwasher: plates, clean, kitchen, machine
-dream: sleep, night, wish, nightmare
-earthquake: shake, ground, disaster, building
-email: computer, send, message, inbox
-engineer: build, machine, design, job
-envelope: letter, mail, stamp, paper
-exam: test, school, study, grade
-exercise: gym, sport, healthy, workout
-expensive: cheap, money, price, cost
-factory: make, workers, machines, products
-fashion: clothes, style, model, trend
-fever: hot, sick, temperature, ill
-firefighter: fire, truck, rescue, hose
-fishing: fish, rod, lake, catch
-flashlight: light, dark, torch, battery
-forest: trees, woods, nature, animals
-fridge: refrigerator, cold, food, kitchen
-frog: green, jump, pond, ribbit
-funny: laugh, joke, comedy, silly
-furniture: chair, table, sofa, home
-gift: present, birthday, give, box
-gloves: hands, winter, wear, fingers
-gym: exercise, sport, fitness, workout
-haircut: hair, barber, short, scissors
-headache: head, pain, hurt, medicine
-helmet: head, bike, safety, wear
-hero: superhero, save, brave, help
-highway: road, car, fast, drive
-hobby: free time, interest, like, fun
-honey: bee, sweet, yellow, bear
-hotel: room, stay, travel, sleep
-hungry: food, eat, stomach, full
-island: sea, water, beach, Jeju
-jeans: pants, blue, wear, denim
-journey: trip, travel, long, way
-kangaroo: Australia, jump, pouch, animal
-king: queen, crown, castle, royal
-kite: fly, wind, string, sky
-knife: cut, fork, sharp, kitchen
-ladder: climb, steps, up, high
-lake: water, swim, river, pond
-laptop: computer, notebook, screen, keyboard
-laugh: funny, smile, joke, ha ha
-lazy: work, tired, hardworking, sofa
-lighthouse: light, sea, ship, tower
-lost: find, way, map, missing
-luggage: suitcase, bags, travel, airport
-magazine: read, pictures, articles, monthly
-magic: trick, wizard, rabbit, hat
-map: directions, find, country, world
-market: buy, sell, food, shop
-medicine: sick, doctor, pill, take
-menu: restaurant, order, food, list
-message: text, send, phone, note
-mirror: reflection, look, face, glass
-mistake: wrong, error, correct, sorry
-museum: art, history, visit, old
-musician: music, play, instrument, band
-neighbor: next door, live, house, near
-nervous: worried, scared, anxious, feel
-newspaper: news, read, daily, paper
-nurse: hospital, doctor, help, sick
-ocean: sea, water, Pacific, big
-passport: travel, country, airport, ID
-penguin: bird, ice, black and white, cold
-pharmacy: medicine, drugstore, pills, buy
-photographer: camera, picture, photo, take
-pilot: plane, fly, airport, captain
-pillow: bed, head, sleep, soft
-plate: dish, food, eat, round
-pocket: pants, jacket, put, hand
-post office: mail, letter, stamp, send
-prize: win, contest, reward, first
-queen: king, crown, royal, woman
-quiet: loud, noise, silent, library
-rainbow: colors, sky, rain, seven
-receipt: shop, pay, paper, buy
-recipe: cook, ingredients, food, make
-rocket: space, launch, moon, fly
-salad: vegetables, lettuce, healthy, dressing
-scared: afraid, fear, frightened, ghost
-scissors: cut, paper, sharp, two
-season: spring, summer, fall, winter
-shark: fish, sea, teeth, dangerous
-shopping: buy, store, mall, money
-sick: ill, doctor, healthy, hospital
-skateboard: wheels, ride, board, trick
-smartphone: phone, apps, mobile, screen
-snake: long, hiss, reptile, dangerous
-soap: wash, hands, clean, bubbles
-spider: web, legs, eight, insect
-stadium: sport, game, big, seats
-stairs: up, down, steps, climb
-stomach: belly, food, hungry, ache
-storm: rain, wind, thunder, weather
-subway: train, underground, metro, station
-suitcase: luggage, travel, pack, clothes
-surprise: party, unexpected, shock, birthday
-tent: camping, sleep, outside, nylon
-thief: steal, rob, police, crime
-thirsty: drink, water, hungry, dry
-thunder: lightning, storm, loud, rain
-ticket: movie, train, buy, concert
-tourist: travel, visit, camera, sightseeing
-traffic: cars, road, jam, busy
-uniform: school, wear, clothes, same
-vacation: holiday, trip, travel, rest
-village: small, town, country, people
-volcano: lava, mountain, erupt, hot
-waiter: restaurant, serve, food, order
-wallet: money, purse, cards, pocket
-wedding: marry, bride, groom, ring
-whale: big, sea, ocean, swim
-wind: blow, air, storm, kite
-zebra: stripes, black, white, horse
+accident: car, crash, hurt
+actor: movie, film, play
+adventure: exciting, journey, explore
+advertisement: ad, TV, sell
+alarm: clock, wake, ring
+ambulance: hospital, emergency, siren
+angry: mad, upset, shout
+ankle: foot, leg, twist
+apartment: flat, building, live
+backpack: bag, school, carry
+bakery: bread, cake, bake
+balloon: air, party, pop
+bank: money, save, account
+barber: hair, cut, haircut
+battery: power, charge, phone
+beard: face, hair, man
+bill: pay, restaurant, money
+blanket: bed, warm, cover
+boring: interesting, fun, sleepy
+bridge: river, cross, over
+bucket: water, carry, pail
+calendar: date, month, day
+camping: tent, outside, fire
+castle: king, queen, princess
+ceiling: roof, room, top
+celebrate: party, birthday, happy
+cereal: breakfast, milk, bowl
+champion: winner, first, trophy
+cheap: expensive, price, money
+chef: cook, kitchen, restaurant
+chopsticks: eat, Korea, two
+cinema: movie, theater, film
+cloud: sky, white, rain
+coach: team, train, sport
+coin: money, round, metal
+comb: hair, brush, teeth
+competition: contest, win, prize
+concert: music, band, singer
+cough: sick, throat, cold
+cousin: family, aunt, uncle
+crowd: people, many, group
+cupboard: kitchen, cabinet, shelf
+customer: buy, shop, store
+dangerous: safe, careful, risk
+delicious: tasty, food, yummy
+dessert: sweet, after, cake
+diary: write, journal, daily
+dictionary: words, meaning, book
+dinosaur: extinct, old, big
+dishwasher: plates, clean, kitchen
+dream: sleep, night, wish
+earthquake: shake, ground, disaster
+email: computer, send, message
+engineer: build, machine, design
+envelope: letter, mail, stamp
+exam: test, school, study
+exercise: gym, sport, healthy
+expensive: cheap, money, price
+factory: make, workers, machines
+fashion: clothes, style, model
+fever: hot, sick, temperature
+firefighter: fire, truck, rescue
+fishing: fish, rod, lake
+flashlight: light, dark, torch
+forest: trees, woods, nature
+fridge: refrigerator, cold, food
+frog: green, jump, pond
+funny: laugh, joke, comedy
+furniture: chair, table, sofa
+gift: present, birthday, give
+gloves: hands, winter, wear
+gym: exercise, sport, fitness
+haircut: hair, barber, short
+headache: head, pain, hurt
+helmet: head, bike, safety
+hero: superhero, save, brave
+highway: road, car, fast
+hobby: free time, interest, like
+honey: bee, sweet, yellow
+hotel: room, stay, travel
+hungry: food, eat, stomach
+island: sea, water, beach
+jeans: pants, blue, wear
+journey: trip, travel, long
+kangaroo: Australia, jump, pouch
+king: queen, crown, castle
+kite: fly, wind, string
+knife: cut, fork, sharp
+ladder: climb, steps, up
+lake: water, swim, river
+laptop: computer, notebook, screen
+laugh: funny, smile, joke
+lazy: work, tired, hardworking
+lighthouse: light, sea, ship
+lost: find, way, map
+luggage: suitcase, bags, travel
+magazine: read, pictures, articles
+magic: trick, wizard, rabbit
+map: directions, find, country
+market: buy, sell, food
+medicine: sick, doctor, pill
+menu: restaurant, order, food
+message: text, send, phone
+mirror: reflection, look, face
+mistake: wrong, error, correct
+museum: art, history, visit
+musician: music, play, instrument
+neighbor: next door, live, house
+nervous: worried, scared, anxious
+newspaper: news, read, daily
+nurse: hospital, doctor, help
+ocean: sea, water, Pacific
+passport: travel, country, airport
+penguin: bird, ice, black and white
+pharmacy: medicine, drugstore, pills
+photographer: camera, picture, photo
+pilot: plane, fly, airport
+pillow: bed, head, sleep
+plate: dish, food, eat
+pocket: pants, jacket, put
+post office: mail, letter, stamp
+prize: win, contest, reward
+queen: king, crown, royal
+quiet: loud, noise, silent
+rainbow: colors, sky, rain
+receipt: shop, pay, paper
+recipe: cook, ingredients, food
+rocket: space, launch, moon
+salad: vegetables, lettuce, healthy
+scared: afraid, fear, frightened
+scissors: cut, paper, sharp
+season: spring, summer, fall
+shark: fish, sea, teeth
+shopping: buy, store, mall
+sick: ill, doctor, healthy
+skateboard: wheels, ride, board
+smartphone: phone, apps, mobile
+snake: long, hiss, reptile
+soap: wash, hands, clean
+spider: web, legs, eight
+stadium: sport, game, big
+stairs: up, down, steps
+stomach: belly, food, hungry
+storm: rain, wind, thunder
+subway: train, underground, metro
+suitcase: luggage, travel, pack
+surprise: party, unexpected, shock
+tent: camping, sleep, outside
+thief: steal, rob, police
+thirsty: drink, water, hungry
+thunder: lightning, storm, loud
+ticket: movie, train, buy
+tourist: travel, visit, camera
+traffic: cars, road, jam
+uniform: school, wear, clothes
+vacation: holiday, trip, travel
+village: small, town, country
+volcano: lava, mountain, erupt
+waiter: restaurant, serve, food
+wallet: money, purse, cards
+wedding: marry, bride, groom
+whale: big, sea, ocean
+wind: blow, air, storm
+zebra: stripes, black, white
 `,
 
 B1: `
-achievement: success, accomplish, goal, reach
-addicted: habit, stop, can't, drug
-advice: suggest, tell, help, should
-afford: money, buy, expensive, enough
-allergy: sneeze, react, sick, peanut
-ancestor: family, past, grandparents, old
-anniversary: wedding, year, celebrate, date
-apologize: sorry, mistake, forgive, say
-appointment: meeting, time, doctor, schedule
-argument: fight, disagree, angry, discuss
-astronaut: space, rocket, moon, NASA
-attitude: behavior, feeling, positive, think
-audience: people, watch, show, crowd
-autograph: signature, famous, sign, star
-bargain: cheap, deal, price, sale
-behave: act, good, manners, children
-biography: life, story, book, person
-blind: see, eyes, can't, dark
-boss: manager, work, employee, company
-brave: courage, fear, hero, scared
-budget: money, plan, spend, save
-bully: hurt, school, mean, victim
-burglar: steal, house, thief, break in
-candidate: election, vote, job, apply
-career: job, work, profession, future
-celebrity: famous, star, actor, singer
-century: hundred, years, time, history
-charity: help, donate, money, poor
-cheat: test, copy, dishonest, game
-citizen: country, person, live, nation
-climate: weather, change, temperature, global
-colleague: coworker, work, office, together
-comfortable: relaxed, soft, chair, cozy
-commute: travel, work, daily, subway
-complain: unhappy, problem, angry, about
-confident: sure, believe, shy, self
-congratulations: well done, success, happy, good
-conversation: talk, chat, speak, discuss
-crime: police, illegal, criminal, law
-culture: tradition, country, customs, people
-curious: interested, know, ask, question
-deadline: date, finish, time, late
-decision: decide, choose, make, option
-degree: university, temperature, graduate, diploma
-delay: late, wait, flight, postpone
-democracy: vote, people, government, election
-departure: leave, arrival, flight, airport
-destination: place, travel, arrive, go
-detective: police, crime, investigate, mystery
-diet: food, eat, lose weight, healthy
-disappointed: sad, expect, hope, upset
-discount: price, cheaper, sale, percent
-documentary: film, real, TV, facts
-donate: give, charity, money, blood
-election: vote, president, candidate, choose
-embarrassed: shy, red, ashamed, awkward
-emergency: urgent, 119, help, ambulance
-employee: work, boss, company, staff
-environment: nature, earth, pollution, green
-equipment: tools, gear, machine, need
-escape: run away, free, prison, get out
-experiment: science, test, lab, try
-expert: knowledge, specialist, professional, know
-explore: discover, adventure, travel, find
-fail: success, test, pass, lose
-fame: famous, celebrity, known, star
-fan: cool, wind, supporter, team
-festival: celebration, music, event, party
-flood: water, rain, river, disaster
-fortune: luck, money, rich, teller
-freedom: free, liberty, choose, prison
-generation: age, young, old, parents
-generous: give, share, kind, selfish
-ghost: spirit, scary, dead, haunted
-global warming: climate, earth, hot, temperature
-goal: aim, target, soccer, score
-gossip: talk, rumor, secret, people
-graduate: finish, school, university, diploma
-guest: visitor, invite, host, party
-habit: always, routine, do, bad
-headline: newspaper, title, news, top
-healthy: fit, good, sick, body
-hometown: born, city, grew up, place
-honest: truth, lie, true, trust
-housework: clean, chores, home, dishes
-identity: who, ID, self, card
-imagine: think, picture, mind, dream
-immigrant: country, move, foreign, new
-independent: alone, free, rely, yourself
-injury: hurt, accident, wound, injure
-insect: bug, small, ant, fly
-instructions: how to, steps, manual, follow
-interview: job, questions, ask, answer
-invention: invent, new, create, Edison
-jealous: envy, want, angry, boyfriend
-journalist: news, reporter, write, newspaper
-judge: court, law, decide, trial
-landscape: view, land, scenery, picture
-lawyer: law, court, attorney, client
-leader: lead, boss, group, follow
-license: permission, driver's, card, official
-lie: truth, false, untrue, honest
-loneliness: alone, lonely, friends, sad
-loyal: faithful, friend, dog, trust
-manners: polite, rude, behavior, please
-memory: remember, forget, brain, past
-microwave: heat, kitchen, oven, food
-millionaire: rich, money, million, wealthy
-mood: feeling, happy, bad, good
-motivation: want, reason, encourage, energy
-mystery: unknown, secret, solve, detective
-nightmare: dream, bad, scary, sleep
-opinion: think, view, believe, idea
-opportunity: chance, possible, take, good
-organize: arrange, plan, tidy, order
-outdoors: outside, nature, indoors, open air
-pollution: dirty, air, environment, smoke
-popular: famous, liked, many, people
-predict: future, guess, forecast, tell
-prison: jail, criminal, crime, locked
-privacy: private, personal, secret, alone
-promise: keep, word, break, swear
-proud: pleased, achievement, parents, feel
-punishment: punish, bad, wrong, penalty
-recycle: reuse, plastic, trash, environment
-relationship: connection, couple, friends, between
-reservation: book, restaurant, hotel, table
-respect: honor, polite, admire, elders
-responsible: duty, blame, care, job
-retire: stop working, old, job, pension
-review: check, again, opinion, movie
-rumor: gossip, story, true, hear
-salary: pay, money, job, monthly
-satellite: space, orbit, signal, earth
-scholarship: university, money, study, award
-scientist: science, lab, research, experiment
-selfish: share, me, generous, only
-sightseeing: tourist, visit, travel, see
-skill: ability, good at, talent, learn
-souvenir: gift, trip, buy, remember
-stranger: unknown, person, know, meet
-stress: pressure, worried, tired, relax
-success: achieve, win, fail, goal
-superstition: luck, belief, black cat, unlucky
-survive: live, alive, die, stay
-technology: computer, machine, science, modern
-teenager: young, thirteen, adult, years
-temperature: hot, cold, degree, thermometer
-tradition: custom, culture, old, celebrate
-translate: language, English, Korean, meaning
-treasure: gold, pirate, chest, valuable
-trust: believe, honest, rely, friend
-unemployed: job, work, no, jobless
-vegetarian: meat, vegetables, eat, vegan
-volunteer: help, free, unpaid, charity
-website: internet, page, online, site
-witness: see, crime, court, saw
-youth: young, old, age, teenagers
+achievement: success, accomplish, goal
+addicted: habit, stop, can't
+advice: suggest, tell, help
+afford: money, buy, expensive
+allergy: sneeze, react, sick
+ancestor: family, past, grandparents
+anniversary: wedding, year, celebrate
+apologize: sorry, mistake, forgive
+appointment: meeting, time, doctor
+argument: fight, disagree, angry
+astronaut: space, rocket, moon
+attitude: behavior, feeling, positive
+audience: people, watch, show
+autograph: signature, famous, sign
+bargain: cheap, deal, price
+behave: act, good, manners
+biography: life, story, book
+blind: see, eyes, can't
+boss: manager, work, employee
+brave: courage, fear, hero
+budget: money, plan, spend
+bully: hurt, school, mean
+burglar: steal, house, thief
+candidate: election, vote, job
+career: job, work, profession
+celebrity: famous, star, actor
+century: hundred, years, time
+charity: help, donate, money
+cheat: test, copy, dishonest
+citizen: country, person, live
+climate: weather, change, temperature
+colleague: coworker, work, office
+comfortable: relaxed, soft, chair
+commute: travel, work, daily
+complain: unhappy, problem, angry
+confident: sure, believe, shy
+congratulations: well done, success, happy
+conversation: talk, chat, speak
+crime: police, illegal, criminal
+culture: tradition, country, customs
+curious: interested, know, ask
+deadline: date, finish, time
+decision: decide, choose, make
+degree: university, temperature, graduate
+delay: late, wait, flight
+democracy: vote, people, government
+departure: leave, arrival, flight
+destination: place, travel, arrive
+detective: police, crime, investigate
+diet: food, eat, lose weight
+disappointed: sad, expect, hope
+discount: price, cheaper, sale
+documentary: film, real, TV
+donate: give, charity, money
+election: vote, president, candidate
+embarrassed: shy, red, ashamed
+emergency: urgent, 119, help
+employee: work, boss, company
+environment: nature, earth, pollution
+equipment: tools, gear, machine
+escape: run away, free, prison
+experiment: science, test, lab
+expert: knowledge, specialist, professional
+explore: discover, adventure, travel
+fail: success, test, pass
+fame: famous, celebrity, known
+fan: cool, wind, supporter
+festival: celebration, music, event
+flood: water, rain, river
+fortune: luck, money, rich
+freedom: free, liberty, choose
+generation: age, young, old
+generous: give, share, kind
+ghost: spirit, scary, dead
+global warming: climate, earth, hot
+goal: aim, target, soccer
+gossip: talk, rumor, secret
+graduate: finish, school, university
+guest: visitor, invite, host
+habit: always, routine, do
+headline: newspaper, title, news
+healthy: fit, good, sick
+hometown: born, city, grew up
+honest: truth, lie, true
+housework: clean, chores, home
+identity: who, ID, self
+imagine: think, picture, mind
+immigrant: country, move, foreign
+independent: alone, free, rely
+injury: hurt, accident, wound
+insect: bug, small, ant
+instructions: how to, steps, manual
+interview: job, questions, ask
+invention: invent, new, create
+jealous: envy, want, angry
+journalist: news, reporter, write
+judge: court, law, decide
+landscape: view, land, scenery
+lawyer: law, court, attorney
+leader: lead, boss, group
+license: permission, driver's, card
+lie: truth, false, untrue
+loneliness: alone, lonely, friends
+loyal: faithful, friend, dog
+manners: polite, rude, behavior
+memory: remember, forget, brain
+microwave: heat, kitchen, oven
+millionaire: rich, money, million
+mood: feeling, happy, bad
+motivation: want, reason, encourage
+mystery: unknown, secret, solve
+nightmare: dream, bad, scary
+opinion: think, view, believe
+opportunity: chance, possible, take
+organize: arrange, plan, tidy
+outdoors: outside, nature, indoors
+pollution: dirty, air, environment
+popular: famous, liked, many
+predict: future, guess, forecast
+prison: jail, criminal, crime
+privacy: private, personal, secret
+promise: keep, word, break
+proud: pleased, achievement, parents
+punishment: punish, bad, wrong
+recycle: reuse, plastic, trash
+relationship: connection, couple, friends
+reservation: book, restaurant, hotel
+respect: honor, polite, admire
+responsible: duty, blame, care
+retire: stop working, old, job
+review: check, again, opinion
+rumor: gossip, story, true
+salary: pay, money, job
+satellite: space, orbit, signal
+scholarship: university, money, study
+scientist: science, lab, research
+selfish: share, me, generous
+sightseeing: tourist, visit, travel
+skill: ability, good at, talent
+souvenir: gift, trip, buy
+stranger: unknown, person, know
+stress: pressure, worried, tired
+success: achieve, win, fail
+superstition: luck, belief, black cat
+survive: live, alive, die
+technology: computer, machine, science
+teenager: young, thirteen, adult
+temperature: hot, cold, degree
+tradition: custom, culture, old
+translate: language, English, Korean
+treasure: gold, pirate, chest
+trust: believe, honest, rely
+unemployed: job, work, no
+vegetarian: meat, vegetables, eat
+volunteer: help, free, unpaid
+website: internet, page, online
+witness: see, crime, court
+youth: young, old, age
 `,
 
 B2: `
-abolish: end, law, cancel, get rid
-accomplice: crime, partner, help, criminal
-accuracy: correct, exact, precise, mistake
-acquaintance: know, friend, person, met
-adolescence: teenager, puberty, age, young
-advocate: support, argue, lawyer, for
-aftermath: after, result, disaster, effect
-alibi: crime, prove, innocent, where
-ambition: goal, want, dream, achieve
-anonymous: unknown, name, secret, unnamed
-anxiety: worry, nervous, stress, fear
-applause: clap, hands, audience, praise
-appreciate: thank, grateful, value, like
-arrogant: proud, superior, rude, ego
-assumption: believe, true, suppose, guess
-awkward: uncomfortable, embarrassing, silence, strange
-bankrupt: money, company, debt, broke
-benefit: advantage, good, help, gain
-bias: unfair, prejudice, opinion, side
-bribe: money, illegal, police, corrupt
-burden: heavy, carry, responsibility, problem
-campaign: election, politics, advertise, organized
-censorship: ban, media, free speech, government
-chaos: disorder, mess, confusion, crazy
-clue: hint, detective, mystery, solve
-commitment: promise, dedicate, loyal, relationship
-compromise: agree, both, middle, give up
-conscience: right, wrong, guilty, moral
-consequence: result, effect, happen, because
-conspiracy: secret, plot, theory, together
-contract: sign, agreement, legal, paper
-controversial: debate, disagree, argument, opinion
-corruption: bribe, dishonest, government, power
-counterfeit: fake, money, copy, real
-cozy: warm, comfortable, home, blanket
-critic: review, judge, movie, opinion
-curfew: home, time, night, late
-cynical: doubt, negative, trust, believe
-debt: owe, money, loan, borrow
-deceive: lie, trick, cheat, fool
-dedication: commitment, hard work, devote, effort
-defendant: court, accused, trial, guilty
-deforestation: trees, cut, forest, Amazon
-demonstration: protest, march, show, crowd
-dependent: rely, need, independent, on
-deserve: earn, worth, should, get
-dilemma: choice, difficult, problem, decide
-diplomat: embassy, country, foreign, relations
-discrimination: unfair, race, treat, prejudice
-distraction: focus, attention, interrupt, phone
-diversity: different, variety, many, mixed
-drought: water, dry, rain, no
-eccentric: strange, odd, weird, unusual
-efficient: waste, effective, quick, productive
-elderly: old, people, age, senior
-eliminate: remove, get rid, out, delete
-empathy: feel, understand, others, sympathy
-endangered: species, extinct, animal, protect
-entrepreneur: business, start, company, owner
-ethical: moral, right, wrong, principles
-evidence: proof, crime, court, show
-exaggerate: overstate, more, story, true
-exhausted: tired, energy, very, worn out
-extinct: dinosaur, die, gone, species
-fake news: false, media, lie, report
-famine: hunger, food, starve, no
-feedback: comment, response, opinion, improve
-fiction: story, novel, real, made up
-fluent: language, speak, well, easily
-forgery: fake, copy, sign, crime
-fraud: cheat, money, crime, scam
-frustrated: annoyed, angry, upset, can't
-gadget: device, tool, small, electronic
-gratitude: thanks, grateful, appreciate, thankful
-greed: money, want, more, selfish
-guilty: crime, innocent, feel, wrong
-hesitate: pause, wait, unsure, before
-hostage: kidnap, prisoner, ransom, held
-humble: modest, proud, simple, arrogant
-hypocrite: say, do, different, pretend
-identical: same, twins, exact, alike
-illiterate: read, write, cannot, educated
-impulsive: suddenly, think, without, act
-inequality: unequal, rich, poor, gap
-inflation: prices, rise, money, economy
-inherit: parents, die, receive, money
-initiative: first, start, action, idea
-innovation: new, idea, invent, technology
-insomnia: sleep, cannot, night, awake
-integrity: honest, moral, principles, character
-intuition: feeling, instinct, gut, know
-irony: opposite, sarcasm, funny, expected
-jury: court, trial, decide, twelve
-landmark: famous, building, place, recognize
-legacy: leave, after, death, remembered
-lottery: ticket, win, money, numbers
-mature: adult, grown up, old, sensible
-mediator: between, solve, conflict, neutral
-minimalism: less, simple, few, things
-misunderstanding: confusion, wrong, meaning, communicate
-monopoly: company, control, market, board game
-nostalgia: past, memories, miss, old days
-obedient: follow, rules, dog, orders
-obsessed: think, always, crazy, about
-optimist: positive, hopeful, pessimist, good
-outsource: company, abroad, contract, external
-overrated: better, think, popular, deserve
-paradox: contradiction, impossible, true, opposite
-patriotic: country, love, nation, flag
-perfectionist: perfect, mistake, detail, everything
-persuade: convince, argue, change, mind
-pessimist: negative, optimist, worst, glass
-plagiarism: copy, essay, cheat, someone
-podcast: listen, audio, episode, online
-precaution: safe, prevent, before, careful
-prejudice: bias, judge, unfair, discrimination
-procrastinate: delay, later, put off, lazy
-propaganda: government, information, spread, political
-prosperity: rich, wealth, success, economy
-protest: demonstrate, against, march, disagree
-reluctant: unwilling, hesitate, want, don't
-renewable energy: solar, wind, power, clean
-reputation: name, known, opinion, good
-resilience: recover, strong, bounce back, tough
-revenge: get back, hurt, angry, payback
-ridiculous: silly, crazy, stupid, absurd
-routine: daily, habit, same, every day
-sarcasm: irony, mean, opposite, tone
-scandal: shocking, celebrity, news, bad
-self-esteem: confidence, yourself, value, feel
-skeptical: doubt, believe, unsure, question
-spontaneous: unplanned, sudden, natural, decide
-stereotype: generalize, all, assume, group
-subscription: monthly, pay, Netflix, sign up
-supervisor: boss, manage, watch, workers
-sustainable: environment, long, last, green
-symptom: sick, sign, illness, doctor
-tactful: polite, careful, sensitive, offend
-teamwork: together, group, cooperate, work
-temptation: want, resist, tempting, can't
-tolerance: accept, different, patient, allow
-tragedy: sad, disaster, death, terrible
-transparent: see through, clear, honest, glass
-unanimous: everyone, agree, vote, all
-urban: city, rural, town, area
-vaccine: injection, virus, disease, shot
-vandalism: damage, destroy, graffiti, property
-versatile: many, adapt, different, use
-viral: internet, spread, video, popular
-vulnerable: weak, easily, hurt, protect
-wealth: rich, money, poor, fortune
-willpower: control, strong, determination, resist
-workaholic: work, always, hours, job
+abolish: end, law, cancel
+accomplice: crime, partner, help
+accuracy: correct, exact, precise
+acquaintance: know, friend, person
+adolescence: teenager, puberty, age
+advocate: support, argue, lawyer
+aftermath: after, result, disaster
+alibi: crime, prove, innocent
+ambition: goal, want, dream
+anonymous: unknown, name, secret
+anxiety: worry, nervous, stress
+applause: clap, hands, audience
+appreciate: thank, grateful, value
+arrogant: proud, superior, rude
+assumption: believe, true, suppose
+awkward: uncomfortable, embarrassing, silence
+bankrupt: money, company, debt
+benefit: advantage, good, help
+bias: unfair, prejudice, opinion
+bribe: money, illegal, police
+burden: heavy, carry, responsibility
+campaign: election, politics, advertise
+censorship: ban, media, free speech
+chaos: disorder, mess, confusion
+clue: hint, detective, mystery
+commitment: promise, dedicate, loyal
+compromise: agree, both, middle
+conscience: right, wrong, guilty
+consequence: result, effect, happen
+conspiracy: secret, plot, theory
+contract: sign, agreement, legal
+controversial: debate, disagree, argument
+corruption: bribe, dishonest, government
+counterfeit: fake, money, copy
+cozy: warm, comfortable, home
+critic: review, judge, movie
+curfew: home, time, night
+cynical: doubt, negative, trust
+debt: owe, money, loan
+deceive: lie, trick, cheat
+dedication: commitment, hard work, devote
+defendant: court, accused, trial
+deforestation: trees, cut, forest
+demonstration: protest, march, show
+dependent: rely, need, independent
+deserve: earn, worth, should
+dilemma: choice, difficult, problem
+diplomat: embassy, country, foreign
+discrimination: unfair, race, treat
+distraction: focus, attention, interrupt
+diversity: different, variety, many
+drought: water, dry, rain
+eccentric: strange, odd, weird
+efficient: waste, effective, quick
+elderly: old, people, age
+eliminate: remove, get rid, out
+empathy: feel, understand, others
+endangered: species, extinct, animal
+entrepreneur: business, start, company
+ethical: moral, right, wrong
+evidence: proof, crime, court
+exaggerate: overstate, more, story
+exhausted: tired, energy, very
+extinct: dinosaur, die, gone
+fake news: false, media, lie
+famine: hunger, food, starve
+feedback: comment, response, opinion
+fiction: story, novel, real
+fluent: language, speak, well
+forgery: fake, copy, sign
+fraud: cheat, money, crime
+frustrated: annoyed, angry, upset
+gadget: device, tool, small
+gratitude: thanks, grateful, appreciate
+greed: money, want, more
+guilty: crime, innocent, feel
+hesitate: pause, wait, unsure
+hostage: kidnap, prisoner, ransom
+humble: modest, proud, simple
+hypocrite: say, do, different
+identical: same, twins, exact
+illiterate: read, write, cannot
+impulsive: suddenly, think, without
+inequality: unequal, rich, poor
+inflation: prices, rise, money
+inherit: parents, die, receive
+initiative: first, start, action
+innovation: new, idea, invent
+insomnia: sleep, cannot, night
+integrity: honest, moral, principles
+intuition: feeling, instinct, gut
+irony: opposite, sarcasm, funny
+jury: court, trial, decide
+landmark: famous, building, place
+legacy: leave, after, death
+lottery: ticket, win, money
+mature: adult, grown up, old
+mediator: between, solve, conflict
+minimalism: less, simple, few
+misunderstanding: confusion, wrong, meaning
+monopoly: company, control, market
+nostalgia: past, memories, miss
+obedient: follow, rules, dog
+obsessed: think, always, crazy
+optimist: positive, hopeful, pessimist
+outsource: company, abroad, contract
+overrated: better, think, popular
+paradox: contradiction, impossible, true
+patriotic: country, love, nation
+perfectionist: perfect, mistake, detail
+persuade: convince, argue, change
+pessimist: negative, optimist, worst
+plagiarism: copy, essay, cheat
+podcast: listen, audio, episode
+precaution: safe, prevent, before
+prejudice: bias, judge, unfair
+procrastinate: delay, later, put off
+propaganda: government, information, spread
+prosperity: rich, wealth, success
+protest: demonstrate, against, march
+reluctant: unwilling, hesitate, want
+renewable energy: solar, wind, power
+reputation: name, known, opinion
+resilience: recover, strong, bounce back
+revenge: get back, hurt, angry
+ridiculous: silly, crazy, stupid
+routine: daily, habit, same
+sarcasm: irony, mean, opposite
+scandal: shocking, celebrity, news
+self-esteem: confidence, yourself, value
+skeptical: doubt, believe, unsure
+spontaneous: unplanned, sudden, natural
+stereotype: generalize, all, assume
+subscription: monthly, pay, Netflix
+supervisor: boss, manage, watch
+sustainable: environment, long, last
+symptom: sick, sign, illness
+tactful: polite, careful, sensitive
+teamwork: together, group, cooperate
+temptation: want, resist, tempting
+tolerance: accept, different, patient
+tragedy: sad, disaster, death
+transparent: see through, clear, honest
+unanimous: everyone, agree, vote
+urban: city, rural, town
+vaccine: injection, virus, disease
+vandalism: damage, destroy, graffiti
+versatile: many, adapt, different
+viral: internet, spread, video
+vulnerable: weak, easily, hurt
+wealth: rich, money, poor
+willpower: control, strong, determination
+workaholic: work, always, hours
 `,
 
 C1: `
-accountability: responsible, blame, answer, accountable
-acknowledge: admit, accept, recognize, thank
-adversity: difficulty, hardship, problem, overcome
-aesthetic: beauty, art, look, style
-affluent: rich, wealthy, money, prosperous
-alienation: isolated, outsider, feel, alone
-allegation: accuse, claim, prove, crime
-ambiguous: unclear, meaning, two, vague
-amnesty: forgive, prisoners, government, pardon
-anecdote: story, short, personal, funny
-apathy: interest, care, indifferent, emotion
-arbitrary: random, reason, choice, without
-articulate: speak, clearly, express, words
-assertive: confident, firm, aggressive, stand up
-asylum: refugee, protection, country, seek
-austerity: cut, spending, government, economy
-authenticity: real, genuine, true, original
-autonomy: independence, self, control, freedom
-bureaucracy: government, rules, paperwork, office
-catalyst: cause, change, speed, chemical
-charisma: charm, attractive, personality, leader
-circumvent: avoid, around, rules, get
-coherent: logical, clear, make sense, consistent
-collaboration: work, together, team, partner
-complacent: satisfied, lazy, comfortable, effort
-condescending: superior, talk down, patronize, arrogant
-consensus: agree, everyone, general, majority
-contemplate: think, consider, deeply, reflect
-credibility: believe, trust, reliable, credible
-cultivate: grow, develop, farm, plants
-debris: pieces, broken, rubbish, remains
-deficit: shortfall, money, less, budget
-degrade: lower, worse, quality, insult
-deliberate: intentional, purpose, on purpose, careful
-detrimental: harmful, bad, damage, negative
-devastated: destroyed, upset, shocked, sad
-dilapidated: old, broken, ruined, building
-discrepancy: difference, inconsistency, numbers, gap
-disposable: throw away, single use, plastic, cup
-dissent: disagree, protest, opposition, opinion
-dormant: sleeping, inactive, volcano, asleep
-eloquent: speak, persuasive, fluent, articulate
-elusive: hard, find, catch, escape
-emigrate: leave, country, move, abroad
-endorse: support, approve, advertise, celebrity
-enigma: mystery, puzzle, strange, riddle
-entitlement: deserve, right, expect, spoiled
-ephemeral: short, temporary, brief, lasting
-euphemism: polite, word, instead, softer
-exploit: use, unfair, take advantage, workers
-facade: front, building, fake, appearance
-fallacy: false, belief, logic, wrong
-feasible: possible, practical, doable, realistic
-fluctuate: change, up and down, vary, price
-frugal: save, money, cheap, spend
-gentrification: neighborhood, rich, rent, move
-grievance: complaint, unfair, wrong, problem
-hierarchy: rank, level, order, top
-hindsight: after, past, looking back, know
-hypothetical: imagine, if, theory, suppose
-idealistic: perfect, dream, realistic, believe
-immersion: language, deep, surround, completely
-impartial: fair, neutral, biased, side
-implication: suggest, result, meaning, effect
-incentive: reward, motivation, encourage, bonus
-indifferent: care, apathy, interest, neither
-indigenous: native, original, people, land
-infrastructure: roads, bridges, system, public
-inevitable: happen, avoid, certain, unavoidable
-insight: understand, deep, idea, perception
-intrinsic: natural, inside, essential, built-in
-irrational: logic, reason, unreasonable, crazy
-jeopardy: danger, risk, threat, quiz
-juxtaposition: side by side, contrast, compare, two
-legitimate: legal, valid, real, fair
-lenient: soft, strict, punish, easy
-liability: legal, responsible, risk, debt
-lucrative: profitable, money, rich, business
-manipulate: control, influence, trick, use
-meticulous: careful, detail, precise, thorough
-migration: move, birds, people, travel
-mitigate: reduce, less, severe, lessen
-momentum: speed, force, movement, continue
-mundane: boring, ordinary, everyday, dull
-narcissist: self, love, ego, mirror
-negligence: careless, fail, duty, care
-notorious: famous, bad, known, infamous
-novice: beginner, new, inexperienced, expert
-obsolete: old, outdated, no longer, used
-ominous: threatening, bad, sign, dark
-oppression: unfair, control, cruel, power
-outspoken: honest, say, opinion, frank
-overwhelmed: too much, stress, emotion, cope
-paramount: important, most, supreme, top
-passive: active, voice, inactive, nothing
-patronizing: superior, condescending, talk, treat
-perception: see, view, think, understand
-perseverance: continue, keep going, give up, effort
-pragmatic: practical, realistic, sensible, idealistic
-precedent: before, example, first, legal
-prestige: respect, status, admire, reputation
-profound: deep, meaningful, serious, great
-proficient: skilled, good, competent, expert
-prolific: produce, many, writer, lots
-proponent: support, advocate, argue, for
-provocative: provoke, react, controversial, deliberate
-quarantine: isolate, disease, separate, virus
-rapport: relationship, understand, connection, good
-reconcile: make up, friends, again, agree
-redundant: unnecessary, job, extra, repeat
-refugee: flee, war, country, asylum
-reinforce: strengthen, support, stronger, again
-remorse: regret, guilt, sorry, feel
-resentment: bitter, anger, unfair, feeling
-rhetoric: speech, persuade, language, politician
-sanction: penalty, punish, country, approve
-scrutiny: examine, careful, close, inspect
-segregation: separate, race, divide, apart
-sentiment: feeling, emotion, opinion, attitude
-solidarity: unity, support, together, group
-speculate: guess, theory, think, invest
-stagnant: still, not moving, growth, water
-stigma: shame, negative, disgrace, mental
-subsidy: government, money, support, help
-subtle: slight, obvious, small, hard to notice
-superficial: shallow, surface, deep, appearance
-surveillance: watch, camera, spy, monitor
-synthetic: artificial, man-made, natural, fake
-tangible: touch, real, physical, concrete
-tedious: boring, long, repetitive, dull
-tenacious: determined, persistent, give up, stubborn
-threshold: door, level, limit, enter
-trivial: unimportant, small, minor, trivia
-turmoil: chaos, confusion, trouble, disorder
-unprecedented: never, before, first, new
-utopia: perfect, society, ideal, world
-validate: confirm, prove, check, accept
-vindicate: prove right, clear, innocent, justify
-volatile: unstable, change, explosive, sudden
-whistleblower: report, secret, company, wrong
-xenophobia: fear, foreign, hate, strangers
-zealous: passionate, eager, enthusiastic, fanatic
+accountability: responsible, blame, answer
+acknowledge: admit, accept, recognize
+adversity: difficulty, hardship, problem
+aesthetic: beauty, art, look
+affluent: rich, wealthy, money
+alienation: isolated, outsider, feel
+allegation: accuse, claim, prove
+ambiguous: unclear, meaning, two
+amnesty: forgive, prisoners, government
+anecdote: story, short, personal
+apathy: interest, care, indifferent
+arbitrary: random, reason, choice
+articulate: speak, clearly, express
+assertive: confident, firm, aggressive
+asylum: refugee, protection, country
+austerity: cut, spending, government
+authenticity: real, genuine, true
+autonomy: independence, self, control
+bureaucracy: government, rules, paperwork
+catalyst: cause, change, speed
+charisma: charm, attractive, personality
+circumvent: avoid, around, rules
+coherent: logical, clear, make sense
+collaboration: work, together, team
+complacent: satisfied, lazy, comfortable
+condescending: superior, talk down, patronize
+consensus: agree, everyone, general
+contemplate: think, consider, deeply
+credibility: believe, trust, reliable
+cultivate: grow, develop, farm
+debris: pieces, broken, rubbish
+deficit: shortfall, money, less
+degrade: lower, worse, quality
+deliberate: intentional, purpose, on purpose
+detrimental: harmful, bad, damage
+devastated: destroyed, upset, shocked
+dilapidated: old, broken, ruined
+discrepancy: difference, inconsistency, numbers
+disposable: throw away, single use, plastic
+dissent: disagree, protest, opposition
+dormant: sleeping, inactive, volcano
+eloquent: speak, persuasive, fluent
+elusive: hard, find, catch
+emigrate: leave, country, move
+endorse: support, approve, advertise
+enigma: mystery, puzzle, strange
+entitlement: deserve, right, expect
+ephemeral: short, temporary, brief
+euphemism: polite, word, instead
+exploit: use, unfair, take advantage
+facade: front, building, fake
+fallacy: false, belief, logic
+feasible: possible, practical, doable
+fluctuate: change, up and down, vary
+frugal: save, money, cheap
+gentrification: neighborhood, rich, rent
+grievance: complaint, unfair, wrong
+hierarchy: rank, level, order
+hindsight: after, past, looking back
+hypothetical: imagine, if, theory
+idealistic: perfect, dream, realistic
+immersion: language, deep, surround
+impartial: fair, neutral, biased
+implication: suggest, result, meaning
+incentive: reward, motivation, encourage
+indifferent: care, apathy, interest
+indigenous: native, original, people
+infrastructure: roads, bridges, system
+inevitable: happen, avoid, certain
+insight: understand, deep, idea
+intrinsic: natural, inside, essential
+irrational: logic, reason, unreasonable
+jeopardy: danger, risk, threat
+juxtaposition: side by side, contrast, compare
+legitimate: legal, valid, real
+lenient: soft, strict, punish
+liability: legal, responsible, risk
+lucrative: profitable, money, rich
+manipulate: control, influence, trick
+meticulous: careful, detail, precise
+migration: move, birds, people
+mitigate: reduce, less, severe
+momentum: speed, force, movement
+mundane: boring, ordinary, everyday
+narcissist: self, love, ego
+negligence: careless, fail, duty
+notorious: famous, bad, known
+novice: beginner, new, inexperienced
+obsolete: old, outdated, no longer
+ominous: threatening, bad, sign
+oppression: unfair, control, cruel
+outspoken: honest, say, opinion
+overwhelmed: too much, stress, emotion
+paramount: important, most, supreme
+passive: active, voice, inactive
+patronizing: superior, condescending, talk
+perception: see, view, think
+perseverance: continue, keep going, give up
+pragmatic: practical, realistic, sensible
+precedent: before, example, first
+prestige: respect, status, admire
+profound: deep, meaningful, serious
+proficient: skilled, good, competent
+prolific: produce, many, writer
+proponent: support, advocate, argue
+provocative: provoke, react, controversial
+quarantine: isolate, disease, separate
+rapport: relationship, understand, connection
+reconcile: make up, friends, again
+redundant: unnecessary, job, extra
+refugee: flee, war, country
+reinforce: strengthen, support, stronger
+remorse: regret, guilt, sorry
+resentment: bitter, anger, unfair
+rhetoric: speech, persuade, language
+sanction: penalty, punish, country
+scrutiny: examine, careful, close
+segregation: separate, race, divide
+sentiment: feeling, emotion, opinion
+solidarity: unity, support, together
+speculate: guess, theory, think
+stagnant: still, not moving, growth
+stigma: shame, negative, disgrace
+subsidy: government, money, support
+subtle: slight, obvious, small
+superficial: shallow, surface, deep
+surveillance: watch, camera, spy
+synthetic: artificial, man-made, natural
+tangible: touch, real, physical
+tedious: boring, long, repetitive
+tenacious: determined, persistent, give up
+threshold: door, level, limit
+trivial: unimportant, small, minor
+turmoil: chaos, confusion, trouble
+unprecedented: never, before, first
+utopia: perfect, society, ideal
+validate: confirm, prove, check
+vindicate: prove right, clear, innocent
+volatile: unstable, change, explosive
+whistleblower: report, secret, company
+xenophobia: fear, foreign, hate
+zealous: passionate, eager, enthusiastic
 `,
 
 C2: `
-abate: lessen, reduce, decrease, die down
-abhor: hate, detest, strongly, loathe
-abstain: avoid, vote, not, refrain
-acquiesce: agree, accept, reluctantly, give in
-acrimonious: bitter, angry, divorce, nasty
-acumen: business, skill, sharp, judgment
-admonish: warn, scold, reprimand, criticize
-adulation: praise, admire, worship, flattery
-alleviate: ease, reduce, pain, relieve
-altruism: selfless, help, others, generous
-ameliorate: improve, better, make, situation
-anachronism: time, period, wrong, out of place
-antithesis: opposite, contrast, direct, exact
-aplomb: confidence, poise, calm, style
-apprehensive: worried, anxious, nervous, future
-assiduous: hardworking, careful, diligent, constant
-audacious: bold, daring, brave, risky
-beleaguered: troubled, under pressure, attack, surrounded
-benevolent: kind, generous, good, charity
-bequeath: will, leave, death, inherit
-bolster: support, strengthen, boost, cushion
-bombastic: pompous, language, inflated, showy
-cacophony: noise, loud, harsh, sounds
-cajole: persuade, coax, flatter, sweet talk
-callous: cruel, insensitive, heartless, cold
-candor: honesty, frank, open, truth
-capricious: unpredictable, change, sudden, whim
-carte blanche: freedom, permission, complete, authority
-castigate: criticize, punish, scold, severely
-chicanery: trickery, deception, fraud, dishonest
-circumspect: careful, cautious, wary, consider
-clandestine: secret, hidden, covert, spy
-clemency: mercy, pardon, leniency, judge
-cogent: convincing, logical, argument, clear
-complicit: involved, guilty, crime, accomplice
-conundrum: puzzle, problem, difficult, riddle
-corroborate: confirm, support, evidence, witness
-culpable: guilty, blame, responsible, fault
-dearth: lack, shortage, scarcity, few
-debacle: disaster, failure, fiasco, embarrassing
-decorum: manners, proper, behavior, polite
-deference: respect, polite, yield, submit
-déjà vu: before, feeling, again, familiar
-deleterious: harmful, damaging, bad, health
-demagogue: politician, emotions, crowd, populist
-denigrate: criticize, belittle, insult, unfair
-deride: mock, ridicule, laugh, scorn
-despondent: hopeless, sad, depressed, discouraged
-diatribe: attack, speech, angry, rant
-didactic: teach, moral, lesson, instructive
-diffident: shy, modest, confidence, reserved
-disenfranchise: vote, deprive, right, exclude
-disparate: different, distinct, unrelated, varied
-dogmatic: opinion, rigid, certain, stubborn
-duplicity: deceit, double, dishonest, two-faced
-ebullient: cheerful, enthusiastic, energetic, bubbly
-egregious: terrible, outrageous, bad, shocking
-emulate: imitate, copy, admire, match
-enervate: weaken, tired, drain, energy
-equanimity: calm, composure, balance, stress
-erudite: learned, scholarly, knowledge, educated
-esoteric: obscure, few, specialized, mysterious
-exacerbate: worse, aggravate, increase, problem
-exonerate: clear, innocent, blame, free
-expedient: convenient, practical, quick, useful
-extol: praise, highly, celebrate, glorify
-fastidious: picky, detail, careful, fussy
-faux pas: mistake, social, embarrassing, French
-fervent: passionate, intense, eager, zealous
-fickle: change, unreliable, mind, inconsistent
-flippant: casual, joke, serious, disrespectful
-fortuitous: lucky, chance, accident, fortunate
-furtive: secret, sly, hidden, sneaky
-garrulous: talkative, chatty, talk, much
-gregarious: social, friendly, people, outgoing
-hackneyed: overused, cliché, stale, original
-hapless: unlucky, unfortunate, poor, luck
-harbinger: sign, warning, coming, herald
-hedonism: pleasure, enjoy, life, indulge
-hubris: pride, arrogance, excessive, downfall
-iconoclast: challenge, beliefs, rebel, tradition
-idiosyncrasy: quirk, habit, peculiar, individual
-impetuous: rash, impulsive, hasty, sudden
-incongruous: out of place, mismatch, strange, fit
-inexorable: unstoppable, relentless, inevitable, stop
-ingenuous: innocent, naive, trusting, simple
-innocuous: harmless, safe, inoffensive, mild
-insidious: gradual, harmful, sneaky, slowly
-intransigent: stubborn, refuse, compromise, inflexible
-inveterate: habitual, long, confirmed, liar
-irrevocable: permanent, change, final, undo
-juggernaut: unstoppable, powerful, huge, force
-kowtow: bow, submit, obey, servile
-laconic: brief, few words, terse, concise
-lethargic: sluggish, tired, slow, energy
-loquacious: talkative, chatty, words, speaking
-lugubrious: gloomy, sad, mournful, dismal
-magnanimous: generous, forgiving, noble, kind
-malevolent: evil, harmful, wicked, ill will
-maverick: independent, rebel, unconventional, nonconformist
-mendacious: lying, untruthful, dishonest, false
-mercurial: unpredictable, moody, change, quick
-milieu: environment, setting, surroundings, social
-misanthrope: hate, people, humans, loner
-modus operandi: method, way, criminal, MO
-mollify: calm, soothe, appease, anger
-myopic: shortsighted, narrow, vision, future
-nefarious: wicked, evil, criminal, villainous
-non sequitur: logic, follow, unrelated, statement
-nonchalant: casual, calm, relaxed, unconcerned
-obdurate: stubborn, unyielding, inflexible, hard
-obfuscate: confuse, unclear, hide, complicate
-obsequious: servile, flatter, eager, please
-onerous: burdensome, heavy, difficult, demanding
-opulent: luxurious, rich, wealthy, lavish
-ostentatious: show off, flashy, pretentious, display
-panacea: cure, all, solution, remedy
-paragon: model, perfect, example, ideal
-parsimonious: stingy, cheap, money, mean
-pejorative: negative, insulting, word, derogatory
-penchant: liking, fondness, taste, tendency
-perfunctory: careless, routine, minimal, effort
-pernicious: harmful, destructive, subtle, damaging
-perspicacious: perceptive, insightful, sharp, clever
-pervasive: widespread, everywhere, spread, common
-placate: calm, appease, soothe, angry
-platitude: cliché, obvious, boring, remark
-precocious: early, advanced, child, mature
-prevaricate: evade, lie, avoid, truth
-pristine: clean, perfect, untouched, new
-prodigal: wasteful, spend, son, extravagant
-propensity: tendency, inclination, likely, habit
-quagmire: bog, mess, trouble, stuck
-quintessential: perfect, typical, example, essence
-quixotic: idealistic, unrealistic, romantic, Don Quixote
-recalcitrant: stubborn, uncooperative, resist, obey
-reprehensible: shameful, blameworthy, wrong, deplorable
-repudiate: reject, deny, refuse, disown
-reticent: reserved, quiet, silent, share
-sagacious: wise, judgment, shrewd, wisdom
-salient: important, noticeable, main, prominent
-sanctimonious: self-righteous, holier, moral, superior
-schadenfreude: pleasure, misfortune, German, others
-scrupulous: careful, honest, thorough, moral
-serendipity: chance, luck, happy, accident
-sophistry: argument, false, clever, misleading
-soporific: sleepy, boring, drowsy, sleep
-spurious: false, fake, invalid, genuine
-squander: waste, money, opportunity, spend
-staunch: loyal, firm, committed, supporter
-stoic: endure, emotion, calm, complain
-sycophant: flatterer, suck up, yes-man, boss
-taciturn: quiet, silent, reserved, speak
-tenuous: weak, thin, slight, link
-truculent: aggressive, defiant, hostile, fight
-ubiquitous: everywhere, common, present, found
-unequivocal: clear, certain, definite, doubt
-untenable: indefensible, impossible, position, argument
-vacillate: waver, indecisive, undecided, hesitate
-venerable: respected, old, wise, honored
-verbose: wordy, long, talkative, words
-vicarious: through, others, experience, indirect
-vitriolic: bitter, cruel, criticism, harsh
-vociferous: loud, noisy, shouting, outspoken
-wanton: deliberate, cruel, unprovoked, reckless
-zeitgeist: spirit, time, era, culture
+abate: lessen, reduce, decrease
+abhor: hate, detest, strongly
+abstain: avoid, vote, not
+acquiesce: agree, accept, reluctantly
+acrimonious: bitter, angry, divorce
+acumen: business, skill, sharp
+admonish: warn, scold, reprimand
+adulation: praise, admire, worship
+alleviate: ease, reduce, pain
+altruism: selfless, help, others
+ameliorate: improve, better, make
+anachronism: time, period, wrong
+antithesis: opposite, contrast, direct
+aplomb: confidence, poise, calm
+apprehensive: worried, anxious, nervous
+assiduous: hardworking, careful, diligent
+audacious: bold, daring, brave
+beleaguered: troubled, under pressure, attack
+benevolent: kind, generous, good
+bequeath: will, leave, death
+bolster: support, strengthen, boost
+bombastic: pompous, language, inflated
+cacophony: noise, loud, harsh
+cajole: persuade, coax, flatter
+callous: cruel, insensitive, heartless
+candor: honesty, frank, open
+capricious: unpredictable, change, sudden
+carte blanche: freedom, permission, complete
+castigate: criticize, punish, scold
+chicanery: trickery, deception, fraud
+circumspect: careful, cautious, wary
+clandestine: secret, hidden, covert
+clemency: mercy, pardon, leniency
+cogent: convincing, logical, argument
+complicit: involved, guilty, crime
+conundrum: puzzle, problem, difficult
+corroborate: confirm, support, evidence
+culpable: guilty, blame, responsible
+dearth: lack, shortage, scarcity
+debacle: disaster, failure, fiasco
+decorum: manners, proper, behavior
+deference: respect, polite, yield
+déjà vu: before, feeling, again
+deleterious: harmful, damaging, bad
+demagogue: politician, emotions, crowd
+denigrate: criticize, belittle, insult
+deride: mock, ridicule, laugh
+despondent: hopeless, sad, depressed
+diatribe: attack, speech, angry
+didactic: teach, moral, lesson
+diffident: shy, modest, confidence
+disenfranchise: vote, deprive, right
+disparate: different, distinct, unrelated
+dogmatic: opinion, rigid, certain
+duplicity: deceit, double, dishonest
+ebullient: cheerful, enthusiastic, energetic
+egregious: terrible, outrageous, bad
+emulate: imitate, copy, admire
+enervate: weaken, tired, drain
+equanimity: calm, composure, balance
+erudite: learned, scholarly, knowledge
+esoteric: obscure, few, specialized
+exacerbate: worse, aggravate, increase
+exonerate: clear, innocent, blame
+expedient: convenient, practical, quick
+extol: praise, highly, celebrate
+fastidious: picky, detail, careful
+faux pas: mistake, social, embarrassing
+fervent: passionate, intense, eager
+fickle: change, unreliable, mind
+flippant: casual, joke, serious
+fortuitous: lucky, chance, accident
+furtive: secret, sly, hidden
+garrulous: talkative, chatty, talk
+gregarious: social, friendly, people
+hackneyed: overused, cliché, stale
+hapless: unlucky, unfortunate, poor
+harbinger: sign, warning, coming
+hedonism: pleasure, enjoy, life
+hubris: pride, arrogance, excessive
+iconoclast: challenge, beliefs, rebel
+idiosyncrasy: quirk, habit, peculiar
+impetuous: rash, impulsive, hasty
+incongruous: out of place, mismatch, strange
+inexorable: unstoppable, relentless, inevitable
+ingenuous: innocent, naive, trusting
+innocuous: harmless, safe, inoffensive
+insidious: gradual, harmful, sneaky
+intransigent: stubborn, refuse, compromise
+inveterate: habitual, long, confirmed
+irrevocable: permanent, change, final
+juggernaut: unstoppable, powerful, huge
+kowtow: bow, submit, obey
+laconic: brief, few words, terse
+lethargic: sluggish, tired, slow
+loquacious: talkative, chatty, words
+lugubrious: gloomy, sad, mournful
+magnanimous: generous, forgiving, noble
+malevolent: evil, harmful, wicked
+maverick: independent, rebel, unconventional
+mendacious: lying, untruthful, dishonest
+mercurial: unpredictable, moody, change
+milieu: environment, setting, surroundings
+misanthrope: hate, people, humans
+modus operandi: method, way, criminal
+mollify: calm, soothe, appease
+myopic: shortsighted, narrow, vision
+nefarious: wicked, evil, criminal
+non sequitur: logic, follow, unrelated
+nonchalant: casual, calm, relaxed
+obdurate: stubborn, unyielding, inflexible
+obfuscate: confuse, unclear, hide
+obsequious: servile, flatter, eager
+onerous: burdensome, heavy, difficult
+opulent: luxurious, rich, wealthy
+ostentatious: show off, flashy, pretentious
+panacea: cure, all, solution
+paragon: model, perfect, example
+parsimonious: stingy, cheap, money
+pejorative: negative, insulting, word
+penchant: liking, fondness, taste
+perfunctory: careless, routine, minimal
+pernicious: harmful, destructive, subtle
+perspicacious: perceptive, insightful, sharp
+pervasive: widespread, everywhere, spread
+placate: calm, appease, soothe
+platitude: cliché, obvious, boring
+precocious: early, advanced, child
+prevaricate: evade, lie, avoid
+pristine: clean, perfect, untouched
+prodigal: wasteful, spend, son
+propensity: tendency, inclination, likely
+quagmire: bog, mess, trouble
+quintessential: perfect, typical, example
+quixotic: idealistic, unrealistic, romantic
+recalcitrant: stubborn, uncooperative, resist
+reprehensible: shameful, blameworthy, wrong
+repudiate: reject, deny, refuse
+reticent: reserved, quiet, silent
+sagacious: wise, judgment, shrewd
+salient: important, noticeable, main
+sanctimonious: self-righteous, holier, moral
+schadenfreude: pleasure, misfortune, German
+scrupulous: careful, honest, thorough
+serendipity: chance, luck, happy
+sophistry: argument, false, clever
+soporific: sleepy, boring, drowsy
+spurious: false, fake, invalid
+squander: waste, money, opportunity
+staunch: loyal, firm, committed
+stoic: endure, emotion, calm
+sycophant: flatterer, suck up, yes-man
+taciturn: quiet, silent, reserved
+tenuous: weak, thin, slight
+truculent: aggressive, defiant, hostile
+ubiquitous: everywhere, common, present
+unequivocal: clear, certain, definite
+untenable: indefensible, impossible, position
+vacillate: waver, indecisive, undecided
+venerable: respected, old, wise
+verbose: wordy, long, talkative
+vicarious: through, others, experience
+vitriolic: bitter, cruel, criticism
+vociferous: loud, noisy, shouting
+wanton: deliberate, cruel, unprovoked
+zeitgeist: spirit, time, era
 `,
 };
