@@ -86,9 +86,26 @@ export function allCards() {
   return [...BUILTIN, ...store.getCustom().map((c) => ({ ...c, custom: true }))];
 }
 
+/** Normalise a word so the same word from different decks matches: "The Earth" = "earth", "cookies" = "cookie". */
+export function wordKey(w) {
+  let k = String(w).toLowerCase().replace(/[’']/g, "'").replace(/[^a-z0-9' -]/g, '').replace(/\s+/g, ' ').trim();
+  k = k.replace(/^(a|an|the) /, '');
+  return k.split(' ').map((t) => (t.length > 3 && /[^s]s$/.test(t) ? t.slice(0, -1) : t)).join(' ');
+}
+
+/** Cards in play for these decks. When decks share a word, only one copy is kept (your own cards win). */
 export function activeCards(sets) {
   const ex = store.getExcluded();
-  return allCards().filter((c) => sets.includes(c.level) && !ex.has(c.id));
+  const pool = allCards().filter((c) => sets.includes(c.level) && !ex.has(c.id));
+  const seen = new Set();
+  const out = [];
+  for (const c of [...pool.filter((x) => x.custom), ...pool.filter((x) => !x.custom)]) {
+    const k = wordKey(c.word);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push(c);
+  }
+  return out;
 }
 
 // Points for each entry of a turn log, applying the skip rule in order.

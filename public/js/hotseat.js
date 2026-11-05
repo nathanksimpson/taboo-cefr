@@ -1,5 +1,5 @@
 import {
-  SETS, SET_INFO, SET_LABEL, TEAM_COLORS, store, allCards, activeCards, remainingMs, fmtTime, shuffle, esc, sfx, shortcutKey,
+  SETS, SET_INFO, SET_LABEL, TEAM_COLORS, store, allCards, activeCards, wordKey, remainingMs, fmtTime, shuffle, esc, sfx, shortcutKey,
 } from './core.js';
 import { setupTeams, ensureColors } from './teams.js';
 import { setupDeckPicker, deckSummary } from './decks.js';
@@ -102,8 +102,8 @@ function drawCard() {
       const c = map.get(game.deck[game.pos++]);
       if (c && !ex.has(c.id)) { game.card = { id: c.id, word: c.word, taboo: c.taboo, level: c.level }; return; }
     }
-    const cur = game.card?.id;
-    game.deck = shuffle(activeCards(game.settings.sets).map((c) => c.id).filter((id) => id !== cur));
+    const curKey = game.card ? wordKey(game.card.word) : null;
+    game.deck = shuffle(activeCards(game.settings.sets).filter((c) => wordKey(c.word) !== curKey).map((c) => c.id));
     game.pos = 0;
   }
   game.card = null;
