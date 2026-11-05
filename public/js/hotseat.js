@@ -1,6 +1,7 @@
 import {
   SETS, SET_INFO, SET_LABEL, TEAM_COLORS, store, allCards, activeCards, remainingMs, fmtTime, shuffle, esc, sfx,
 } from './core.js';
+import { setupTeams, ensureColors } from './teams.js';
 import { openCardManager, cardManagerOpen } from './cardmanager.js';
 import { sync, hsSettings, STYLE, scoreHS, turnTotal, passRuleText } from './hotseat-shared.js';
 
@@ -40,12 +41,6 @@ function renderSetup() {
     ? `${STYLE[settings.style].name} · ${n} cards · ${settings.teams.length} teams · ${settings.seconds}s turns`
     : 'Pick at least one card set to start.';
 
-  $('#team-count').textContent = settings.teams.length;
-  const names = $('#team-names');
-  if (names.children.length !== settings.teams.length) {
-    names.innerHTML = settings.teams.map((t, i) => `<label class="team-name" style="--team:${TEAM_COLORS[i]}">
-      <span class="dot"></span><input data-team="${i}" value="${esc(t)}" maxlength="24"></label>`).join('');
-  }
 
   $('#timer-presets').innerHTML = [60, 90, 120, 180].map((s) =>
     `<button data-sec="${s}" class="${settings.seconds === s ? 'on' : ''}">${s % 60 ? `${s}s` : `${s / 60} min`}</button>`).join('');
@@ -72,12 +67,6 @@ $('#set-grid').addEventListener('click', (e) => {
   settings.sets = settings.sets.includes(s) ? settings.sets.filter((x) => x !== s) : SETS.filter((x) => x === s || settings.sets.includes(x));
   saveSettings();
 });
-$('#team-minus').onclick = () => { if (settings.teams.length > 1) { settings.teams.pop(); saveSettings(); } };
-$('#team-plus').onclick = () => { if (settings.teams.length < 6) { settings.teams.push(`Team ${settings.teams.length + 1}`); saveSettings(); } };
-$('#team-names').addEventListener('input', (e) => {
-  const i = e.target.dataset.team; if (i == null) return;
-  settings.teams[i] = e.target.value; hsSettings.set(settings);
-});
 $('#timer-presets').addEventListener('click', (e) => {
   const b = e.target.closest('[data-sec]'); if (!b) return;
   settings.seconds = +b.dataset.sec; saveSettings();
@@ -96,12 +85,13 @@ $('#sounds').onchange = (e) => { settings.sounds = e.target.checked; saveSetting
 
 $('#start').onclick = () => {
   if (game && game.teams && game.phase !== 'over' && !confirm('Start a new game? The current scores will be cleared.')) return;
+  ensureColors(settings);
   const ids = shuffle(activeCards(settings.sets).map((c) => c.id));
   if (!ids.length) return;
   game = {
     phase: 'ready',
     settings: { ...settings, teams: undefined },
-    teams: settings.teams.map((name, i) => ({ name: name.trim() || `Team ${i + 1}`, score: 0, color: TEAM_COLORS[i], turns: 0 })),
+    teams: settings.teams.map((name, i) => ({ name: name.trim() || `Team ${i + 1}`, score: 0, color: settings.colors[i], turns: 0 })),
     current: 0,
     deck: ids, pos: 0, card: null, log: [],
     endAt: 0, remaining: 0, flash: null, lastTurn: null,
@@ -399,5 +389,7 @@ $('#manage-cards').onclick = openCards;
 $('#manage-cards-top').onclick = openCards;
 
 /* ---------------- boot ---------------- */
+ensureColors(settings);
+setupTeams({ settings, min: 1, save: saveSettings, persist: () => hsSettings.set(settings) });
 if (game?.phase === 'playing' && game.endAt <= Date.now()) timeUp();
 renderSetup();
