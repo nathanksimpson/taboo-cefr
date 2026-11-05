@@ -1,5 +1,5 @@
 // Card manager dialog shared by every game: browse, exclude, add, export/import.
-import { SETS, SET_INFO, SET_LABEL, store, allCards, esc } from './core.js';
+import { SETS, SET_NAME, SET_LABEL, store, allCards, esc } from './core.js';
 
 const HTML = `
 <dialog id="cards-dlg" class="dlg">
@@ -63,7 +63,7 @@ function render() {
 function build() {
   document.body.insertAdjacentHTML('beforeend', HTML);
   dlg = $('#cards-dlg');
-  $('#add-level').innerHTML = SETS.map((s) => `<option value="${s}">${s === 'MY' ? 'My cards' : `${s} — ${SET_INFO[s]}`}</option>`).join('');
+  $('#add-level').innerHTML = SETS.map((s) => `<option value="${s}">${SET_NAME(s)}</option>`).join('');
   $('#cards-close').onclick = () => dlg.close();
   dlg.addEventListener('close', () => hooks.onClose?.());
 

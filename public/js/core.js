@@ -1,13 +1,23 @@
 // Shared data, storage and sync used by both windows.
 import { RAW } from './cards.js';
+import { BOOKS, LEVEL_ORDER, LEVEL_COLORS } from './books/index.js';
 
+export { BOOKS, LEVEL_ORDER, LEVEL_COLORS };
 export const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-export const SETS = [...LEVELS, 'MY'];
+export const BOOK_IDS = BOOKS.map((b) => b.id);
+export const BOOK_BY_ID = Object.fromEntries(BOOKS.map((b) => [b.id, b]));
+export const SETS = [...BOOK_IDS, ...LEVELS, 'MY'];
 export const SET_INFO = {
   A1: 'Beginner', A2: 'Elementary', B1: 'Intermediate',
   B2: 'Upper-intermediate', C1: 'Advanced', C2: 'Proficiency', MY: 'My cards',
+  ...Object.fromEntries(BOOKS.map((b) => [b.id, `${b.level} level`])),
 };
-export const SET_LABEL = (s) => (s === 'MY' ? 'My cards' : s);
+/** Short label, used on cards and tabs: "WN 3 · Navy", "B1", "My cards". */
+export const SET_LABEL = (s) => (s === 'MY' ? 'My cards' : BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].short} · ${BOOK_BY_ID[s].level}` : s);
+/** Full deck name: "Write Now 3 · Navy". */
+export const SET_NAME = (s) => (BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].name} · ${BOOK_BY_ID[s].level}` : s === 'MY' ? 'My cards' : `CEFR ${s}`);
+/** Which filter group a set belongs to: a Rainbow level, 'CEFR' or 'MY'. */
+export const SET_GROUP = (s) => (BOOK_BY_ID[s] ? BOOK_BY_ID[s].level : s === 'MY' ? 'MY' : 'CEFR');
 export const TEAM_COLORS = ['#ef4b3f', '#2f6df6', '#13a35f', '#e29a0f', '#8b4ef0', '#e5428f'];
 
 function parse(level, text) {
@@ -18,7 +28,21 @@ function parse(level, text) {
     return { id: `${level}:${word.toLowerCase()}`, level, word, taboo, custom: false };
   });
 }
-export const BUILTIN = LEVELS.flatMap((l) => parse(l, RAW[l]));
+function parseBook(book) {
+  let unit = '';
+  const out = [];
+  for (const raw of book.raw.trim().split('\n')) {
+    const line = raw.trim();
+    if (!line) continue;
+    if (line.startsWith('#')) { unit = line.slice(1).trim(); continue; }
+    const i = line.indexOf(':');
+    const word = line.slice(0, i).trim();
+    const taboo = line.slice(i + 1).split(',').map((s) => s.trim()).filter(Boolean);
+    out.push({ id: `${book.id}:${word.toLowerCase()}`, level: book.id, unit, word, taboo, custom: false });
+  }
+  return out;
+}
+export const BUILTIN = [...BOOKS.flatMap(parseBook), ...LEVELS.flatMap((l) => parse(l, RAW[l]))];
 
 const K = {
   excluded: 'taboo.excluded.v1',

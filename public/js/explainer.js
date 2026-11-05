@@ -3,6 +3,8 @@ import {
   skipRuleText, remainingMs, fmtTime, shuffle, esc, publish, onMessage, sfx,
 } from './core.js';
 import { setupTeams, ensureColors } from './teams.js';
+import { setupDeckPicker, deckSummary } from './decks.js';
+let renderDecks = () => {};
 import { openCardManager, cardManagerOpen } from './cardmanager.js';
 
 const $ = (s) => document.querySelector(s);
@@ -14,22 +16,9 @@ let game = store.getGame();
 function saveSettings() { store.setSettings(settings); renderSetup(); }
 
 function renderSetup() {
-  const ex = store.getExcluded();
-  const cards = allCards();
-  $('#set-grid').innerHTML = SETS.map((s) => {
-    const inSet = cards.filter((c) => c.level === s);
-    const active = inSet.filter((c) => !ex.has(c.id)).length;
-    const on = settings.sets.includes(s);
-    return `<button class="set-tile ${on ? 'on' : ''}" data-set="${s}" aria-pressed="${on}">
-      <span class="set-code">${SET_LABEL(s)}</span>
-      <span class="set-name">${s === 'MY' ? 'Cards you added' : SET_INFO[s]}</span>
-      <span class="set-count">${active}${active !== inSet.length ? ` / ${inSet.length}` : ''} card${inSet.length === 1 ? '' : 's'}</span>
-    </button>`;
-  }).join('');
+  renderDecks();
   const n = activeCards(settings.sets).length;
-  $('#deck-count').textContent = settings.sets.length
-    ? `${n} cards in play from ${settings.sets.map(SET_LABEL).join(', ')}.`
-    : 'Pick at least one set.';
+  $('#deck-count').textContent = deckSummary(settings.sets, n);
   $('#start').disabled = n === 0;
   $('#setup-summary').textContent = n
     ? `${n} cards · ${settings.teams.length} teams · ${settings.seconds}s turns`
@@ -49,12 +38,6 @@ function renderSetup() {
   $('#resume-banner').hidden = !(game && game.phase !== 'over');
 }
 
-$('#set-grid').addEventListener('click', (e) => {
-  const t = e.target.closest('[data-set]'); if (!t) return;
-  const s = t.dataset.set;
-  settings.sets = settings.sets.includes(s) ? settings.sets.filter((x) => x !== s) : SETS.filter((x) => x === s || settings.sets.includes(x));
-  saveSettings();
-});
 $('#timer-presets').addEventListener('click', (e) => {
   const b = e.target.closest('[data-sec]'); if (!b) return;
   settings.seconds = +b.dataset.sec; saveSettings();
@@ -384,6 +367,7 @@ $('#manage-cards').onclick = openCards;
 $('#manage-cards-top').onclick = openCards;
 
 /* ---------------- boot ---------------- */
+renderDecks = setupDeckPicker({ settings, save: saveSettings });
 ensureColors(settings);
 setupTeams({ settings, min: 2, save: saveSettings, persist: () => store.setSettings(settings) });
 if (game?.phase === 'playing' && game.endAt <= Date.now()) timeUp();

@@ -1,6 +1,21 @@
 # CEFR Word Games — Taboo & Hot Seat
 
-Two classroom vocabulary games sharing ~950 cards sorted by CEFR level (A1–C2, about 150 per level), built to run as a static Cloudflare Worker. The home page (`/`) lets you pick a game.
+Two classroom vocabulary games sharing ~950 CEFR cards (A1–C2) plus ~1,680 cards from 14 Simson Rainbow-level textbooks, built to run as a static Cloudflare Worker. The home page (`/`) lets you pick a game.
+
+## Book decks
+
+`public/js/books/` holds one deck per textbook, labelled *Book · Level* (e.g. *Write Now 3 · Navy*), with `# Unit …` headings so each card keeps its unit:
+
+| Level | Books |
+|---|---|
+| Red | Hand in Hand 1 |
+| Orange | Hand in Hand 2 |
+| Yellow | Hand in Hand 3 |
+| Green | Early Writers 1, The Best Writing Starter 1, Write Now 1, Write Right 1 |
+| Blue | Early Writers 2, The Best Writing Starter 2, Write Now 2 |
+| Navy | Early Writers 3, The Best Writing Starter 3, Write Now 3, Write Right 3 |
+
+The deck picker can filter by level, search, sort (level order, A–Z, most cards) and select a whole level at once. Run `node scripts/check-books.mjs` after editing a book file.
 
 ## Hot Seat / Who Am I? (`/hotseat.html`)
 
