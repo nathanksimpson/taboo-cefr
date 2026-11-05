@@ -222,3 +222,24 @@ export function shortcutKey(e) {
   const k = (e.key || '').toLowerCase();
   return JAMO[k] || k;
 }
+
+// Words already played, remembered across games so new games use fresh words first.
+export function seenStore(name) {
+  const key = `${name}.seen.v1`;
+  const get = () => new Set(load(key, []));
+  return {
+    get,
+    add(k) { const s = get(); if (!s.has(k)) { s.add(k); save(key, [...s]); } },
+    remove(k) { const s = get(); if (s.delete(k)) save(key, [...s]); },
+    clear() { save(key, []); },
+  };
+}
+export const unplayedCount = (cards, seen) => { const s = seen.get(); return cards.filter((c) => !s.has(wordKey(c.word))).length; };
+/** Deck order: words not played yet (shuffled), then played ones (shuffled). Starts a fresh round when everything has been played. */
+export function buildDeck(cards, seen) {
+  const s = seen.get();
+  const fresh = cards.filter((c) => !s.has(wordKey(c.word)));
+  if (!fresh.length) { seen.clear(); return shuffle(cards).map((c) => c.id); }
+  const old = cards.filter((c) => s.has(wordKey(c.word)));
+  return [...shuffle(fresh), ...shuffle(old)].map((c) => c.id);
+}

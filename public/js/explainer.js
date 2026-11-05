@@ -1,10 +1,11 @@
 import {
-  SETS, SET_INFO, SET_LABEL, TEAM_COLORS, store, allCards, activeCards, wordKey, scoreTurn, sum,
+  SETS, SET_INFO, SET_LABEL, TEAM_COLORS, store, allCards, activeCards, wordKey, seenStore, buildDeck, unplayedCount, scoreTurn, sum,
   skipRuleText, remainingMs, fmtTime, shuffle, esc, publish, onMessage, sfx, shortcutKey,
 } from './core.js';
 import { setupTeams, ensureColors } from './teams.js';
 import { setupDeckPicker, deckSummary } from './decks.js';
 let renderDecks = () => {};
+const seen = seenStore('taboo');
 import { openCardManager, cardManagerOpen } from './cardmanager.js';
 
 const $ = (s) => document.querySelector(s);
@@ -18,7 +19,10 @@ function saveSettings() { store.setSettings(settings); renderSetup(); }
 function renderSetup() {
   renderDecks();
   const n = activeCards(settings.sets).length;
-  $('#deck-count').textContent = deckSummary(settings.sets, n);
+  const unseen = n ? unplayedCount(activeCards(settings.sets), seen) : 0;
+  $('#deck-count').innerHTML = esc(deckSummary(settings.sets, n)) + (n && unseen < n
+    ? ` <span class="seen-note">${unseen ? `${unseen} not played yet, so those come first.` : 'Every word has been played, so the next game starts a fresh round.'} <button type="button" class="link small" data-reset-seen>Start fresh</button></span>`
+    : '');
   $('#start').disabled = n === 0;
   $('#setup-summary').textContent = n
     ? `${n} cards · ${settings.teams.length} teams · ${settings.seconds}s turns`
@@ -54,17 +58,21 @@ $('#turns-per-team').addEventListener('change', (e) => { settings.turnsPerTeam =
 $('#reveal-words').onchange = (e) => { settings.revealWords = e.target.checked; saveSettings(); };
 $('#sounds').onchange = (e) => { settings.sounds = e.target.checked; saveSettings(); };
 
+$('#deck-count').addEventListener('click', (e) => {
+  if (e.target.closest('[data-reset-seen]')) { seen.clear(); renderSetup(); }
+});
+
 $('#start').onclick = () => {
   if (game && game.phase !== 'over' && !confirm('Start a new game? The current scores will be cleared.')) return;
   ensureColors(settings);
-  const ids = shuffle(activeCards(settings.sets).map((c) => c.id));
+  const ids = buildDeck(activeCards(settings.sets), seen);
   if (!ids.length) return;
   game = {
     phase: 'ready',
     settings: { ...settings, teams: undefined },
     teams: settings.teams.map((name, i) => ({ name: name.trim() || `Team ${i + 1}`, score: 0, color: settings.colors[i], turns: 0 })),
     current: 0,
-    deck: ids, pos: 0, card: null, log: [],
+    deck: ids, pos: 0, card: null, log: [], used: [],
     endAt: 0, remaining: 0, flash: null, lastTurn: null,
   };
   publish(game);
@@ -85,14 +93,22 @@ function showSetup() { $('#play').hidden = true; $('#setup').hidden = false; ren
 function drawCard() {
   const map = byId();
   const ex = store.getExcluded();
+  game.used ||= [];
   for (let guard = 0; guard < 2; guard++) {
     while (game.pos < game.deck.length) {
       const c = map.get(game.deck[game.pos++]);
-      if (c && !ex.has(c.id)) { game.card = { id: c.id, word: c.word, taboo: c.taboo, level: c.level }; return; }
+      if (!c || ex.has(c.id)) continue;
+      const k = wordKey(c.word);
+      if (game.used.includes(k)) continue; // never the same word twice in a round
+      game.used.push(k);
+      seen.add(k);
+      game.card = { id: c.id, word: c.word, taboo: c.taboo, level: c.level };
+      return;
     }
-    // Deck used up: reshuffle everything still in play.
+    // Every word has been played: start a new round, without repeating the card just shown.
     const curKey = game.card ? wordKey(game.card.word) : null;
-    game.deck = shuffle(activeCards(game.settings.sets).filter((c) => wordKey(c.word) !== curKey).map((c) => c.id));
+    game.used = curKey ? [curKey] : [];
+    game.deck = buildDeck(activeCards(game.settings.sets).filter((c) => wordKey(c.word) !== curKey), seen);
     game.pos = 0;
   }
   game.card = null;
@@ -121,7 +137,12 @@ function mark(result) {
 function undo() {
   if (game.phase !== 'playing' || !game.log.length) return;
   const last = game.log.pop();
-  if (game.pos > 0) game.pos -= 1; else game.deck.unshift(game.card.id);
+  if (game.card) {
+    const k = wordKey(game.card.word);
+    game.used = (game.used || []).filter((x) => x !== k);
+    seen.remove(k);
+    if (game.pos > 0 && game.deck[game.pos - 1] === game.card.id) game.pos -= 1; else game.deck.splice(game.pos, 0, game.card.id);
+  }
   game.card = last.card;
   game.flash = { type: 'undo', at: Date.now() };
   commit();
@@ -142,6 +163,12 @@ function pause() {
 
 function timeUp() {
   game.phase = 'review';
+  if (game.card) {
+    const k = wordKey(game.card.word);
+    game.used = (game.used || []).filter((x) => x !== k);
+    seen.remove(k);
+    game.deck.push(game.card.id);
+  }
   game.card = null;
   game.flash = { type: 'timeup', at: Date.now() };
   play('timeUp');

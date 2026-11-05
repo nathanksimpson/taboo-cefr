@@ -409,3 +409,4 @@ body.hs-class { background-color: var(--blue); background-image: radial-gradient
 .deck-group { display: grid; grid-template-columns: 112px 1fr; gap: .6rem; align-items: start; }
 .deck-group-head { flex-direction: column; align-items: flex-start; gap: .2rem; margin: .4rem 0 0; }
 @media (max-width: 640px) { .deck-group { grid-template-columns: 1fr; } .deck-group-head { flex-direction: row; } }
+.seen-note { display: inline; color: var(--muted); }
