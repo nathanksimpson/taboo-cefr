@@ -139,8 +139,9 @@ function undo() {
   const last = game.log.pop();
   if (game.card) {
     const k = wordKey(game.card.word);
+    // Undo puts the card that was showing back on top of the deck so it comes straight back.
+    // It still counts as played for future games, because it was shown.
     game.used = (game.used || []).filter((x) => x !== k);
-    seen.remove(k);
     if (game.pos > 0 && game.deck[game.pos - 1] === game.card.id) game.pos -= 1; else game.deck.splice(game.pos, 0, game.card.id);
   }
   game.card = last.card;
@@ -163,13 +164,7 @@ function pause() {
 
 function timeUp() {
   game.phase = 'review';
-  if (game.card) {
-    const k = wordKey(game.card.word);
-    game.used = (game.used || []).filter((x) => x !== k);
-    seen.remove(k);
-    game.deck.push(game.card.id);
-  }
-  game.card = null;
+  game.card = null; // a word that was shown counts as played, even if time ran out
   game.flash = { type: 'timeup', at: Date.now() };
   play('timeUp');
   commit();
