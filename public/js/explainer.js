@@ -2,6 +2,7 @@ import {
   SETS, SET_INFO, SET_LABEL, TEAM_COLORS, store, allCards, activeCards, scoreTurn, sum,
   skipRuleText, remainingMs, fmtTime, shuffle, esc, publish, onMessage, sfx,
 } from './core.js';
+import { openCardManager, cardManagerOpen } from './cardmanager.js';
 
 const $ = (s) => document.querySelector(s);
 let settings = store.getSettings();
@@ -343,7 +344,7 @@ $('#pause').onclick = pause;
 $('#end-game').onclick = endGame;
 
 document.addEventListener('keydown', (e) => {
-  if (!game || $('#play').hidden || e.target.matches('input, textarea, select') || $('#cards-dlg').open) return;
+  if (!game || $('#play').hidden || e.target.matches('input, textarea, select') || cardManagerOpen()) return;
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const k = e.key.toLowerCase();
   const p = game.phase;
@@ -381,101 +382,16 @@ $('#open-class').onclick = openClass;
 
 /* ---------------- card manager ---------------- */
 
-let cmSet = 'A1';
-const dlg = $('#cards-dlg');
-function openCards() { renderCm(); dlg.showModal(); }
+function openCards() {
+  openCardManager({
+    onAdd(level) {
+      if (!settings.sets.includes(level)) { settings.sets = SETS.filter((x) => x === level || settings.sets.includes(x)); store.setSettings(settings); }
+    },
+    onClose() { renderSetup(); if (game && !$('#play').hidden) render(); },
+  });
+}
 $('#manage-cards').onclick = openCards;
 $('#manage-cards-top').onclick = openCards;
-$('#cards-close').onclick = () => dlg.close();
-dlg.addEventListener('close', () => { renderSetup(); if (game && !$('#play').hidden) render(); });
-
-$('#add-level').innerHTML = SETS.map((s) => `<option value="${s}">${s === 'MY' ? 'My cards' : `${s} — ${SET_INFO[s]}`}</option>`).join('');
-
-function renderCm() {
-  const ex = store.getExcluded();
-  const cards = allCards();
-  $('#cm-tabs').innerHTML = SETS.map((s) => {
-    const n = cards.filter((c) => c.level === s).length;
-    return `<button class="${s === cmSet ? 'on' : ''}" data-tab="${s}">${SET_LABEL(s)} <span>${n}</span></button>`;
-  }).join('');
-  $('#add-level').value = cmSet;
-  const q = $('#cm-search').value.trim().toLowerCase();
-  const list = cards.filter((c) => c.level === cmSet)
-    .filter((c) => !q || c.word.toLowerCase().includes(q) || c.taboo.some((t) => t.toLowerCase().includes(q)))
-    .sort((a, b) => a.word.localeCompare(b.word));
-  const inSet = cards.filter((c) => c.level === cmSet);
-  $('#cm-count').textContent = `${inSet.filter((c) => !ex.has(c.id)).length} of ${inSet.length} included`;
-  $('#cm-list').innerHTML = list.map((c) => `<div class="cm-row ${ex.has(c.id) ? 'off' : ''}">
-      <label><input type="checkbox" data-cid="${esc(c.id)}" ${ex.has(c.id) ? '' : 'checked'}>
-        <b>${esc(c.word)}</b>${c.custom ? '<span class="badge">added</span>' : ''}
-        <span class="cm-taboo">${c.taboo.map(esc).join(' · ')}</span></label>
-      ${c.custom ? `<button class="link small" data-del="${esc(c.id)}">Delete</button>` : ''}
-    </div>`).join('') || `<p class="muted pad">${cmSet === 'MY' && !q ? 'No cards yet — add your own above.' : 'Nothing matches.'}</p>`;
-}
-
-$('#cm-tabs').addEventListener('click', (e) => {
-  const b = e.target.closest('[data-tab]'); if (!b) return;
-  cmSet = b.dataset.tab; $('#cm-search').value = ''; renderCm();
-});
-$('#cm-search').addEventListener('input', renderCm);
-$('#cm-list').addEventListener('change', (e) => {
-  const id = e.target.dataset.cid; if (!id) return;
-  const ex = store.getExcluded();
-  if (e.target.checked) ex.delete(id); else ex.add(id);
-  store.setExcluded(ex);
-  e.target.closest('.cm-row').classList.toggle('off', !e.target.checked);
-  const inSet = allCards().filter((c) => c.level === cmSet);
-  $('#cm-count').textContent = `${inSet.filter((c) => !ex.has(c.id)).length} of ${inSet.length} included`;
-});
-$('#cm-list').addEventListener('click', (e) => {
-  const id = e.target.dataset?.del; if (!id) return;
-  store.setCustom(store.getCustom().filter((c) => c.id !== id));
-  renderCm();
-});
-function bulk(include) {
-  const ex = store.getExcluded();
-  allCards().filter((c) => c.level === cmSet).forEach((c) => (include ? ex.delete(c.id) : ex.add(c.id)));
-  store.setExcluded(ex); renderCm();
-}
-$('#cm-include-all').onclick = () => bulk(true);
-$('#cm-exclude-all').onclick = () => bulk(false);
-
-$('#add-form').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const word = $('#add-word').value.trim();
-  const taboo = $('#add-taboo').value.split(',').map((s) => s.trim()).filter(Boolean);
-  const level = $('#add-level').value;
-  if (!word || !taboo.length) return;
-  const custom = store.getCustom();
-  custom.push({ id: `C:${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`, level, word, taboo });
-  store.setCustom(custom);
-  if (!settings.sets.includes(level)) { settings.sets = SETS.filter((x) => x === level || settings.sets.includes(x)); store.setSettings(settings); }
-  $('#add-word').value = ''; $('#add-taboo').value = '';
-  cmSet = level; renderCm(); $('#add-word').focus();
-});
-
-$('#export').onclick = () => {
-  const data = { app: 'taboo-cefr', version: 1, custom: store.getCustom(), excluded: [...store.getExcluded()] };
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
-  a.download = 'taboo-cards.json';
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-};
-$('#import').addEventListener('change', async (e) => {
-  const f = e.target.files[0]; if (!f) return;
-  try {
-    const data = JSON.parse(await f.text());
-    const custom = store.getCustom();
-    const have = new Set(custom.map((c) => c.id));
-    (data.custom || []).forEach((c) => { if (c.id && c.word && Array.isArray(c.taboo) && !have.has(c.id)) custom.push(c); });
-    store.setCustom(custom);
-    const ex = store.getExcluded(); (data.excluded || []).forEach((id) => ex.add(id)); store.setExcluded(ex);
-    renderCm();
-    alert(`Imported ${data.custom?.length || 0} cards and ${data.excluded?.length || 0} exclusions.`);
-  } catch { alert('That file could not be read.'); }
-  e.target.value = '';
-});
 
 /* ---------------- boot ---------------- */
 if (game?.phase === 'playing' && game.endAt <= Date.now()) timeUp();

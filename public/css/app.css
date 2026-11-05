@@ -230,3 +230,56 @@ body.classview { --bg: #111017; --ink: #f6f3ee; --muted: #9a96a5; --surface: #1c
 .fs-btn { position: fixed; top: 14px; right: 14px; z-index: 5; border: 0; background: var(--surface-2); color: var(--muted); width: 40px; height: 40px; border-radius: 10px; cursor: pointer; font-size: 1.2rem; opacity: .5; }
 .fs-btn:hover { opacity: 1; }
 .cv-turn-pts { font: 800 clamp(2rem, 8vmin, 6rem)/1 var(--display); margin: 0; }
+
+/* ---------------- shared: links in brand ---------------- */
+a.brand { color: inherit; text-decoration: none; }
+.brand-mark.hs { background: #2f6df6; transform: rotate(5deg); }
+
+/* ---------------- home ---------------- */
+body.home { min-height: 100vh; }
+.home-main { max-width: 920px; margin: 0 auto; padding: clamp(32px, 8vh, 80px) 16px 48px; }
+.home-head { text-align: center; margin-bottom: 2rem; }
+.home-head h1 { font: 800 clamp(2.4rem, 7vw, 3.8rem)/1 var(--display); margin: .4rem 0 .6rem; letter-spacing: -.02em; }
+.game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+.game-tile { display: grid; gap: .5rem; align-content: start; padding: 1.6rem; border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); color: inherit; text-decoration: none; border: 2px solid transparent; transition: transform .12s, border-color .15s; }
+.game-tile:hover { transform: translateY(-3px); border-color: var(--team); }
+.game-mark { width: 52px; height: 52px; border-radius: 14px; background: var(--team); color: #fff; display: grid; place-items: center; font: 800 1.6rem var(--display); transform: rotate(-6deg); margin-bottom: .4rem; }
+.game-name { font: 800 1.7rem/1.1 var(--display); }
+.game-desc { color: var(--muted); }
+.game-go { font-weight: 700; color: var(--team); margin-top: .4rem; }
+
+/* ---------------- hot seat controller ---------------- */
+.style-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: .6rem; }
+.style-tile { text-align: left; border: 0; border-radius: 14px; padding: 1rem 1.1rem; background: var(--surface-2); cursor: pointer; display: grid; gap: .25rem; box-shadow: inset 0 0 0 2px transparent; transition: background .15s, box-shadow .15s; }
+.style-tile.on { background: color-mix(in srgb, #2f6df6 13%, var(--surface)); box-shadow: inset 0 0 0 2px #2f6df6; }
+.style-name { font: 800 1.3rem var(--display); }
+.style-desc { color: var(--muted); font-size: .9rem; }
+.hotseat .set-tile.on { background: color-mix(in srgb, #2f6df6 13%, var(--surface)); box-shadow: inset 0 0 0 2px #2f6df6; }
+.hotseat .check input { accent-color: #2f6df6; }
+.seat-note { font-weight: 700; font-size: 1.15rem; margin: .2rem 0; padding: .5rem 1rem; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow); }
+.hs-wrap { width: min(820px, 100%); }
+.hs-card { position: relative; background: var(--surface); border-radius: 24px; box-shadow: var(--shadow); border: 1px solid var(--line); padding: clamp(1.6rem, 5vh, 3rem) 1.2rem; text-align: center; display: grid; gap: 1rem; justify-items: center; }
+.hs-card .level-tag { position: absolute; top: .9rem; right: .9rem; }
+.hs-word { font: 800 clamp(3rem, 11vw, 7.5rem)/1 var(--display); letter-spacing: -.03em; overflow-wrap: anywhere; }
+.hs-avoid { display: flex; flex-wrap: wrap; gap: .4rem .5rem; justify-content: center; align-items: center; }
+.hs-avoid span { font: 700 .72rem var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--bad); margin-right: .2rem; }
+.hs-avoid b { font: 650 1.2rem var(--display); padding: .15rem .6rem; border-radius: 8px; background: color-mix(in srgb, var(--bad) 12%, var(--surface)); }
+
+/* ---------------- hot seat class view ---------------- */
+.cv-logo.hs { color: #2f6df6; transform: rotate(2deg); font-size: 12vmin; }
+.cv-seat { font: 700 clamp(1.2rem, 3.4vmin, 2.4rem) var(--display); margin: 0; padding: .4em .9em; border-radius: .6em; background: var(--surface-2); }
+.hs-bar { position: fixed; top: 0; left: 0; right: 0; height: 10px; background: var(--surface-2); z-index: 4; }
+.hs-bar div { height: 100%; background: var(--team); transform-origin: left; transition: transform .25s linear; }
+.cv-hs { display: grid; grid-template-rows: auto 1fr auto; padding: 4vh 4vw 2vh; gap: 2vh; min-height: 0; }
+.cv-hs-top { display: flex; justify-content: space-between; align-items: center; font: 800 clamp(1.2rem, 4vmin, 3rem) var(--display); }
+.cv-hs-team { color: var(--team); }
+.cv-hs-timer { font-variant-numeric: tabular-nums; font-size: 1.4em; }
+.cv-hs-timer.low { color: var(--bad); animation: pulse 1s infinite; }
+.cv-hs-got { color: var(--good); }
+.cv-hs-word-wrap { position: relative; display: grid; place-content: center; justify-items: center; gap: 3vh; text-align: center; background: var(--surface); border-radius: 3vmin; box-shadow: inset 0 0 0 2px var(--line); padding: 4vh 3vw; min-width: 0; }
+.cv-hs-word-wrap .level-tag { position: absolute; top: 2vmin; right: 2vmin; font-size: clamp(.8rem, 2vmin, 1.3rem); }
+.cv-hs-word { font: 800 clamp(3rem, 19vmin, 16rem)/1 var(--display); letter-spacing: -.03em; white-space: nowrap; }
+.cv-hs-avoid { display: flex; flex-wrap: wrap; gap: 1.4vmin; justify-content: center; align-items: center; }
+.cv-hs-avoid span { font: 700 clamp(.8rem, 2vmin, 1.3rem) var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--bad); }
+.cv-hs-avoid b { font: 700 clamp(1.1rem, 4vmin, 3rem) var(--display); padding: .1em .5em; border-radius: .3em; background: color-mix(in srgb, var(--bad) 25%, var(--surface)); }
+.cv-hs-rule { text-align: center; margin: 0; color: var(--muted); font-size: clamp(1rem, 2.6vmin, 1.8rem); font-weight: 600; }

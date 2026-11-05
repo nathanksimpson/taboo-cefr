@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hot Seat CEFR</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="explainer hotseat">
+  <header class="topbar">
+    <a class="brand" href="./"><span class="brand-mark hs">H</span> Hot Seat <span class="brand-sub">CEFR</span></a>
+    <div class="topbar-actions">
+      <button class="btn ghost" id="open-class" title="Open the class view in a new window for a second screen">⧉ Class view</button>
+      <button class="btn ghost" id="manage-cards-top">Cards</button>
+    </div>
+  </header>
+
+  <!-- SETUP -->
+  <main id="setup" class="setup">
+    <div id="resume-banner" class="banner" hidden>
+      <span>A game is still in progress.</span>
+      <button class="btn primary" id="resume">Resume game</button>
+    </div>
+
+    <section class="panel">
+      <div class="panel-head"><h2><span class="step">1</span> Game style</h2></div>
+      <div class="style-grid" id="style-grid">
+        <button class="style-tile" data-style="hotseat">
+          <span class="style-name">Hot Seat</span>
+          <span class="style-desc">One student sits facing away from the screen. Their team describes the word and they guess.</span>
+        </button>
+        <button class="style-tile" data-style="whoami">
+          <span class="style-name">Who Am I?</span>
+          <span class="style-desc">The student in the hot seat asks yes/no questions. The class can only answer yes, no or maybe.</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2><span class="step">2</span> Card sets</h2>
+        <button class="btn ghost small" id="manage-cards">Manage cards…</button></div>
+      <div id="set-grid" class="set-grid"></div>
+      <p class="hint" id="deck-count"></p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2><span class="step">3</span> Teams</h2>
+        <div class="stepper">
+          <button class="btn ghost small" id="team-minus" aria-label="Fewer teams">−</button>
+          <span id="team-count">2</span>
+          <button class="btn ghost small" id="team-plus" aria-label="More teams">+</button>
+        </div></div>
+      <div id="team-names" class="team-names"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2><span class="step">4</span> Rules</h2></div>
+      <div class="rule">
+        <div class="rule-label">Turn timer</div>
+        <div class="rule-body">
+          <div class="seg" id="timer-presets"></div>
+          <label class="inline">or <input type="number" id="seconds" min="5" max="600" step="5"> seconds</label>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-label">Passes</div>
+        <div class="rule-body">
+          <div class="seg" id="pass-modes">
+            <button data-mode="free">Free</button>
+            <button data-mode="limited">Some free, then −1</button>
+            <button data-mode="penalty">Always −1</button>
+          </div>
+          <label class="inline" id="free-passes-wrap"><input type="number" id="free-passes" min="0" max="20"> free per turn</label>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-label">Rule broken</div>
+        <div class="rule-body">
+          <label class="check"><input type="checkbox" id="foul-penalty"> Costs the team 1 point <span class="muted" id="foul-hint"></span></label>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-label">Game length</div>
+        <div class="rule-body"><label class="inline"><input type="number" id="turns-per-team" min="0" max="50"> turns per team <span class="muted">(0 = until you end it)</span></label></div>
+      </div>
+      <div class="rule">
+        <div class="rule-label">Extras</div>
+        <div class="rule-body">
+          <label class="check"><input type="checkbox" id="show-avoid"> Harder: show 3 words the clue-givers can't say</label>
+          <label class="check"><input type="checkbox" id="reveal-words"> Show the turn's words at the end so the guesser can see them</label>
+          <label class="check"><input type="checkbox" id="sounds"> Sound effects</label>
+        </div>
+      </div>
+    </section>
+
+    <div class="setup-actions">
+      <span class="setup-summary" id="setup-summary"></span>
+      <button class="btn primary big" id="start">Start game ▶</button>
+    </div>
+  </main>
+
+  <!-- PLAY -->
+  <main id="play" class="play" hidden>
+    <div class="playbar">
+      <div class="team-chip" id="cur-team"></div>
+      <div class="timer" id="timer">60</div>
+      <div class="playbar-actions">
+        <button class="btn ghost small" id="pause" title="Pause (P)">Pause</button>
+        <button class="btn ghost small" id="end-game">End game</button>
+      </div>
+    </div>
+    <div id="stage" class="stage"></div>
+    <div id="scoreboard" class="scoreboard"></div>
+  </main>
+
+  <script type="module" src="js/hotseat.js"></script>
+</body>
+</html>

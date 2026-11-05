@@ -117,18 +117,33 @@ export function shuffle(a) {
 export const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // Same-browser window sync: BroadcastChannel, with localStorage events as backup.
-const bc = 'BroadcastChannel' in window ? new BroadcastChannel('taboo-cefr') : null;
-export function publish(game) {
-  store.setGame(game);
-  bc?.postMessage({ type: 'state', game });
+// Each game gets its own storage key and channel.
+export function makeSync(gameKey, channelName) {
+  const bc = 'BroadcastChannel' in window ? new BroadcastChannel(channelName) : null;
+  return {
+    load: () => load(gameKey, null),
+    publish(game) { save(gameKey, game); bc?.postMessage({ type: 'state', game }); },
+    onMessage(fn) {
+      bc?.addEventListener('message', (e) => fn(e.data));
+      window.addEventListener('storage', (e) => {
+        if (e.key === gameKey) fn({ type: 'state', game: e.newValue ? JSON.parse(e.newValue) : null });
+      });
+    },
+    send(msg) { bc?.postMessage(msg); },
+  };
 }
-export function onMessage(fn) {
-  bc?.addEventListener('message', (e) => fn(e.data));
-  window.addEventListener('storage', (e) => {
-    if (e.key === K.game) fn({ type: 'state', game: e.newValue ? JSON.parse(e.newValue) : null });
-  });
+const tabooSync = makeSync(K.game, 'taboo-cefr');
+export const publish = tabooSync.publish;
+export const onMessage = tabooSync.onMessage;
+export const send = tabooSync.send;
+
+// Settings saved per game.
+export function settingsStore(key, defaults) {
+  return {
+    get: () => ({ ...defaults, ...load(key, {}) }),
+    set: (s) => save(key, s),
+  };
 }
-export function send(msg) { bc?.postMessage(msg); }
 
 // Small Web Audio sound kit — no files needed.
 let ctx;
