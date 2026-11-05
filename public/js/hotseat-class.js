@@ -1,4 +1,4 @@
-import { SET_LABEL, remainingMs, fmtTime, esc } from './core.js';
+import { SET_LABEL, remainingMs, fmtTime, esc, shortcutKey } from './core.js';
 import { sync, STYLE, turnTotal, passRuleText } from './hotseat-shared.js';
 
 const cv = document.getElementById('cv');
@@ -108,4 +108,4 @@ render();
 
 const fs = () => (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.());
 document.getElementById('fullscreen').onclick = fs;
-document.addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'f') fs(); });
+document.addEventListener('keydown', (e) => { if (shortcutKey(e) === 'f') fs(); });

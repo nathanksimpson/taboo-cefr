@@ -192,3 +192,16 @@ export const sfx = {
   timeUp: () => { tone(220, 0.9, 'sawtooth', 0.22); tone(110, 0.9, 'square', 0.1); },
   start: () => { tone(523, 0.1, 'triangle'); tone(784, 0.18, 'triangle', 0.18, 0.1); },
 };
+
+// Read shortcuts by physical key so they work in Korean (한글) input mode too:
+// in 한글 mode X types ㅌ, S ㄴ, Z ㅋ, P ㅔ, F ㄹ, but e.code stays KeyX etc.
+const JAMO = { 'ㅌ': 'x', 'ㄴ': 's', 'ㅋ': 'z', 'ㅔ': 'p', 'ㄹ': 'f' };
+export function shortcutKey(e) {
+  const c = e.code || '';
+  if (/^Key[A-Z]$/.test(c)) return c.slice(3).toLowerCase();
+  if (c === 'Space') return ' ';
+  if (c === 'Enter' || c === 'NumpadEnter') return 'enter';
+  if (c === 'ArrowRight') return 'arrowright';
+  const k = (e.key || '').toLowerCase();
+  return JAMO[k] || k;
+}

@@ -1,4 +1,4 @@
-import { store, onMessage, send, scoreTurn, sum, remainingMs, fmtTime, esc, skipRuleText } from './core.js';
+import { store, onMessage, send, scoreTurn, sum, remainingMs, fmtTime, esc, skipRuleText, shortcutKey } from './core.js';
 
 const cv = document.getElementById('cv');
 const flashEl = document.getElementById('flash');
@@ -90,4 +90,4 @@ render();
 
 const fs = () => (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.());
 document.getElementById('fullscreen').onclick = fs;
-document.addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'f') fs(); });
+document.addEventListener('keydown', (e) => { if (shortcutKey(e) === 'f') fs(); });

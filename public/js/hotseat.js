@@ -1,5 +1,5 @@
 import {
-  SETS, SET_INFO, SET_LABEL, TEAM_COLORS, store, allCards, activeCards, remainingMs, fmtTime, shuffle, esc, sfx,
+  SETS, SET_INFO, SET_LABEL, TEAM_COLORS, store, allCards, activeCards, remainingMs, fmtTime, shuffle, esc, sfx, shortcutKey,
 } from './core.js';
 import { setupTeams, ensureColors } from './teams.js';
 import { setupDeckPicker, deckSummary } from './decks.js';
@@ -91,7 +91,7 @@ const play = (name) => { if (game?.settings.sounds) sfx[name](); };
 const SOUND = { correct: 'correct', pass: 'skip', foul: 'taboo' };
 
 function commit() { sync.publish(game); render(); }
-function showPlay() { $('#setup').hidden = true; $('#play').hidden = false; render(); }
+function showPlay() { document.activeElement?.blur?.(); $('#setup').hidden = true; $('#play').hidden = false; render(); }
 function showSetup() { $('#play').hidden = true; $('#setup').hidden = false; renderSetup(); }
 
 function drawCard() {
@@ -330,7 +330,8 @@ $('#end-game').onclick = endGame;
 document.addEventListener('keydown', (e) => {
   if (!game || $('#play').hidden || e.target.matches('input, textarea, select') || cardManagerOpen()) return;
   if (e.metaKey || e.ctrlKey || e.altKey) return;
-  const k = e.key.toLowerCase();
+  if (e.repeat) return; // holding a key shouldn't score twice
+  const k = shortcutKey(e);
   const p = game.phase;
   if (p === 'ready' && (k === ' ' || k === 'enter')) { e.preventDefault(); startTurn(); }
   else if (p === 'playing') {
