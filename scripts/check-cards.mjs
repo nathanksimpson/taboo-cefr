@@ -1,4 +1,6 @@
-const { RAW } = await import(new URL("../public/js/cards.js", import.meta.url));
+const { RAW: EN } = await import(new URL("../public/js/cards.js", import.meta.url));
+const { KO_RAW } = await import(new URL("../public/js/korean.js", import.meta.url));
+const RAW = { ...EN, ...KO_RAW };
 const seen = new Map(); let bad = 0;
 for (const [lvl, txt] of Object.entries(RAW)) {
   const lines = txt.trim().split('\n').filter(Boolean);

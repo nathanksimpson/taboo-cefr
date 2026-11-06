@@ -1,6 +1,23 @@
-# CEFR Word Games — Taboo & Hot Seat
+# CEFR Word Games — Taboo, Hot Seat & Taboo Online
 
-Two classroom vocabulary games sharing ~950 CEFR cards (A1–C2) plus ~1,680 cards from 14 Simson Rainbow-level textbooks, built to run as a static Cloudflare Worker. The home page (`/`) lets you pick a game.
+Vocabulary games sharing ~950 English CEFR cards (A1–C2), ~210 Korean cards (TOPIK 1–6) and ~1,680 cards from 14 Simson Rainbow-level textbooks, running as a Cloudflare Worker. The home page (`/`) lets you pick a game.
+
+## Taboo Online (`/online.html`)
+
+Everyone plays on their own phone or laptop, from anywhere. One person creates a room and shares the 4-letter code or the invite link.
+
+- **Co-op:** everyone is on one side with a shared score. Players take turns explaining while the others guess, and the room remembers your best score. Built for language partners: each player picks the language they explain in (English or 한국어) and their own decks.
+- **Teams:** 2–4 teams take turns. The explainer's teammates guess; the other teams see the card and can press **Taboo!** if a taboo word slips out.
+- Only the explainer (and, in team games, the other teams) can see the card. The guessers' screens never receive it.
+- Same rules as classroom Taboo: timer, skip rules, taboo penalty, rounds (0 = until you end it), a review list anyone can fix, and score nudges.
+- The screens can be shown in English or 한국어 (EN / 한국어 toggle at the top). Each player chooses their own.
+- If you close the page or lose signal, open the link again to rejoin as the same player.
+
+How it works: `src/worker.js` runs only for `/api/*`. Each room code is one Durable Object (`Room`) that holds the game and talks to the players over WebSockets. The rules live in `public/js/online-engine.js`, which both the server and the browser use. Rooms are deleted 3 days after their last action.
+
+## Korean decks
+
+`public/js/korean.js` holds one deck per TOPIK level (K1–K6), in the same `단어: 금지어, 금지어, 금지어` format. They show up in every game's deck picker under **한국어**. Run `npm run check` after editing.
 
 ## Book decks
 
@@ -65,7 +82,7 @@ To change the built-in decks, edit `public/js/cards.js` (one card per line: `wor
 
 ## Deploying to Cloudflare
 
-This is an assets-only Worker (see `wrangler.jsonc`) — no server code.
+Static files are served straight from `./public`. Only `/api/*` runs the Worker script (`src/worker.js`), which hosts Taboo Online rooms using a SQLite-backed Durable Object. That works on the free Workers plan, and the first deploy creates it automatically from the `migrations` block in `wrangler.jsonc`.
 
 **Option A — connected to GitHub (auto-deploys on every push)**
 1. Push this repo to GitHub.

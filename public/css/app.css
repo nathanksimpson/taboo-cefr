@@ -424,3 +424,62 @@ body.hs-class { background-color: var(--blue); background-image: radial-gradient
 .drag-handle:hover { color: var(--ink); }
 .team-names.sorting, .team-names.sorting * { cursor: grabbing !important; user-select: none; }
 .team-name.dragging { background: var(--yellow); box-shadow: var(--pop); transform: rotate(-1.5deg) scale(1.03); z-index: 5; }
+
+/* =========================================================
+   Taboo Online
+   ========================================================= */
+body.online .topbar { background: var(--teal); }
+.setup.narrow { max-width: 600px; }
+.join-title { font: 800 clamp(1.4rem, 4vw, 1.9rem)/1.15 var(--display); margin: .2rem 0 .4rem; }
+.field { display: flex; flex-direction: column; gap: .45rem; margin: 1.1rem 0 0; font-weight: 750; }
+.field input, .join-code input { border: var(--line); border-radius: 12px; padding: .6rem .8rem; font-size: 1.1rem; background: var(--paper); min-width: 0; }
+.field .hint { margin: 0; }
+.join-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 1.4rem; }
+.join-code { display: flex; gap: .5rem; }
+.join-code input { width: 7.2rem; letter-spacing: .3em; font: 800 1.3rem var(--display); text-transform: uppercase; text-align: center; }
+.rejoin { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; width: 100%; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.conn { font-weight: 750; background: var(--yellow); border: 2px solid var(--ink); border-radius: 999px; padding: .2rem .7rem; font-size: .85rem; }
+.uilang button { padding: .3rem .7rem; font-size: .85rem; }
+.room-panel { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.room-panel .eyebrow { margin: 0; }
+.code-big { font: 800 clamp(2.4rem, 9vw, 3.4rem)/1 var(--display); letter-spacing: .18em; }
+.mode-seg button { font-size: 1.05rem; padding: .55rem 1.5rem; }
+.players { display: flex; flex-direction: column; gap: .5rem; }
+.player { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; padding: .55rem .8rem; border: 2px solid var(--ink); border-radius: 14px; background: var(--soft); }
+.player.me { background: #fff6cf; }
+.player-name { font-weight: 750; flex: 1 1 8rem; }
+.online-dot { width: 13px; height: 13px; border-radius: 50%; background: #c9c2e6; border: 2px solid var(--ink); flex: none; }
+.online-dot.on { background: var(--green); }
+.lang-tag { display: inline-block; font-weight: 800; font-size: .78rem; line-height: 1.3; padding: .1rem .55rem; border-radius: 999px; border: 2px solid var(--ink); background: var(--blue); color: #fff; vertical-align: .12em; }
+.lang-tag.ko { background: var(--pink); color: var(--ink); }
+.team-pick button, .lang-pick button { font-size: .85rem; padding: .3rem .65rem; }
+.team-pick .swatch { display: inline-block; width: .7rem; height: .7rem; border-radius: 50%; margin-right: .3rem; border: 1.5px solid var(--ink); vertical-align: -.05em; }
+.guess-screen .eyebrow { display: flex; gap: .5rem; align-items: center; justify-content: center; flex-wrap: wrap; }
+.guess-big { font: 800 clamp(3rem, 13vw, 6.5rem)/1 var(--display); margin: .4rem 0 .2rem; }
+.guess-count { font: 800 clamp(2rem, 7vw, 3rem) var(--display); margin-bottom: .8rem; }
+.coop-score { font-size: clamp(4rem, 15vw, 7.5rem); margin: .1rem 0; }
+.hint.center { text-align: center; }
+.act .buzz { font-size: 1.6rem; padding: 1rem 3.2rem; }
+.small-names { font-size: .8rem; font-weight: 600; }
+@media (max-width: 560px) {
+  .topbar .brand-sub, .topbar #manage-cards-top { display: none; }
+  .join-code { width: 100%; }
+  .join-code input { flex: 1; }
+}
+html:lang(ko) body { word-break: keep-all; }
+body.online .team-chip, body.online .playbar-actions .btn { white-space: nowrap; }
+@media (max-width: 560px) {
+  body.online .team-chip { font-size: .85rem; padding: .35rem .7rem; }
+  body.online .timer { font-size: 1.9rem; }
+  body.online kbd { display: none; }
+}
+.act.act-single { grid-template-columns: 1fr; }
+.small-names { margin-left: .4rem; }
+@media (max-width: 560px) {
+  body.online .playbar { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "chip actions" "timer timer"; gap: .6rem; }
+  body.online .team-chip { grid-area: chip; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  body.online .playbar-actions { grid-area: actions; }
+  body.online .playbar .timer { grid-area: timer; justify-self: center; }
+  body.online .small-names { display: none; }
+}

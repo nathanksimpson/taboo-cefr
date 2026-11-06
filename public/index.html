@@ -13,7 +13,7 @@
 <body class="home">
   <main class="home-main">
     <header class="home-head">
-      <p class="eyebrow">Vocabulary games · A1 to C2</p>
+      <p class="eyebrow">Vocabulary games · A1 to C2 · 한국어 TOPIK 1–6</p>
       <h1>Pick a game</h1>
       <p class="muted" id="home-count">About 950 words sorted by CEFR level, shared by every game.</p>
     </header>
@@ -30,11 +30,17 @@
         <span class="game-desc">One student faces away from the board and guesses the word everyone else can see. Works with one screen or iPad mirroring.</span>
         <span class="game-go">Play Hot Seat →</span>
       </a>
+      <a class="game-tile" href="online.html" style="--team:#27c3c9">
+        <span class="game-mark">O</span>
+        <span class="game-name">Taboo Online</span>
+        <span class="game-desc">Everyone on their own phone or laptop, anywhere. Co-op for two (take turns explaining in English or 한국어) or online teams.</span>
+        <span class="game-go">Play online →</span>
+      </a>
     </div>
   </main>
   <script type="module">
     import { allCards } from './js/core.js';
-    document.getElementById('home-count').textContent = `${allCards().length} words sorted by CEFR level, shared by every game.`;
+    document.getElementById('home-count').textContent = `${allCards().length} English and Korean words, shared by every game.`;
   </script>
 </body>
 </html>

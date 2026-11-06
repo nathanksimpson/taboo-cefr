@@ -1,23 +1,28 @@
 // Shared data, storage and sync used by both windows.
 import { RAW } from './cards.js';
 import { BOOKS, LEVEL_ORDER, LEVEL_COLORS } from './books/index.js';
+import { KO_RAW, KO_LEVELS, KO_INFO } from './korean.js';
 
-export { BOOKS, LEVEL_ORDER, LEVEL_COLORS };
+export { BOOKS, LEVEL_ORDER, LEVEL_COLORS, KO_LEVELS };
 export const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 export const BOOK_IDS = BOOKS.map((b) => b.id);
 export const BOOK_BY_ID = Object.fromEntries(BOOKS.map((b) => [b.id, b]));
-export const SETS = [...BOOK_IDS, ...LEVELS, 'MY'];
+export const SETS = [...BOOK_IDS, ...LEVELS, ...KO_LEVELS, 'MY'];
+export const isKorean = (s) => KO_LEVELS.includes(s);
+/** Language a card set is in: 'ko' for the TOPIK decks, otherwise 'en'. */
+export const SET_LANG = (s) => (isKorean(s) ? 'ko' : 'en');
 export const SET_INFO = {
   A1: 'Beginner', A2: 'Elementary', B1: 'Intermediate',
   B2: 'Upper-intermediate', C1: 'Advanced', C2: 'Proficiency', MY: 'My cards',
+  ...KO_INFO,
   ...Object.fromEntries(BOOKS.map((b) => [b.id, `${b.level} level`])),
 };
 /** Short label, used on cards and tabs: "WN 3 · Navy", "B1", "My cards". */
-export const SET_LABEL = (s) => (s === 'MY' ? 'My cards' : BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].short} · ${BOOK_BY_ID[s].level}` : s);
+export const SET_LABEL = (s) => (s === 'MY' ? 'My cards' : BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].short} · ${BOOK_BY_ID[s].level}` : isKorean(s) ? `TOPIK ${s.slice(1)}` : s);
 /** Full deck name: "Write Now 3 · Navy". */
-export const SET_NAME = (s) => (BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].name} · ${BOOK_BY_ID[s].level}` : s === 'MY' ? 'My cards' : `CEFR ${s}`);
+export const SET_NAME = (s) => (BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].name} · ${BOOK_BY_ID[s].level}` : s === 'MY' ? 'My cards' : isKorean(s) ? `한국어 ${KO_INFO[s]}` : `CEFR ${s}`);
 /** Which filter group a set belongs to: a Rainbow level, 'CEFR' or 'MY'. */
-export const SET_GROUP = (s) => (BOOK_BY_ID[s] ? BOOK_BY_ID[s].level : s === 'MY' ? 'MY' : 'CEFR');
+export const SET_GROUP = (s) => (BOOK_BY_ID[s] ? BOOK_BY_ID[s].level : s === 'MY' ? 'MY' : isKorean(s) ? 'Korean' : 'CEFR');
 export const TEAM_COLORS = ['#ef4b3f', '#2f6df6', '#13a35f', '#e29a0f', '#8b4ef0', '#e5428f'];
 
 function parse(level, text) {
@@ -25,7 +30,7 @@ function parse(level, text) {
     const i = line.indexOf(':');
     const word = line.slice(0, i).trim();
     const taboo = line.slice(i + 1).split(',').map((s) => s.trim()).filter(Boolean);
-    return { id: `${level}:${word.toLowerCase()}`, level, word, taboo, custom: false };
+    return { id: `${level}:${word.toLowerCase()}`, level, word, taboo, custom: false, lang: SET_LANG(level) };
   });
 }
 function parseBook(book) {
@@ -42,7 +47,7 @@ function parseBook(book) {
   }
   return out;
 }
-export const BUILTIN = [...BOOKS.flatMap(parseBook), ...LEVELS.flatMap((l) => parse(l, RAW[l]))];
+export const BUILTIN = [...BOOKS.flatMap(parseBook), ...LEVELS.flatMap((l) => parse(l, RAW[l])), ...KO_LEVELS.flatMap((l) => parse(l, KO_RAW[l]))];
 
 const K = {
   excluded: 'taboo.excluded.v1',
@@ -88,7 +93,7 @@ export function allCards() {
 
 /** Normalise a word so the same word from different decks matches: "The Earth" = "earth", "cookies" = "cookie". */
 export function wordKey(w) {
-  let k = String(w).toLowerCase().replace(/[’']/g, "'").replace(/[^a-z0-9' -]/g, '').replace(/\s+/g, ' ').trim();
+  let k = String(w).toLowerCase().replace(/[’']/g, "'").replace(/[^a-z0-9'\u3131-\u318e\uac00-\ud7a3 -]/g, '').replace(/\s+/g, ' ').trim();
   k = k.replace(/^(a|an|the) /, '');
   return k.split(' ').map((t) => (t.length > 3 && /[^s]s$/.test(t) ? t.slice(0, -1) : t)).join(' ');
 }

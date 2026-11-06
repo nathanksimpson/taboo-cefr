@@ -4,9 +4,10 @@ import {
 } from './core.js';
 
 const VIEW_KEY = 'decks.view.v1';
-const CEFR_COLORS = { A1: '#ffc61a', A2: '#ffa24d', B1: '#ff8577', B2: '#6b9bff', C1: '#9a6cff', C2: '#27c3c9' };
-const FILTERS = ['All', ...LEVEL_ORDER, 'CEFR', 'MY', 'Selected'];
-const FILTER_LABEL = { MY: 'My cards' };
+const CEFR_COLORS = { A1: '#ffc61a', A2: '#ffa24d', B1: '#ff8577', B2: '#6b9bff', C1: '#9a6cff', C2: '#27c3c9',
+  K1: '#ffd6e0', K2: '#ffb3c7', K3: '#ff8fb0', K4: '#f06a99', K5: '#d94d84', K6: '#b8336a' };
+const FILTERS = ['All', ...LEVEL_ORDER, 'CEFR', 'Korean', 'MY', 'Selected'];
+const FILTER_LABEL = { MY: 'My cards', Korean: '한국어' };
 const SORTS = { level: 'Level order', az: 'A–Z', cards: 'Most cards' };
 
 function loadView() {
@@ -15,7 +16,7 @@ function loadView() {
 function saveView(v) { try { localStorage.setItem(VIEW_KEY, JSON.stringify({ filter: v.filter, sort: v.sort })); } catch { /* ignore */ } }
 
 const colorOf = (s) => (BOOK_BY_ID[s] ? LEVEL_COLORS[BOOK_BY_ID[s].level] : CEFR_COLORS[s] || '#ff6fb5');
-const darkTile = (s) => BOOK_BY_ID[s]?.level === 'Navy';
+const darkTile = (s) => BOOK_BY_ID[s]?.level === 'Navy' || s === 'K6' || s === 'K5';
 
 /**
  * Mount the picker into #deck-picker.
@@ -56,8 +57,9 @@ export function setupDeckPicker({ settings, save }) {
     const on = settings.sets.includes(s);
     const c = cnt[s] || { total: 0, active: 0 };
     const book = BOOK_BY_ID[s];
-    const title = book ? book.name : s === 'MY' ? 'My cards' : s;
-    const sub = book ? `<span class="lvl-chip" style="--lc:${colorOf(s)}">${book.level}</span>` : `<span class="set-name">${s === 'MY' ? 'Cards you added' : `CEFR · ${SET_INFO[s]}`}</span>`;
+    const ko = SET_GROUP(s) === 'Korean';
+    const title = book ? book.name : s === 'MY' ? 'My cards' : ko ? `TOPIK ${s.slice(1)}` : s;
+    const sub = book ? `<span class="lvl-chip" style="--lc:${colorOf(s)}">${book.level}</span>` : `<span class="set-name">${s === 'MY' ? 'Cards you added' : ko ? `한국어 · ${SET_INFO[s].split('· ')[1]}` : `CEFR · ${SET_INFO[s]}`}</span>`;
     return `<button type="button" class="set-tile ${on ? 'on' : ''} ${book ? 'book' : ''} ${darkTile(s) ? 'dark' : ''}" style="--c:${colorOf(s)}" data-set="${s}" aria-pressed="${on}" title="${esc(SET_NAME(s))}">
       <span class="set-code">${esc(title)}</span>
       ${sub}
@@ -89,11 +91,11 @@ export function setupDeckPicker({ settings, save }) {
       return;
     }
     if (view.sort === 'level') {
-      const groups = [...LEVEL_ORDER, 'CEFR', 'MY'];
+      const groups = [...LEVEL_ORDER, 'CEFR', 'Korean', 'MY'];
       listEl.innerHTML = groups.map((g) => {
         const inG = sets.filter((s) => SET_GROUP(s) === g);
         if (!inG.length) return '';
-        const head = LEVEL_COLORS[g] ? `<span class="fdot" style="background:${LEVEL_COLORS[g]}"></span>${g}` : g === 'CEFR' ? 'CEFR levels' : 'Your own cards';
+        const head = LEVEL_COLORS[g] ? `<span class="fdot" style="background:${LEVEL_COLORS[g]}"></span>${g}` : g === 'CEFR' ? 'CEFR levels' : g === 'Korean' ? '한국어 · TOPIK levels' : 'Your own cards';
         const allOn = inG.every((s) => settings.sets.includes(s));
         return `<section class="deck-group">
           <div class="deck-group-head"><h3>${head}</h3>${inG.length > 1 ? `<button type="button" class="link small" data-group="${g}">${allOn ? 'Unselect all' : 'Select all'}</button>` : ''}</div>
