@@ -1,80 +1,156 @@
-// Card manager dialog shared by every game: browse, exclude, add, export/import.
-import { SETS as ALL_SETS, SET_NAME, SET_LABEL, store, allCards, esc, isDeck } from './core.js';
-
-// Your own decks are edited in the deck builder, so the card manager lists every other set.
-const managedSets = () => ALL_SETS.filter((s) => !isDeck(s));
+// Manage cards: decks first, then the cards inside a deck.
+//   Decks view  — ＋ New deck, your own decks, then every built-in deck by group.
+//   Deck view   — open a deck to add cards, search, and switch cards on or off.
+// Your own decks open in the deck builder (pick units, words, or write your own cards).
+import {
+  SETS, SET_NAME, SET_GROUP, SET_INFO, LEVEL_ORDER, LEVEL_COLORS, BOOK_BY_ID, store, allCards, esc, isDeck, deckCardIds,
+} from './core.js';
+import { openDeckBuilder } from './builder.js';
 
 const HTML = `
-<dialog id="cards-dlg" class="dlg">
+<dialog id="cards-dlg" class="dlg cm">
   <div class="dlg-head">
-    <h2>Manage cards</h2>
-    <button class="btn ghost small" id="cards-close">Done</button>
+    <div class="cm-head-left">
+      <button class="btn ghost small" id="cm-back" type="button" hidden>← Decks</button>
+      <h2 id="cm-title">Manage cards</h2>
+    </div>
+    <button class="btn primary small" id="cards-close" type="button">Done</button>
   </div>
-  <div class="tabs" id="cm-tabs"></div>
-  <form id="add-form" class="add-form">
-    <input id="add-word" placeholder="New word" required maxlength="40">
-    <input id="add-taboo" placeholder="Taboo / clue words, separated by commas" required>
-    <select id="add-level"></select>
-    <button class="btn primary small">Add card</button>
-  </form>
-  <div class="cm-tools">
-    <input type="search" id="cm-search" placeholder="Search this set…">
-    <span class="muted" id="cm-count"></span>
-    <button class="btn ghost small" id="cm-include-all">Include all</button>
-    <button class="btn ghost small" id="cm-exclude-all">Exclude all</button>
+
+  <div id="cm-decks-view" class="cm-view">
+    <div class="cm-tools"><input type="search" id="cm-deck-search" placeholder="Search decks…" aria-label="Search decks"></div>
+    <div id="cm-decks" class="cm-decks"></div>
   </div>
-  <div id="cm-list" class="cm-list"></div>
+
+  <div id="cm-deck-view" class="cm-view" hidden>
+    <form id="add-form" class="add-form">
+      <input id="add-word" placeholder="New word" required maxlength="40" aria-label="New word">
+      <input id="add-taboo" placeholder="Taboo / clue words, separated by commas" required aria-label="Taboo / clue words, separated by commas">
+      <button class="btn primary small">Add card</button>
+    </form>
+    <div class="cm-tools">
+      <input type="search" id="cm-search" placeholder="Search this deck…" aria-label="Search this deck">
+      <span class="muted" id="cm-count"></span>
+      <button class="btn ghost small" id="cm-include-all" type="button">Include all</button>
+      <button class="btn ghost small" id="cm-exclude-all" type="button">Exclude all</button>
+    </div>
+    <div id="cm-list" class="cm-list"></div>
+  </div>
+
   <div class="dlg-foot">
-    <span class="muted">Shared by Taboo and Hot Seat. Saved in this browser.</span>
-    <button class="btn ghost small" id="export">Export</button>
+    <span class="muted">Shared by every game. Saved in this browser.</span>
+    <button class="btn ghost small" id="export" type="button">Export</button>
     <label class="btn ghost small">Import<input type="file" id="import" accept="application/json" hidden></label>
   </div>
 </dialog>`;
 
 let dlg = null;
-let cmSet = 'A1';
+let open = null; // the deck being viewed, or null for the deck list
 let hooks = {};
 const $ = (s) => document.querySelector(s);
 
+const CEFR_C = { A1: '#ffc61a', A2: '#ffa24d', B1: '#ff8577', B2: '#6b9bff', C1: '#9a6cff', C2: '#27c3c9' };
+const colorOf = (s) => (BOOK_BY_ID[s] ? LEVEL_COLORS[BOOK_BY_ID[s].level] : CEFR_C[s] || (SET_GROUP(s) === 'Korean' ? '#ff8fb0' : '#d8cfff'));
+
+function deckCards(s) {
+  const cards = allCards();
+  if (isDeck(s)) {
+    const d = store.getDecks().find((x) => x.id === s);
+    const ids = new Set(d ? deckCardIds(d, cards) : []);
+    return cards.filter((c) => ids.has(c.id));
+  }
+  return cards.filter((c) => c.level === s);
+}
+
+function tile(s) {
+  const ex = store.getExcluded();
+  const cards = deckCards(s);
+  const on = cards.filter((c) => !ex.has(c.id)).length;
+  const book = BOOK_BY_ID[s];
+  const sub = book ? book.level : isDeck(s) ? 'Your deck' : s === 'MY' ? 'Cards you added' : SET_INFO[s] || '';
+  return `<button type="button" class="cm-deck" data-open="${esc(s)}" style="--c:${colorOf(s)}">
+    <span class="cm-deck-name">${esc(book ? book.name : SET_NAME(s))}</span>
+    <span class="cm-deck-sub">${esc(sub)}</span>
+    <span class="cm-deck-count">${on === cards.length ? `${cards.length} cards` : `${on} of ${cards.length} included`}</span>
+  </button>`;
+}
+
+function renderDecks() {
+  const q = $('#cm-deck-search').value.trim().toLowerCase();
+  const match = (s) => !q || SET_NAME(s).toLowerCase().includes(q) || String(SET_INFO[s] || '').toLowerCase().includes(q);
+  const mine = SETS.filter((s) => (isDeck(s) || s === 'MY') && match(s));
+  const groups = [...LEVEL_ORDER, 'CEFR', 'Korean'];
+  const head = (g) => (LEVEL_COLORS[g] ? `<span class="fdot" style="background:${LEVEL_COLORS[g]}"></span>${g}` : g === 'CEFR' ? 'CEFR levels' : '한국어 · TOPIK levels');
+  const newTile = q ? '' : '<button type="button" class="cm-deck cm-new" data-new><span class="cm-deck-name">＋ New deck</span><span class="cm-deck-sub">Name it, then add cards</span></button>';
+  let html = `<section class="cm-group"><h3>My decks</h3><div class="cm-grid">${newTile}${mine.map(tile).join('')}</div></section>`;
+  for (const g of groups) {
+    const inG = SETS.filter((s) => !isDeck(s) && s !== 'MY' && SET_GROUP(s) === g && match(s));
+    if (inG.length) html += `<section class="cm-group"><h3>${head(g)}</h3><div class="cm-grid">${inG.map(tile).join('')}</div></section>`;
+  }
+  $('#cm-decks').innerHTML = html;
+}
+
 function countText() {
   const ex = store.getExcluded();
-  const inSet = allCards().filter((c) => c.level === cmSet);
+  const inSet = deckCards(open);
   return `${inSet.filter((c) => !ex.has(c.id)).length} of ${inSet.length} included`;
 }
 
-function render() {
+function renderDeck() {
   const ex = store.getExcluded();
-  const cards = allCards();
-  $('#cm-tabs').innerHTML = managedSets().map((s) => {
-    const n = cards.filter((c) => c.level === s).length;
-    return `<button class="${s === cmSet ? 'on' : ''}" data-tab="${s}">${SET_LABEL(s)} <span>${n}</span></button>`;
-  }).join('');
-  $('#add-level').value = cmSet;
   const q = $('#cm-search').value.trim().toLowerCase();
-  const list = cards.filter((c) => c.level === cmSet)
-    .filter((c) => !q || c.word.toLowerCase().includes(q) || c.taboo.some((t) => t.toLowerCase().includes(q)))
+  const list = deckCards(open)
+    .filter((c) => !q || c.word.toLowerCase().includes(q) || c.taboo.join(' ').toLowerCase().includes(q))
     .sort((a, b) => a.word.localeCompare(b.word));
   $('#cm-count').textContent = countText();
   $('#cm-list').innerHTML = list.map((c) => `<div class="cm-row ${ex.has(c.id) ? 'off' : ''}">
       <label><input type="checkbox" data-cid="${esc(c.id)}" ${ex.has(c.id) ? '' : 'checked'}>
         <b>${esc(c.word)}</b>${c.custom ? '<span class="badge">added</span>' : ''}
         <span class="cm-taboo">${c.taboo.map(esc).join(' · ')}</span></label>
-      ${c.custom ? `<button class="link small" data-del="${esc(c.id)}">Delete</button>` : ''}
-    </div>`).join('') || `<p class="muted pad">${cmSet === 'MY' && !q ? 'No cards yet — add your own above.' : 'Nothing matches.'}</p>`;
+      ${c.custom ? `<button class="link small" data-del="${esc(c.id)}" type="button">Delete</button>` : ''}
+    </div>`).join('') || `<p class="muted pad">${q ? 'Nothing matches.' : 'No cards yet — add your first one above.'}</p>`;
+}
+
+function render() {
+  const inDeck = !!open;
+  $('#cm-decks-view').hidden = inDeck;
+  $('#cm-deck-view').hidden = !inDeck;
+  $('#cm-back').hidden = !inDeck;
+  $('#cm-title').textContent = inDeck ? SET_NAME(open) : 'Manage cards';
+  if (inDeck) renderDeck(); else renderDecks();
+}
+
+function openDeck(s) {
+  if (isDeck(s)) {
+    // your own decks have their own editor: units, single words and cards you write
+    openDeckBuilder(s, { onClose: () => { hooks.onClose?.(); render(); } });
+    return;
+  }
+  open = s;
+  $('#cm-search').value = '';
+  render();
+  $('#add-word').focus();
 }
 
 function build() {
   document.body.insertAdjacentHTML('beforeend', HTML);
   dlg = $('#cards-dlg');
-  $('#add-level').innerHTML = managedSets().map((s) => `<option value="${s}">${SET_NAME(s)}</option>`).join('');
   $('#cards-close').onclick = () => dlg.close();
+  $('#cm-back').onclick = () => { open = null; render(); };
   dlg.addEventListener('close', () => hooks.onClose?.());
+  dlg.addEventListener('cancel', (e) => { if (open) { e.preventDefault(); open = null; render(); } }); // Esc goes back a level first
 
-  $('#cm-tabs').addEventListener('click', (e) => {
-    const b = e.target.closest('[data-tab]'); if (!b) return;
-    cmSet = b.dataset.tab; $('#cm-search').value = ''; render();
+  $('#cm-deck-search').addEventListener('input', renderDecks);
+  $('#cm-decks').addEventListener('click', (e) => {
+    if (e.target.closest('[data-new]')) {
+      openDeckBuilder(null, { onClose: (id) => { hooks.onClose?.(id); render(); } });
+      return;
+    }
+    const t = e.target.closest('[data-open]');
+    if (t) openDeck(t.dataset.open);
   });
-  $('#cm-search').addEventListener('input', render);
+
+  $('#cm-search').addEventListener('input', renderDeck);
   $('#cm-list').addEventListener('change', (e) => {
     const id = e.target.dataset.cid; if (!id) return;
     const ex = store.getExcluded();
@@ -86,12 +162,12 @@ function build() {
   $('#cm-list').addEventListener('click', (e) => {
     const id = e.target.dataset?.del; if (!id) return;
     store.setCustom(store.getCustom().filter((c) => c.id !== id));
-    render();
+    renderDeck();
   });
   const bulk = (include) => {
     const ex = store.getExcluded();
-    allCards().filter((c) => c.level === cmSet).forEach((c) => (include ? ex.delete(c.id) : ex.add(c.id)));
-    store.setExcluded(ex); render();
+    deckCards(open).forEach((c) => (include ? ex.delete(c.id) : ex.add(c.id)));
+    store.setExcluded(ex); renderDeck();
   };
   $('#cm-include-all').onclick = () => bulk(true);
   $('#cm-exclude-all').onclick = () => bulk(false);
@@ -100,14 +176,13 @@ function build() {
     e.preventDefault();
     const word = $('#add-word').value.trim();
     const taboo = $('#add-taboo').value.split(',').map((s) => s.trim()).filter(Boolean);
-    const level = $('#add-level').value;
-    if (!word || !taboo.length) return;
+    if (!word || !taboo.length || !open) return;
     const custom = store.getCustom();
-    custom.push({ id: `C:${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`, level, word, taboo });
+    custom.push({ id: `C:${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`, level: open, word, taboo });
     store.setCustom(custom);
-    hooks.onAdd?.(level);
+    hooks.onAdd?.(open);
     $('#add-word').value = ''; $('#add-taboo').value = '';
-    cmSet = level; render(); $('#add-word').focus();
+    renderDeck(); $('#add-word').focus();
   });
 
   $('#export').onclick = () => {
@@ -136,11 +211,14 @@ function build() {
   });
 }
 
-/** Open the shared card manager. hooks: { onAdd(level), onClose() } */
+/** Open Manage cards at the deck list. hooks: { onAdd(deck), onClose() } */
 export function openCardManager(h = {}) {
   hooks = h;
   if (!dlg) build();
+  open = null;
+  $('#cm-deck-search').value = '';
   render();
   dlg.showModal();
 }
+
 export const cardManagerOpen = () => !!dlg?.open;

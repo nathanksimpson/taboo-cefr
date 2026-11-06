@@ -488,3 +488,22 @@ body.hs-class { background-color: var(--blue); background-image: radial-gradient
 .team-name.drag-gap { background: transparent; border-style: dashed; box-shadow: none; }
 .team-name.drag-gap > * { visibility: hidden; }
 body.is-dragging, body.is-dragging * { cursor: grabbing !important; user-select: none; -webkit-user-select: none; }
+/* Manage cards: decks, then cards */
+.home-manage { margin: .9rem auto .2rem; font-size: 1.05rem; }
+.dlg.cm { width: min(1000px, calc(100vw - 24px)); height: min(860px, calc(100vh - 32px)); }
+.cm-head-left { display: flex; align-items: center; gap: .7rem; min-width: 0; }
+.cm-head-left h2 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cm-view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.cm-view[hidden] { display: none; }
+.cm-decks { flex: 1; overflow: auto; padding: .4rem 1.2rem 1.2rem; display: grid; gap: 1.1rem; align-content: start; }
+.cm-group h3 { margin: 0 0 .5rem; font: 800 1.05rem var(--display); display: flex; align-items: center; gap: .45rem; }
+.cm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: .65rem; }
+.cm-deck { display: grid; gap: .2rem; text-align: left; padding: .75rem .85rem; border: 2.5px solid var(--ink); border-radius: 16px; background: var(--paper); cursor: pointer; box-shadow: 3px 3px 0 var(--ink); border-left: 10px solid var(--c, var(--ink)); }
+.cm-deck:hover { background: var(--yellow); transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+.cm-deck-name { font: 800 1rem var(--display); line-height: 1.2; }
+.cm-deck-sub { font-size: .78rem; font-weight: 650; color: var(--muted); }
+.cm-deck-count { font-size: .8rem; font-weight: 750; }
+.cm-deck.cm-new { border-style: dashed; border-left-width: 2.5px; background: var(--soft); place-content: center; text-align: center; box-shadow: none; min-height: 84px; }
+#cm-deck-view .add-form { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto; }
+#cm-deck-view .cm-list { flex: 1; min-height: 0; overflow: auto; }
+@media (max-width: 640px) { #cm-deck-view .add-form { grid-template-columns: 1fr; } }
