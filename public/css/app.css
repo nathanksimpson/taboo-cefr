@@ -476,3 +476,15 @@ body.hs-class { background-color: var(--blue); background-image: radial-gradient
   .bd-own { grid-template-columns: 1fr 1fr; }
   .bd-own .btn { grid-column: span 2; }
 }
+/* drag to reorder (sortable.js) */
+.team-names .team-name { cursor: grab; }
+.team-names .team-name input { cursor: text; }
+.team-move { display: none; }
+.drag-handle:focus-visible { outline: 3px solid var(--blue); border-radius: 6px; }
+.drag-float { position: fixed; z-index: 1000; margin: 0; box-sizing: border-box; pointer-events: none; cursor: grabbing;
+  transform: translate(var(--dx, 0), var(--dy, 0)); transition: scale .15s ease, rotate .15s ease, box-shadow .15s ease, background .15s ease; }
+.drag-float.lifted { scale: 1.04; rotate: -1.5deg; background: var(--yellow); box-shadow: 10px 12px 0 rgba(26, 18, 48, .22); }
+.drag-float.landing { transition: transform .16s cubic-bezier(.2, .8, .2, 1), scale .16s ease, rotate .16s ease, box-shadow .16s ease; }
+.team-name.drag-gap { background: transparent; border-style: dashed; box-shadow: none; }
+.team-name.drag-gap > * { visibility: hidden; }
+body.is-dragging, body.is-dragging * { cursor: grabbing !important; user-select: none; -webkit-user-select: none; }

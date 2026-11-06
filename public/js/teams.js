@@ -1,4 +1,5 @@
 // Team names + colour picker, shared by both games' setup screens.
+import { makeSortable } from './sortable.js';
 import { esc } from './core.js';
 
 export const PALETTE = [
@@ -44,14 +45,10 @@ export function setupTeams({ settings, save, persist, min = 2, max = 6 }) {
       const name = PALETTE.find((p) => p.c === color)?.n || 'Colour';
       const last = settings.teams.length - 1;
       return `<div class="team-name" data-row="${i}" style="--team:${color}">
-        <span class="drag-handle" data-drag="${i}" title="Drag to reorder" aria-hidden="true">⠿</span>
+        <span class="drag-handle" data-drag="${i}" tabindex="0" role="button" title="Drag to reorder" aria-label="Move ${esc(t)}: drag, or use the arrow keys">⠿</span>
         <span class="team-order" aria-hidden="true">${i + 1}</span>
         <button type="button" class="swatch" data-pick="${i}" aria-label="Team ${i + 1} colour: ${name}. Change colour" aria-expanded="${openPicker === i}"></button>
         <input data-team="${i}" value="${esc(t)}" maxlength="24" aria-label="Team ${i + 1} name">
-        <span class="team-move">
-          <button type="button" data-move="${i}" data-dir="-1" ${i === 0 ? 'disabled' : ''} aria-label="Move ${esc(t)} up" title="Move up">▲</button>
-          <button type="button" data-move="${i}" data-dir="1" ${i === last ? 'disabled' : ''} aria-label="Move ${esc(t)} down" title="Move down">▼</button>
-        </span>
         ${openPicker === i ? `<div class="palette" role="listbox" aria-label="Pick a colour">${PALETTE.map((p) => {
           const owner = settings.colors.indexOf(p.c);
           const taken = owner !== -1 && owner !== i;
@@ -67,50 +64,24 @@ export function setupTeams({ settings, save, persist, min = 2, max = 6 }) {
     const [n] = settings.teams.splice(from, 1); settings.teams.splice(to, 0, n);
     const [c] = settings.colors.splice(from, 1); settings.colors.splice(to, 0, c);
     openPicker = null; save(); render();
+    root.querySelector(`[data-drag="${to}"]`)?.focus();
   }
 
-  // Drag and drop (mouse and touch): drag the ⠿ handle onto another team's spot.
-  let drag = null;
-  root.addEventListener('pointerdown', (e) => {
-    const h = e.target.closest('[data-drag]'); if (!h) return;
-    e.preventDefault();
-    const row = h.closest('.team-name');
-    if (openPicker !== null) { openPicker = null; render(); return; }
-    drag = { row, id: e.pointerId };
-    h.setPointerCapture(e.pointerId);
-    row.classList.add('dragging');
-    root.classList.add('sorting');
-  });
-  root.addEventListener('pointermove', (e) => {
-    if (!drag || e.pointerId !== drag.id) return;
-    const over = document.elementFromPoint(e.clientX, e.clientY)?.closest('.team-name');
-    if (!over || over === drag.row || !root.contains(over)) return;
-    const rows = [...root.querySelectorAll('.team-name')];
-    if (rows.indexOf(drag.row) < rows.indexOf(over)) over.after(drag.row); else over.before(drag.row);
-    root.querySelectorAll('.team-order').forEach((el, i) => { el.textContent = i + 1; });
-  });
-  const endDrag = (e) => {
-    if (!drag || e.pointerId !== drag.id) return;
-    const order = [...root.querySelectorAll('.team-name')].map((r) => +r.dataset.row);
-    drag = null;
-    root.classList.remove('sorting');
-    if (order.some((v, i) => v !== i)) {
+  // Drag to reorder: the team you hold floats under the pointer and the others slide out of the way.
+  makeSortable(root, {
+    items: '.team-name',
+    ignore: 'input, button, .palette, .team-lang',
+    onChange: () => root.querySelectorAll('.team-order').forEach((el, i) => { el.textContent = i + 1; }),
+    onDrop: (order) => {
+      if (openPicker !== null) openPicker = null;
       settings.teams = order.map((i) => settings.teams[i]);
       settings.colors = order.map((i) => settings.colors[i]);
-      save();
-    }
-    render();
-  };
-  root.addEventListener('pointerup', endDrag);
-  root.addEventListener('pointercancel', endDrag);
+      save(); render();
+    },
+    onKey: (i, dir) => moveTeam(i, i + dir),
+  });
 
   root.addEventListener('click', (e) => {
-    const mv = e.target.closest('[data-move]');
-    if (mv) {
-      const i = +mv.dataset.move; moveTeam(i, i + +mv.dataset.dir);
-      root.querySelector(`[data-move="${i + +mv.dataset.dir}"][data-dir="${mv.dataset.dir}"]`)?.focus();
-      return;
-    }
     const sw = e.target.closest('[data-pick]');
     const pal = e.target.closest('[data-color]');
     if (sw) { const i = +sw.dataset.pick; openPicker = openPicker === i ? null : i; render(); return; }
