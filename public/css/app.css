@@ -420,3 +420,7 @@ body.hs-class { background-color: var(--blue); background-image: radial-gradient
 .team-random { margin-top: .8rem; }
 .panel-head .btn#team-shuffle { margin-left: auto; }
 .panel-head:has(#team-shuffle) .stepper { margin-left: .4rem; }
+.drag-handle { flex: none; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; font-size: 1.15rem; line-height: 1; padding: .35rem .15rem .35rem .1rem; color: var(--muted); }
+.drag-handle:hover { color: var(--ink); }
+.team-names.sorting, .team-names.sorting * { cursor: grabbing !important; user-select: none; }
+.team-name.dragging { background: var(--yellow); box-shadow: var(--pop); transform: rotate(-1.5deg) scale(1.03); z-index: 5; }

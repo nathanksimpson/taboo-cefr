@@ -43,7 +43,8 @@ export function setupTeams({ settings, save, persist, min = 2, max = 6 }) {
       const color = settings.colors[i];
       const name = PALETTE.find((p) => p.c === color)?.n || 'Colour';
       const last = settings.teams.length - 1;
-      return `<div class="team-name" style="--team:${color}">
+      return `<div class="team-name" data-row="${i}" style="--team:${color}">
+        <span class="drag-handle" data-drag="${i}" title="Drag to reorder" aria-hidden="true">⠿</span>
         <span class="team-order" aria-hidden="true">${i + 1}</span>
         <button type="button" class="swatch" data-pick="${i}" aria-label="Team ${i + 1} colour: ${name}. Change colour" aria-expanded="${openPicker === i}"></button>
         <input data-team="${i}" value="${esc(t)}" maxlength="24" aria-label="Team ${i + 1} name">
@@ -67,6 +68,41 @@ export function setupTeams({ settings, save, persist, min = 2, max = 6 }) {
     const [c] = settings.colors.splice(from, 1); settings.colors.splice(to, 0, c);
     openPicker = null; save(); render();
   }
+
+  // Drag and drop (mouse and touch): drag the ⠿ handle onto another team's spot.
+  let drag = null;
+  root.addEventListener('pointerdown', (e) => {
+    const h = e.target.closest('[data-drag]'); if (!h) return;
+    e.preventDefault();
+    const row = h.closest('.team-name');
+    if (openPicker !== null) { openPicker = null; render(); return; }
+    drag = { row, id: e.pointerId };
+    h.setPointerCapture(e.pointerId);
+    row.classList.add('dragging');
+    root.classList.add('sorting');
+  });
+  root.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const over = document.elementFromPoint(e.clientX, e.clientY)?.closest('.team-name');
+    if (!over || over === drag.row || !root.contains(over)) return;
+    const rows = [...root.querySelectorAll('.team-name')];
+    if (rows.indexOf(drag.row) < rows.indexOf(over)) over.after(drag.row); else over.before(drag.row);
+    root.querySelectorAll('.team-order').forEach((el, i) => { el.textContent = i + 1; });
+  });
+  const endDrag = (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const order = [...root.querySelectorAll('.team-name')].map((r) => +r.dataset.row);
+    drag = null;
+    root.classList.remove('sorting');
+    if (order.some((v, i) => v !== i)) {
+      settings.teams = order.map((i) => settings.teams[i]);
+      settings.colors = order.map((i) => settings.colors[i]);
+      save();
+    }
+    render();
+  };
+  root.addEventListener('pointerup', endDrag);
+  root.addEventListener('pointercancel', endDrag);
 
   root.addEventListener('click', (e) => {
     const mv = e.target.closest('[data-move]');
