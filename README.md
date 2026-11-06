@@ -17,6 +17,18 @@ Two classroom vocabulary games sharing ~950 CEFR cards (A1–C2) plus ~1,680 car
 
 The deck picker can filter by level, search, sort (level order, A–Z, most cards) and select a whole level at once. Run `node scripts/check-books.mjs` after editing a book file.
 
+## Deck builder
+
+In either game's Decks panel, **My decks → ＋ New deck** opens the deck builder:
+
+- Name the deck (e.g. *Week 10 Review*).
+- **Add words:** pick a book or CEFR level, narrow to a unit, then add single words or **Add all shown**. The search box looks across every deck.
+- **Your own word:** write a word plus taboo words; it belongs to that deck only.
+- A word already in the deck can't be added twice (even from another book).
+- Use ✎ on a deck tile to edit it later, or **Delete deck**.
+
+Decks are saved in the browser; **Cards → Export/Import** carries them to another computer.
+
 ## Hot Seat / Who Am I? (`/hotseat.html`)
 
 One student sits facing away from the screen; everyone else can see the word.

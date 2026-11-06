@@ -1,5 +1,8 @@
 // Card manager dialog shared by every game: browse, exclude, add, export/import.
-import { SETS, SET_NAME, SET_LABEL, store, allCards, esc } from './core.js';
+import { SETS as ALL_SETS, SET_NAME, SET_LABEL, store, allCards, esc, isDeck } from './core.js';
+
+// Your own decks are edited in the deck builder, so the card manager lists every other set.
+const managedSets = () => ALL_SETS.filter((s) => !isDeck(s));
 
 const HTML = `
 <dialog id="cards-dlg" class="dlg">
@@ -42,7 +45,7 @@ function countText() {
 function render() {
   const ex = store.getExcluded();
   const cards = allCards();
-  $('#cm-tabs').innerHTML = SETS.map((s) => {
+  $('#cm-tabs').innerHTML = managedSets().map((s) => {
     const n = cards.filter((c) => c.level === s).length;
     return `<button class="${s === cmSet ? 'on' : ''}" data-tab="${s}">${SET_LABEL(s)} <span>${n}</span></button>`;
   }).join('');
@@ -63,7 +66,7 @@ function render() {
 function build() {
   document.body.insertAdjacentHTML('beforeend', HTML);
   dlg = $('#cards-dlg');
-  $('#add-level').innerHTML = SETS.map((s) => `<option value="${s}">${SET_NAME(s)}</option>`).join('');
+  $('#add-level').innerHTML = managedSets().map((s) => `<option value="${s}">${SET_NAME(s)}</option>`).join('');
   $('#cards-close').onclick = () => dlg.close();
   dlg.addEventListener('close', () => hooks.onClose?.());
 
@@ -108,7 +111,7 @@ function build() {
   });
 
   $('#export').onclick = () => {
-    const data = { app: 'taboo-cefr', version: 1, custom: store.getCustom(), excluded: [...store.getExcluded()] };
+    const data = { app: 'taboo-cefr', version: 2, custom: store.getCustom(), excluded: [...store.getExcluded()], decks: store.getDecks() };
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
     a.download = 'taboo-cards.json';
@@ -124,8 +127,10 @@ function build() {
       (data.custom || []).forEach((c) => { if (c.id && c.word && Array.isArray(c.taboo) && !have.has(c.id)) custom.push(c); });
       store.setCustom(custom);
       const ex = store.getExcluded(); (data.excluded || []).forEach((id) => ex.add(id)); store.setExcluded(ex);
+      const decks = store.getDecks(); const haveD = new Set(decks.map((d) => d.id));
+      (data.decks || []).forEach((d) => { if (d.id && d.name && !haveD.has(d.id)) decks.push(d); }); store.setDecks(decks);
       render();
-      alert(`Imported ${data.custom?.length || 0} cards and ${data.excluded?.length || 0} exclusions.`);
+      alert(`Imported ${data.custom?.length || 0} cards, ${data.decks?.length || 0} decks and ${data.excluded?.length || 0} exclusions.`);
     } catch { alert('That file could not be read.'); }
     e.target.value = '';
   });

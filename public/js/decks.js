@@ -1,12 +1,13 @@
 // Deck picker shared by both games: filter by level, search, sort, select.
 import {
-  SETS, SET_INFO, SET_NAME, SET_GROUP, BOOK_BY_ID, LEVEL_ORDER, LEVEL_COLORS, allCards, store, esc,
+  SETS, SET_INFO, SET_NAME, SET_GROUP, BOOK_BY_ID, LEVEL_ORDER, LEVEL_COLORS, allCards, store, esc, isDeck, deckCardIds,
 } from './core.js';
+import { openDeckBuilder } from './builder.js';
 
 const VIEW_KEY = 'decks.view.v1';
 const CEFR_COLORS = { A1: '#ffc61a', A2: '#ffa24d', B1: '#ff8577', B2: '#6b9bff', C1: '#9a6cff', C2: '#27c3c9' };
 const FILTERS = ['All', ...LEVEL_ORDER, 'CEFR', 'MY', 'Selected'];
-const FILTER_LABEL = { MY: 'My cards' };
+const FILTER_LABEL = { MY: 'My decks' };
 const SORTS = { level: 'Level order', az: 'A–Z', cards: 'Most cards' };
 
 function loadView() {
@@ -49,6 +50,11 @@ export function setupDeckPicker({ settings, save }) {
       const m = (map[c.level] ||= { total: 0, active: 0 });
       m.total += 1; if (!ex.has(c.id)) m.active += 1;
     }
+    const cards = allCards();
+    for (const d of store.getDecks()) {
+      const ids = deckCardIds(d, cards);
+      map[d.id] = { total: ids.length, active: ids.filter((id) => !ex.has(id)).length };
+    }
     return map;
   }
 
@@ -56,16 +62,21 @@ export function setupDeckPicker({ settings, save }) {
     const on = settings.sets.includes(s);
     const c = cnt[s] || { total: 0, active: 0 };
     const book = BOOK_BY_ID[s];
-    const title = book ? book.name : s === 'MY' ? 'My cards' : s;
-    const sub = book ? `<span class="lvl-chip" style="--lc:${colorOf(s)}">${book.level}</span>` : `<span class="set-name">${s === 'MY' ? 'Cards you added' : `CEFR · ${SET_INFO[s]}`}</span>`;
-    return `<button type="button" class="set-tile ${on ? 'on' : ''} ${book ? 'book' : ''} ${darkTile(s) ? 'dark' : ''}" style="--c:${colorOf(s)}" data-set="${s}" aria-pressed="${on}" title="${esc(SET_NAME(s))}">
+    const deck = isDeck(s);
+    const title = book ? book.name : s === 'MY' ? 'My cards' : deck ? SET_NAME(s) : s;
+    const sub = book ? `<span class="lvl-chip" style="--lc:${colorOf(s)}">${book.level}</span>` : `<span class="set-name">${s === 'MY' ? 'Cards you added' : deck ? 'Your deck' : `CEFR · ${SET_INFO[s]}`}</span>`;
+    const btn = `<button type="button" class="set-tile ${on ? 'on' : ''} ${book || deck ? 'book' : ''} ${darkTile(s) ? 'dark' : ''}" style="--c:${colorOf(s)}" data-set="${s}" aria-pressed="${on}" title="${esc(SET_NAME(s))}">
       <span class="set-code">${esc(title)}</span>
       ${sub}
       <span class="set-count">${c.active}${c.active !== c.total ? ` / ${c.total}` : ''} card${c.total === 1 ? '' : 's'}</span>
     </button>`;
+    return deck ? `<div class="tile-wrap">${btn}<button type="button" class="tile-edit" data-edit-deck="${esc(s)}" title="Edit this deck" aria-label="Edit ${esc(SET_NAME(s))}">✎</button></div>` : btn;
   }
+  const newTile = '<button type="button" class="set-tile new-deck" data-new-deck><span class="set-code">＋ New deck</span><span class="set-name">Pick units, words or write your own</span></button>';
 
   function render() {
+    const valid = settings.sets.filter((s) => SETS.includes(s));
+    if (valid.length !== settings.sets.length) settings.sets = valid; // a deck was deleted
     const cnt = counts();
     const sel = settings.sets.length;
     filtersEl.innerHTML = FILTERS.map((f) => {
@@ -93,15 +104,15 @@ export function setupDeckPicker({ settings, save }) {
       listEl.innerHTML = groups.map((g) => {
         const inG = sets.filter((s) => SET_GROUP(s) === g);
         if (!inG.length) return '';
-        const head = LEVEL_COLORS[g] ? `<span class="fdot" style="background:${LEVEL_COLORS[g]}"></span>${g}` : g === 'CEFR' ? 'CEFR levels' : 'Your own cards';
+        const head = LEVEL_COLORS[g] ? `<span class="fdot" style="background:${LEVEL_COLORS[g]}"></span>${g}` : g === 'CEFR' ? 'CEFR levels' : 'My decks';
         const allOn = inG.every((s) => settings.sets.includes(s));
         return `<section class="deck-group">
           <div class="deck-group-head"><h3>${head}</h3>${inG.length > 1 ? `<button type="button" class="link small" data-group="${g}">${allOn ? 'Unselect all' : 'Select all'}</button>` : ''}</div>
-          <div class="set-grid">${inG.map((s) => tile(s, cnt)).join('')}</div>
+          <div class="set-grid">${inG.map((s) => tile(s, cnt)).join('')}${g === 'MY' && view.filter !== 'Selected' && !q ? newTile : ''}</div>
         </section>`;
       }).join('');
     } else {
-      listEl.innerHTML = `<div class="set-grid">${sets.map((s) => tile(s, cnt)).join('')}</div>`;
+      listEl.innerHTML = `<div class="set-grid">${sets.map((s) => tile(s, cnt)).join('')}${['All', 'MY'].includes(view.filter) && !q ? newTile : ''}</div>`;
     }
   }
 
@@ -114,7 +125,22 @@ export function setupDeckPicker({ settings, save }) {
   searchEl.addEventListener('input', () => { view.q = searchEl.value; render(); });
   sortEl.addEventListener('change', () => { view.sort = sortEl.value; saveView(view); render(); });
   root.querySelector('.deck-clear').onclick = () => setSets([]);
+  const openBuilder = (id) => {
+    const before = new Set(store.getDecks().map((d) => d.id));
+    openDeckBuilder(id, {
+      onClose(deckId) {
+        // A brand-new deck with cards in it gets selected straight away.
+        const d = store.getDecks().find((x) => x.id === deckId);
+        if (d && !before.has(deckId) && deckCardIds(d).length && !settings.sets.includes(deckId)) settings.sets = [...settings.sets, deckId];
+        settings.sets = settings.sets.filter((s) => SETS.includes(s));
+        save();
+      },
+    });
+  };
   listEl.addEventListener('click', (e) => {
+    if (e.target.closest('[data-new-deck]')) { openBuilder(null); return; }
+    const ed = e.target.closest('[data-edit-deck]');
+    if (ed) { openBuilder(ed.dataset.editDeck); return; }
     const g = e.target.closest('[data-group]');
     if (g) {
       const inG = SETS.filter((s) => SET_GROUP(s) === g.dataset.group);

@@ -6,18 +6,25 @@ export { BOOKS, LEVEL_ORDER, LEVEL_COLORS };
 export const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 export const BOOK_IDS = BOOKS.map((b) => b.id);
 export const BOOK_BY_ID = Object.fromEntries(BOOKS.map((b) => [b.id, b]));
+// SETS also holds your own decks (ids start with "D:"); refreshSets() keeps it up to date in place.
 export const SETS = [...BOOK_IDS, ...LEVELS, 'MY'];
+export const isDeck = (s) => typeof s === 'string' && s.startsWith('D:');
+const deckById = (s) => (isDeck(s) ? store.getDecks().find((d) => d.id === s) : null);
+export function refreshSets() {
+  SETS.length = 0;
+  SETS.push(...BOOK_IDS, ...LEVELS, 'MY', ...store.getDecks().map((d) => d.id));
+}
 export const SET_INFO = {
   A1: 'Beginner', A2: 'Elementary', B1: 'Intermediate',
   B2: 'Upper-intermediate', C1: 'Advanced', C2: 'Proficiency', MY: 'My cards',
   ...Object.fromEntries(BOOKS.map((b) => [b.id, `${b.level} level`])),
 };
 /** Short label, used on cards and tabs: "WN 3 · Navy", "B1", "My cards". */
-export const SET_LABEL = (s) => (s === 'MY' ? 'My cards' : BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].short} · ${BOOK_BY_ID[s].level}` : s);
+export const SET_LABEL = (s) => (s === 'MY' ? 'My cards' : BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].short} · ${BOOK_BY_ID[s].level}` : isDeck(s) ? (deckById(s)?.name || 'Deck') : s);
 /** Full deck name: "Write Now 3 · Navy". */
-export const SET_NAME = (s) => (BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].name} · ${BOOK_BY_ID[s].level}` : s === 'MY' ? 'My cards' : `CEFR ${s}`);
+export const SET_NAME = (s) => (BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].name} · ${BOOK_BY_ID[s].level}` : s === 'MY' ? 'My cards' : isDeck(s) ? (deckById(s)?.name || 'Deck') : `CEFR ${s}`);
 /** Which filter group a set belongs to: a Rainbow level, 'CEFR' or 'MY'. */
-export const SET_GROUP = (s) => (BOOK_BY_ID[s] ? BOOK_BY_ID[s].level : s === 'MY' ? 'MY' : 'CEFR');
+export const SET_GROUP = (s) => (BOOK_BY_ID[s] ? BOOK_BY_ID[s].level : s === 'MY' || isDeck(s) ? 'MY' : 'CEFR');
 export const TEAM_COLORS = ['#ef4b3f', '#2f6df6', '#13a35f', '#e29a0f', '#8b4ef0', '#e5428f'];
 
 function parse(level, text) {
@@ -47,6 +54,7 @@ export const BUILTIN = [...BOOKS.flatMap(parseBook), ...LEVELS.flatMap((l) => pa
 const K = {
   excluded: 'taboo.excluded.v1',
   custom: 'taboo.custom.v1',
+  decks: 'taboo.decks.v1',
   settings: 'taboo.settings.v1',
   game: 'taboo.game.v1',
 };
@@ -76,6 +84,9 @@ export const store = {
   setExcluded: (s) => save(K.excluded, [...s]),
   getCustom: () => load(K.custom, []),
   setCustom: (c) => save(K.custom, c),
+  /** Your own decks: [{ id: 'D:…', name, cardIds: [...] }]. Cards you create inside a deck are custom cards with level = deck id. */
+  getDecks: () => load(K.decks, []),
+  setDecks: (d) => { save(K.decks, d); refreshSets(); },
   getSettings: () => ({ ...DEFAULT_SETTINGS, ...load(K.settings, {}) }),
   setSettings: (s) => save(K.settings, s),
   getGame: () => load(K.game, null),
@@ -93,10 +104,21 @@ export function wordKey(w) {
   return k.split(' ').map((t) => (t.length > 3 && /[^s]s$/.test(t) ? t.slice(0, -1) : t)).join(' ');
 }
 
+/** Card ids in one of your decks: the cards you picked plus the cards you wrote for it. */
+export function deckCardIds(deck, cards = allCards()) {
+  const ids = new Set(deck.cardIds || []);
+  for (const c of cards) if (c.level === deck.id) ids.add(c.id);
+  const known = new Set(cards.map((c) => c.id));
+  return [...ids].filter((id) => known.has(id));
+}
+
 /** Cards in play for these decks. When decks share a word, only one copy is kept (your own cards win). */
 export function activeCards(sets) {
   const ex = store.getExcluded();
-  const pool = allCards().filter((c) => sets.includes(c.level) && !ex.has(c.id));
+  const cards = allCards();
+  const picked = new Set();
+  for (const d of store.getDecks()) if (sets.includes(d.id)) deckCardIds(d, cards).forEach((id) => picked.add(id));
+  const pool = cards.filter((c) => (sets.includes(c.level) || picked.has(c.id)) && !ex.has(c.id));
   const seen = new Set();
   const out = [];
   for (const c of [...pool.filter((x) => x.custom), ...pool.filter((x) => !x.custom)]) {
@@ -243,3 +265,5 @@ export function buildDeck(cards, seen) {
   const old = cards.filter((c) => s.has(wordKey(c.word)));
   return [...shuffle(fresh), ...shuffle(old)].map((c) => c.id);
 }
+
+refreshSets();
