@@ -30,7 +30,7 @@ function render() {
     const last = game.lastTurn ? `<p class="cv-sub">${esc(game.teams[game.lastTurn.team].name)} scored ${game.lastTurn.pts >= 0 ? '+' : ''}${game.lastTurn.pts} last turn</p>` : '';
     main = `<div class="cv-center"><p class="cv-eyebrow">${esc(style.name)} · get ready</p><h1 class="cv-team">${esc(team.name)}</h1>
       <p class="cv-seat">🪑 ${esc(style.seat)}</p>
-      <p class="cv-sub">${esc(style.rule)}<br>${s.seconds} seconds · ${esc(passRuleText(s))}</p>${last}</div>`;
+      <p class="cv-sub">${esc(style.rule)}<br>${s.seconds} seconds · ${esc(passRuleText(s))}${s.foulPenalty ? ' · Rule broken = −1' : ''}</p>${last}</div>`;
   } else if (p === 'playing' && game.card) {
     const c = game.card;
     const n = game.log.filter((e) => e.result === 'correct').length;

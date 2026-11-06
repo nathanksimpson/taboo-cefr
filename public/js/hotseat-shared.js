@@ -3,19 +3,30 @@ import { makeSync, settingsStore, sum } from './core.js';
 
 export const sync = makeSync('hotseat.game.v1', 'hotseat-cefr');
 
-export const hsSettings = settingsStore('hotseat.settings.v1', {
+const baseSettings = settingsStore('hotseat.settings.v1', {
   style: 'hotseat', // 'hotseat' | 'whoami'
   sets: ['A2', 'B1'],
   seconds: 90,
   passMode: 'limited', // 'free' | 'limited' | 'penalty'
   freePasses: 2,
-  foulPenalty: false,
+  foulPenalty: true,
   turnsPerTeam: 0,
   showAvoid: false,
   revealWords: true,
   sounds: true,
   teams: ['Team 1', 'Team 2'],
 });
+
+// Rule broken now costs 1 point by default. Saved setups from before this change get it switched on once;
+// after that, unticking the box in setup is remembered.
+export const hsSettings = {
+  get() {
+    const s = baseSettings.get();
+    if (!s.foulDefaultV2) { s.foulPenalty = true; s.foulDefaultV2 = true; baseSettings.set(s); }
+    return s;
+  },
+  set: baseSettings.set,
+};
 
 export const STYLE = {
   hotseat: {
