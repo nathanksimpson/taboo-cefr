@@ -410,3 +410,13 @@ body.hs-class { background-color: var(--blue); background-image: radial-gradient
 .deck-group-head { flex-direction: column; align-items: flex-start; gap: .2rem; margin: .4rem 0 0; }
 @media (max-width: 640px) { .deck-group { grid-template-columns: 1fr; } .deck-group-head { flex-direction: row; } }
 .seen-note { display: inline; color: var(--muted); }
+
+/* team order + reordering */
+.team-order { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--paper); border: 2px solid var(--ink); display: grid; place-items: center; font: 800 .8rem var(--display); }
+.team-move { flex: none; display: grid; gap: 2px; }
+.team-move button { width: 28px; height: 18px; border: 2px solid var(--ink); background: var(--paper); border-radius: 6px; font-size: .55rem; line-height: 1; cursor: pointer; padding: 0; }
+.team-move button:hover:not(:disabled) { background: var(--yellow); }
+.team-move button:disabled { opacity: .25; cursor: default; }
+.team-random { margin-top: .8rem; }
+.panel-head .btn#team-shuffle { margin-left: auto; }
+.panel-head:has(#team-shuffle) .stepper { margin-left: .4rem; }

@@ -82,7 +82,10 @@ $('#start').onclick = () => {
   game = {
     phase: 'ready',
     settings: { ...settings, teams: undefined },
-    teams: settings.teams.map((name, i) => ({ name: name.trim() || `Team ${i + 1}`, score: 0, color: settings.colors[i], turns: 0 })),
+    teams: (() => {
+      const t = settings.teams.map((name, i) => ({ name: name.trim() || `Team ${i + 1}`, score: 0, color: settings.colors[i], turns: 0 }));
+      return settings.randomOrder ? shuffle(t) : t;
+    })(),
     current: 0,
     deck: ids, pos: 0, card: null, log: [], used: [],
     endAt: 0, remaining: 0, flash: null, lastTurn: null,
