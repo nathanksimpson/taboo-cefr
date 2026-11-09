@@ -94,6 +94,7 @@ const play = (name) => { if (game?.settings.sounds) sfx[name](); };
 /** Send the game to the class view (same computer) and to the online room. */
 function pub() {
   if (!game) return;
+  game.kind = 'taboo';
   if (game.phase === 'ready') updateExplainer();
   game.settings.watchers = net.active ? net.watchers : true;
   game.online = net.active ? { code: net.code } : null;

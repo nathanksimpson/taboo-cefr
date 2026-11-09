@@ -2,6 +2,7 @@ import {
   SETS, SET_INFO, SET_LABEL, TEAM_COLORS, store, allCards, activeCards, wordKey, seenStore, buildDeck, unplayedCount, remainingMs, fmtTime, shuffle, esc, sfx, shortcutKey,
 } from './core.js';
 import { setupTeams, ensureColors } from './teams.js';
+import { setupHostOnline } from './host-online.js';
 import { setupDeckPicker, deckSummary } from './decks.js';
 let renderDecks = () => {};
 const seen = seenStore('hotseat');
@@ -14,7 +15,7 @@ let game = sync.load();
 
 /* ---------------- setup ---------------- */
 
-function saveSettings() { hsSettings.set(settings); renderSetup(); }
+function saveSettings() { hsSettings.set(settings); renderSetup(); net?.sendLobby(); }
 const clampNum = (v, lo, hi, d) => { const n = parseInt(v, 10); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
 
 function renderSetup() {
@@ -80,17 +81,20 @@ $('#start').onclick = () => {
   const ids = buildDeck(activeCards(settings.sets), seen);
   if (!ids.length) return;
   game = {
+    kind: 'hotseat',
     phase: 'ready',
     settings: { ...settings, teams: undefined },
     teams: (() => {
-      const t = settings.teams.map((name, i) => ({ name: name.trim() || `Team ${i + 1}`, score: 0, color: settings.colors[i], turns: 0 }));
+      // id stays the same if the order is shuffled, so players online keep their team.
+      const t = settings.teams.map((name, i) => ({ id: i, name: name.trim() || `Team ${i + 1}`, score: 0, color: settings.colors[i], turns: 0 }));
       return settings.randomOrder ? shuffle(t) : t;
     })(),
     current: 0,
     deck: ids, pos: 0, card: null, log: [], used: [],
     endAt: 0, remaining: 0, flash: null, lastTurn: null,
   };
-  sync.publish(game);
+  pub();
+  net.sendLobby();
   showPlay();
 };
 $('#resume').onclick = () => { if (game) { if (game.phase === 'playing') pause(); showPlay(); } };
@@ -101,7 +105,69 @@ const byId = () => new Map(allCards().map((c) => [c.id, c]));
 const play = (name) => { if (game?.settings.sounds) sfx[name](); };
 const SOUND = { correct: 'correct', pass: 'skip', foul: 'taboo' };
 
-function commit() { sync.publish(game); render(); }
+/** Send the game to the class view (same computer) and to the online room. */
+function pub() {
+  if (!game) return;
+  game.kind = 'hotseat';
+  if (game.phase === 'ready') updateSeat();
+  game.online = net.active ? { code: net.code } : null;
+  sync.publish(game);
+  net.publish(game);
+}
+function commit() { pub(); render(); }
+
+/* ---------------- online: who sits in the hot seat ---------------- */
+
+const teamId = (i = game.current) => game.teams[i].id ?? i;
+const hostRole = () => (net.active && game?.teams.some((t, i) => teamId(i) === net.hostRole) ? net.hostRole : 'teacher');
+function seatCandidates(tid = teamId()) {
+  if (!net.active) return [];
+  const list = net.players(tid).map((p) => ({ id: p.id, name: p.name }));
+  if (hostRole() === tid) list.unshift({ id: 'host', name: 'Me (this screen)' });
+  return list;
+}
+/** In the "Up next" phase, pick the next player on the team for the hot seat, in turn. */
+function updateSeat() {
+  const list = seatCandidates();
+  if (game.seatManual && (game.seatId == null || list.some((c) => c.id === game.seatId))) return;
+  game.seatManual = false;
+  if (!list.length) { game.seatId = null; game.seatName = ''; return; }
+  const pick = list[game.teams[game.current].turns % list.length];
+  game.seatId = pick.id;
+  game.seatName = pick.id === 'host' ? '' : pick.name;
+}
+/** This screen is the one in the hot seat, so it must not show the word. */
+const hostInSeat = () => net.active && game.seatId === 'host';
+
+/** A button pressed on a player's device. */
+function onRemote(m) {
+  if (!game) return;
+  const p = game.phase;
+  const seat = !!m.from && m.from === game.seatId;
+  const onTeam = m.team != null && m.team === teamId();
+  const sameCard = m.cardId && m.cardId === game.card?.id;
+  // Hot Seat: the seat's teammates describe and score. Who Am I?: everyone else answers, so anyone but the seat can score.
+  // If nobody else from the seat's team is online, anyone else may score for them.
+  const helpers = net.players(teamId()).filter((x) => x.id !== game.seatId).length;
+  const runs = !seat && (onTeam || game.settings.style === 'whoami' || !helpers);
+  if (m.act === 'start' && p === 'ready' && (onTeam || seat)) startTurn();
+  else if ((m.act === 'correct' || m.act === 'pass') && p === 'playing' && runs && sameCard) mark(m.act);
+  else if (m.act === 'foul' && p === 'playing' && !seat && sameCard) mark('foul', m.name);
+  else if (m.act === 'undo' && p === 'playing' && runs) undo();
+  else if (m.act === 'pause' && (p === 'playing' || p === 'paused') && (onTeam || seat)) pause();
+  else if (m.act === 'rv' && p === 'review' && (onTeam || seat) && game.log[m.i] && ['correct', 'pass', 'foul'].includes(m.r)) { game.log[m.i].result = m.r; commit(); }
+  else if (m.act === 'confirm' && p === 'review' && (onTeam || seat)) confirmTurn();
+}
+
+function seatPicker() {
+  if (!net.active) return '';
+  const list = seatCandidates();
+  if (!list.length) return `<p class="remote-note">Nobody from ${esc(game.teams[game.current].name)} has joined online — the hot seat is in the room.</p>`;
+  const opts = [{ id: '', name: 'Someone in the room (no device)' }, ...list];
+  return `<label class="explainer-pick">In the hot seat
+    <select id="seat-select">${opts.map((c) => `<option value="${esc(c.id)}" ${(c.id || null) === (game.seatId ?? null) ? 'selected' : ''}>${esc(c.name)}${c.id && c.id !== 'host' ? ' 📱' : ''}</option>`).join('')}</select></label>
+    ${game.seatId && game.seatId !== 'host' ? `<p class="remote-note">The word is hidden on ${esc(game.seatName)}'s device.</p>` : ''}`;
+}
 function showPlay() { document.activeElement?.blur?.(); $('#setup').hidden = true; $('#play').hidden = false; render(); }
 function showSetup() { $('#play').hidden = true; $('#setup').hidden = false; renderSetup(); }
 
@@ -117,7 +183,7 @@ function drawCard() {
       if (game.used.includes(k)) continue; // never the same word twice in a round
       game.used.push(k);
       seen.add(k);
-      game.card = { id: c.id, word: c.word, taboo: c.taboo, level: c.level };
+      game.card = { id: c.id, word: c.word, taboo: c.taboo, level: c.level, label: SET_LABEL(c.level) };
       return;
     }
     // Every word has been played: start a new round, without repeating the card just shown.
@@ -140,10 +206,10 @@ function startTurn() {
   commit();
 }
 
-function mark(result) {
+function mark(result, by) {
   if (game.phase !== 'playing' || !game.card) return;
   game.log.push({ card: game.card, result });
-  game.flash = { type: result, at: Date.now() };
+  game.flash = { type: result, at: Date.now(), by: by || '' };
   play(SOUND[result]);
   drawCard();
   commit();
@@ -191,6 +257,7 @@ function confirmTurn() {
   team.score += pts;
   team.turns += 1;
   game.lastTurn = { team: game.current, pts, log: game.log };
+  game.seatManual = false;
   game.log = [];
   game.current = (game.current + 1) % game.teams.length;
   const limit = game.settings.turnsPerTeam;
@@ -256,14 +323,21 @@ function renderStage() {
     st.innerHTML = `<div class="ready" style="--team:${team.color}">
       <p class="eyebrow">${esc(style.name)} · up next</p>
       <h1 class="ready-team">${esc(team.name)}</h1>
-      <p class="seat-note">🪑 ${esc(style.seat)}</p>
+      <p class="seat-note">🪑 ${game.seatName ? `${esc(game.seatName)} is in the hot seat` : game.seatId === 'host' ? 'You’re in the hot seat — turn away from the screen!' : esc(style.seat)}</p>
       <p class="muted">${esc(style.rule)}<br>${s.seconds} seconds · ${esc(passRuleText(s))}${s.foulPenalty ? ' · Rule broken −1' : ''}</p>
       ${last}
+      ${seatPicker()}
       <button class="btn primary huge" data-act="start">Start turn <kbd>Space</kbd></button>
     </div>`;
+  } else if (game.phase === 'playing' && game.card && hostInSeat()) {
+    st.innerHTML = `<div class="ready"><p class="eyebrow">You're in the hot seat</p>
+      <h1 class="ready-team">${s.style === 'whoami' ? 'Ask yes/no questions!' : 'Listen and guess!'}</h1>
+      <p class="muted">The word is hidden on this screen. Your team scores it on their devices.</p>
+      ${tallyHtml(game.log)}</div>`;
   } else if (game.phase === 'playing' && game.card) {
     const c = game.card;
     st.innerHTML = `<div class="card-wrap hs-wrap">
+      ${game.seatName ? `<p class="remote-note">🪑 ${esc(game.seatName)} is in the hot seat</p>` : ''}
       <div class="hs-card">
         <span class="level-tag">${SET_LABEL(c.level)}</span>
         <div class="hs-word">${esc(c.word)}</div>
@@ -360,7 +434,9 @@ document.addEventListener('keydown', (e) => {
   const k = shortcutKey(e);
   const p = game.phase;
   if (p === 'ready' && (k === ' ' || k === 'enter')) { e.preventDefault(); startTurn(); }
-  else if (p === 'playing') {
+  else if (p === 'playing' && hostInSeat()) {
+    if (k === 'p') pause();
+  } else if (p === 'playing') {
     if (k === ' ' || k === 'enter' || k === 'arrowright') { e.preventDefault(); mark('correct'); }
     else if (k === 'x') mark('foul');
     else if (k === 's') mark('pass');
@@ -381,6 +457,13 @@ setInterval(() => {
 }, 200);
 
 sync.onMessage((m) => { if (m?.type === 'hello' && game) sync.publish(game); });
+$('#stage').addEventListener('change', (e) => {
+  if (e.target.id !== 'seat-select' || game?.phase !== 'ready') return;
+  game.seatId = e.target.value || null;
+  game.seatName = !e.target.value || e.target.value === 'host' ? '' : net.nameOf(e.target.value);
+  game.seatManual = true;
+  commit();
+});
 
 let classWin = null;
 $('#open-class').onclick = () => {
@@ -399,8 +482,48 @@ $('#manage-cards').onclick = openCards;
 $('#manage-cards-top').onclick = openCards;
 
 /* ---------------- boot ---------------- */
+const net = setupHostOnline({
+  kind: 'hotseat',
+  getGame: () => game,
+  getTeams: () => {
+    if (game && game.phase !== 'over') return game.teams.map((t, i) => ({ id: teamId(i), name: t.name, color: t.color }));
+    ensureColors(settings);
+    return settings.teams.map((name, i) => ({ id: i, name: name.trim() || `Team ${i + 1}`, color: settings.colors[i] }));
+  },
+  onAct: onRemote,
+  onChange: () => { if (game) { pub(); if (!$('#play').hidden) render(); } },
+  teamsApi: {
+    canResize: () => !game || game.phase === 'over',
+    rename(id, name) {
+      if (id < settings.teams.length) { settings.teams[id] = name; hsSettings.set(settings); renderTeamList(); }
+      if (game && game.phase !== 'over') {
+        const t = game.teams.find((x, i) => teamId(i) === id);
+        if (t) { t.name = name.trim() || `Team ${id + 1}`; commit(); }
+      }
+    },
+    add() {
+      if (settings.teams.length >= 6) return;
+      settings.teams.push(`Team ${settings.teams.length + 1}`);
+      ensureColors(settings); saveSettings(); renderTeamList();
+    },
+    remove(id) {
+      if (settings.teams.length <= 1) return;
+      const order = settings.teams.map((_, i) => i).filter((i) => i !== id);
+      settings.teams.splice(id, 1); settings.colors.splice(id, 1);
+      saveSettings(); renderTeamList(); net.remap(order);
+    },
+  },
+});
+if (location.hash === '#online') {
+  history.replaceState(null, '', location.pathname + location.search);
+  setTimeout(() => net.host(), 0);
+}
 renderDecks = setupDeckPicker({ settings, save: saveSettings });
 ensureColors(settings);
-setupTeams({ settings, min: 1, save: saveSettings, persist: () => hsSettings.set(settings) });
+const renderTeamList = setupTeams({
+  settings, min: 1, save: saveSettings,
+  persist: () => { hsSettings.set(settings); net.sendLobby(); net.render(); },
+  onReorder: (order) => net.remap(order),
+});
 if (game?.phase === 'playing' && game.endAt <= Date.now()) timeUp();
 renderSetup();

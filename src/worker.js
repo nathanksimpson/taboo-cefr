@@ -50,6 +50,12 @@ export default {
 /** Whether this connection may see the current card and the turn's words. */
 export function canSeeCard(game, a) {
   if (a.role === 'host') return true;
+  if (game?.kind === 'hotseat') {
+    // Hot Seat / Who Am I?: everyone sees the word except the player in the hot seat.
+    // The big screen shows it too (in class, the hot seat faces away from it).
+    if (a.role === 'screen') return true;
+    return !game.seatId || a.id !== game.seatId;
+  }
   if (!game || a.role !== 'player') return false;
   if (game.explainerId && a.id === game.explainerId) return true;
   // Players on the other teams watch the card so they can call "Taboo!".

@@ -58,6 +58,10 @@ Press **🌐 Online → Start online room** on the Taboo screen. You get a 4-let
 - Change who explains on the *Up next* screen. Reloading or a phone going to sleep rejoins automatically.
 - The teacher's screen still runs the game (decks, scores, timer), so keep it open. Rooms are cleared 3 days after everyone leaves; **Close room** ends one straight away.
 
+**Hot Seat / Who Am I? online** works the same way: **🌐 Online** on the Hot Seat screen (or **Host online** on the home page). Each turn the next player on the team takes the hot seat — their device hides the word while everyone else's shows it. In Hot Seat their teammates press Correct / Pass on their phones; in Who Am I? anyone else can. Anyone who sees the word can call **Rule broken**. The big screen (`/hotseat-class.html?room=CODE`) shows the word as usual, so the hot seat faces away from it in class.
+
+Taboo and Hot Seat share one room: switch games on your computer and everyone's devices (and the big screen) follow, with no need to rejoin.
+
 The room is a small Worker + Durable Object in `src/worker.js` (free plan is fine). It never sees the deck, and it removes the card from what it sends to anyone who shouldn't see it.
 
 ### Setup options

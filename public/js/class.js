@@ -95,7 +95,11 @@ if (room) {
   connect({
     code: room, role: 'screen',
     on: {
-      state: (g) => { game = g; render(); maybeFlash(); },
+      state: (g) => {
+        // The teacher switched this room to Hot Seat: follow it.
+        if (g?.kind === 'hotseat') { location.replace(`hotseat-class.html?room=${room}`); return; }
+        game = g; render(); maybeFlash();
+      },
       error: (m) => { roomError = m.message; game = null; render(); },
     },
   });

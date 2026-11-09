@@ -30,15 +30,18 @@
         <span class="game-desc">Describe the word without saying the taboo words. Only the explainer sees the card. Use a second screen for the class, or play online with phones.</span>
         <span class="game-actions">
           <a class="game-go game-main" href="taboo.html">Play Taboo →</a>
-          <a class="game-go game-online" href="taboo.html#online" id="host-online" title="Start a room that phones and other computers can join">🌐 Host online</a>
+          <a class="game-go game-online" href="taboo.html#online" data-host-online title="Start a room that phones and other computers can join">🌐 Host online</a>
         </span>
       </div>
-      <a class="game-tile" href="hotseat.html" style="--team:#6b9bff">
+      <div class="game-tile has-actions" style="--team:#6b9bff">
         <span class="game-mark">H</span>
         <span class="game-name">Hot Seat / Who Am I?</span>
-        <span class="game-desc">One student faces away from the board and guesses the word everyone else can see. Works with one screen or iPad mirroring.</span>
-        <span class="game-go">Play Hot Seat →</span>
-      </a>
+        <span class="game-desc">One student faces away from the board and guesses the word everyone else can see. Works with one screen or iPad mirroring, or online with phones.</span>
+        <span class="game-actions">
+          <a class="game-go game-main" href="hotseat.html">Play Hot Seat →</a>
+          <a class="game-go game-online" href="hotseat.html#online" data-host-online title="Start a room that phones and other computers can join">🌐 Host online</a>
+        </span>
+      </div>
     </div>
     <a class="join-strip" href="join">📱 Got a room code? <b>Join an online game →</b></a>
   </main>
@@ -50,7 +53,7 @@
     // Already hosting a room? Say so on the button.
     try {
       const room = JSON.parse(localStorage.getItem('taboo.online.v1') || 'null');
-      if (room?.code) document.getElementById('host-online').textContent = `🌐 Room ${room.code} →`;
+      if (room?.code) document.querySelectorAll('[data-host-online]').forEach((a) => { a.textContent = `🌐 Room ${room.code} →`; });
     } catch { /* storage unavailable */ }
     document.getElementById('home-manage').onclick = () => openCardManager({ onClose: count });
   </script>

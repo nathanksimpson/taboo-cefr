@@ -19,7 +19,27 @@ const HTML = `
  *   onChange(): the player list, connection or host role changed
  *   teamsApi: { rename(id, name), add(), remove(id), canResize() } — edit the teams themselves
  */
-export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi }) {
+const COPY = {
+  taboo: {
+    inClass: 'keep this screen and the Class view on the projector; the explaining student holds a phone that shows the card.',
+    apart: 'everyone joins from their own device (on a video call); the explainer and the other teams see the card, the guessing team doesn\'t.',
+    sees: 'Sees every card',
+    hostHint: 'If you play on a team, this screen hides the card while your team is guessing.',
+    turnHint: 'Each turn the next player on the team explains — you can change who on the “Up next” screen.',
+    bigScreen: 'class.html',
+  },
+  hotseat: {
+    inClass: 'the Class view shows the word big as usual; the student in the hot seat faces away, and teammates can press Correct / Pass on their phones.',
+    apart: 'everyone joins from their own device (on a video call); everyone sees the word except the player in the hot seat.',
+    sees: 'Sees every word',
+    hostHint: 'If you play on a team, this screen hides the word when you’re in the hot seat.',
+    turnHint: 'Each turn the next player on the team takes the hot seat — you can change who on the “Up next” screen.',
+    bigScreen: 'hotseat-class.html',
+  },
+};
+
+export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi, kind = 'taboo' }) {
+  const copy = COPY[kind];
   document.body.insertAdjacentHTML('beforeend', HTML);
   const dlg = document.getElementById('online-dlg');
   const body = document.getElementById('online-body');
@@ -40,6 +60,7 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi }
     get watchers() { return saved?.watchers !== false; },
     get roster() { return roster; },
     get connected() { return status === 'online'; },
+    get takenOver() { return status === 'taken'; },
     players: (teamId) => roster.filter((p) => p.role === 'player' && p.team === teamId),
     isOnline: (id) => id === 'host' || roster.some((p) => p.id === id),
     nameOf: (id) => (id === 'host' ? 'This screen' : roster.find((p) => p.id === id)?.name || 'Player'),
@@ -91,6 +112,7 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi }
         welcome: () => { net.sendLobby(); net.publish(getGame()); },
         roster: (m) => { roster = m.players; net.render(); onChange(); },
         act: (m) => onAct(m),
+        takenOver: () => { net.render(); onChange(); },
         error: (m) => {
           error = m.message;
           if (m.code === 'no-room' || m.code === 'bad-key') { saved = null; persist(); conn = null; roster = []; }
@@ -150,8 +172,8 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi }
       body.innerHTML = `<div class="online-intro">
         <p>Start a room and anyone can join from a phone, tablet or computer with a 4-letter code.</p>
         <ul class="online-uses">
-          <li><b>In class:</b> keep this screen and the Class view on the projector; the explaining student holds a phone that shows the card.</li>
-          <li><b>Apart:</b> everyone joins from their own device (on a video call); the explainer and the other teams see the card, the guessing team doesn't.</li>
+          <li><b>In class:</b> ${copy.inClass}</li>
+          <li><b>Apart:</b> ${copy.apart}</li>
         </ul>
         <p class="muted">This screen still runs the game, so keep it open while you play.</p>
         ${error ? `<p class="online-err">${esc(error)}</p>` : ''}
@@ -185,22 +207,23 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi }
           <p class="room-link">Join at <b>${esc(shortJoinHost())}</b></p>
         </div>
         <div class="room-meta">
-          <span class="net-status ${status}"><span class="net-dot ${status}"></span>${{ online: 'Connected', connecting: 'Connecting…', offline: 'Offline — retrying' }[status]}</span>
+          <span class="net-status ${status}"><span class="net-dot ${status}"></span>${{ online: 'Connected', connecting: 'Connecting…', offline: 'Offline — retrying', taken: 'Running in another tab' }[status]}</span>
           <button class="btn ghost small" id="copy-link">Copy invite link</button>
-          <a class="btn ghost small" href="class.html?room=${esc(saved.code)}" target="_blank" rel="noopener">⧉ Big screen on another device</a>
+          <a class="btn ghost small" href="${copy.bigScreen}?room=${esc(saved.code)}" target="_blank" rel="noopener">⧉ Big screen on another device</a>
         </div>
       </div>
       ${error ? `<p class="online-err">${esc(error)}</p>` : ''}
+      ${status === 'taken' ? `<p class="online-err">This room is being run from another tab or page (the other game, perhaps). <button class="btn ghost small" id="take-back">Run it from here</button></p>` : ''}
       <div class="rule"><div class="rule-label">This screen is</div><div class="rule-body">
         <div class="role-pick" id="host-role" role="radiogroup">
-          <button role="radio" aria-checked="${net.hostRole === 'teacher'}" data-role="teacher" class="${net.hostRole === 'teacher' ? 'on' : ''}"><span class="role-ico">👀</span><span><b>Teacher</b><small>Sees every card</small></span></button>
+          <button role="radio" aria-checked="${net.hostRole === 'teacher'}" data-role="teacher" class="${net.hostRole === 'teacher' ? 'on' : ''}"><span class="role-ico">👀</span><span><b>Teacher</b><small>${copy.sees}</small></span></button>
           ${teams.map((t) => `<button role="radio" aria-checked="${net.hostRole === t.id}" data-role="${t.id}" class="${net.hostRole === t.id ? 'on' : ''}" style="--team:${t.color}"><span class="dot" style="background:${t.color}"></span><span><b>${esc(t.name)}</b><small>I'm playing on this team</small></span></button>`).join('')}
         </div>
-        <p class="hint">If you play on a team, this screen hides the card while your team is guessing.</p>
+        <p class="hint">${copy.hostHint}</p>
       </div></div>
-      <div class="rule"><div class="rule-label">Other teams</div><div class="rule-body">
+      ${kind === 'taboo' ? `<div class="rule"><div class="rule-label">Other teams</div><div class="rule-body">
         <label class="check"><input type="checkbox" id="watchers" ${net.watchers ? 'checked' : ''}> <span>See the card and can call <b>Taboo!</b> from their device</span></label>
-      </div></div>
+      </div></div>` : ''}
       <div class="ro-bar">
         <h3 class="ro-title">Teams <span class="muted">${players.length} player${players.length === 1 ? '' : 's'}${screens ? ` · ${screens} big screen${screens > 1 ? 's' : ''}` : ''}</span></h3>
         <button class="btn ghost small" id="ro-shuffle" ${players.length < 2 ? 'disabled' : ''} title="Mix everyone into even teams">🔀 Shuffle players</button>
@@ -210,13 +233,14 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi }
         <div class="ro-team ro-none" data-tid="none"><div class="ro-head"><span class="ro-none-title">Choosing a team</span><span class="ro-count">${unassigned.length}</span></div>
           <ul>${unassigned.map(chip).join('') || '<li class="ro-empty">Nobody</li>'}</ul></div>
       </div>
-      <p class="hint">Drag players between teams, or select one and use ← →. Rename a team by typing over its name. Each turn the next player on the team explains — you can change who on the “Up next” screen.</p>
+      <p class="hint">Drag players between teams, or select one and use ← →. Rename a team by typing over its name. ${copy.turnHint}</p>
       <div class="online-foot"><button class="btn ghost small danger" id="close-room">Close room</button></div>`;
   }
 
   dlg.addEventListener('click', async (e) => {
     if (e.target.closest('#online-close')) { dlg.close(); return; }
     if (e.target.closest('#online-start')) { makeRoom(); return; }
+    if (e.target.closest('#take-back')) { conn?.reopen(); return; }
     if (e.target.closest('#close-room')) { closeRoom(); return; }
     if (e.target.closest('#copy-link')) {
       const b = e.target.closest('#copy-link');

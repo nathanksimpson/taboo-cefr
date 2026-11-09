@@ -1,10 +1,20 @@
 import { SET_LABEL, remainingMs, fmtTime, esc, shortcutKey } from './core.js';
 import { sync, STYLE, turnTotal, passRuleText } from './hotseat-shared.js';
+import { connect, loadJSON, ROOM_KEY, cleanCode, shortJoinHost } from './online.js';
+
+// hotseat-class.html?room=ABCD — a big screen on another device, following an online room.
+const room = cleanCode(new URLSearchParams(location.search).get('room') || '');
+let roomError = '';
+function joinBanner() {
+  const code = room || game?.online?.code || (!game ? loadJSON(ROOM_KEY, null)?.code : null);
+  if (!code || roomError) return '';
+  return `<p class="cv-join">Join on your phone: <b>${esc(shortJoinHost())}</b> · code <b class="cv-code">${esc(code)}</b></p>`;
+}
 
 const cv = document.getElementById('cv');
 const flashEl = document.getElementById('flash');
 const bar = document.querySelector('#hs-bar div');
-let game = sync.load();
+let game = room ? null : sync.load();
 let lastFlash = game?.flash?.at || 0;
 
 function scoreboard() {
@@ -17,7 +27,7 @@ function scoreboard() {
 function render() {
   document.body.dataset.phase = game?.phase || 'waiting';
   if (!game || !game.teams) {
-    cv.innerHTML = `<div class="cv-center"><div class="cv-logo hs">Hot Seat</div><p class="cv-sub">Waiting for the teacher to start the game…</p></div>`;
+    cv.innerHTML = `<div class="cv-center"><div class="cv-logo hs">Hot Seat</div><p class="cv-sub">${roomError ? esc(roomError) : 'Waiting for the teacher to start the game…'}</p>${joinBanner()}</div>`;
     return;
   }
   const team = game.teams[game.current];
@@ -29,8 +39,8 @@ function render() {
   if (p === 'ready') {
     const last = game.lastTurn ? `<p class="cv-sub">${esc(game.teams[game.lastTurn.team].name)} scored ${game.lastTurn.pts >= 0 ? '+' : ''}${game.lastTurn.pts} last turn</p>` : '';
     main = `<div class="cv-center"><p class="cv-eyebrow">${esc(style.name)} · get ready</p><h1 class="cv-team">${esc(team.name)}</h1>
-      <p class="cv-seat">🪑 ${esc(style.seat)}</p>
-      <p class="cv-sub">${esc(style.rule)}<br>${s.seconds} seconds · ${esc(passRuleText(s))}${s.foulPenalty ? ' · Rule broken = −1' : ''}</p>${last}</div>`;
+      <p class="cv-seat">🪑 ${game.seatName ? `${esc(game.seatName)}: sit facing away from the screen.` : esc(style.seat)}</p>
+      <p class="cv-sub">${esc(style.rule)}<br>${s.seconds} seconds · ${esc(passRuleText(s))}${s.foulPenalty ? ' · Rule broken = −1' : ''}</p>${last}${joinBanner()}</div>`;
   } else if (p === 'playing' && game.card) {
     const c = game.card;
     const n = game.log.filter((e) => e.result === 'correct').length;
@@ -54,7 +64,7 @@ function render() {
     document.body.style.setProperty('--team', winners[0].color);
     const title = game.teams.length === 1 ? `${ranked[0].score} point${ranked[0].score === 1 ? '' : 's'}!` : winners.length > 1 ? 'It’s a tie!' : `${esc(winners[0].name)} wins!`;
     main = `<div class="cv-center"><p class="cv-eyebrow">Game over</p><h1 class="cv-team">${title}</h1>
-      <ol class="final big">${ranked.map((t) => `<li style="--team:${t.color}"><span>${esc(t.name)}</span><b>${t.score}</b></li>`).join('')}</ol></div>`;
+      <ol class="final big">${ranked.map((t) => `<li style="--team:${t.color}"><span>${esc(t.name)}</span><b>${t.score}</b></li>`).join('')}</ol>${joinBanner()}</div>`;
   }
   cv.innerHTML = main + (p === 'over' ? '' : scoreboard());
   fitWord();
@@ -79,7 +89,7 @@ function maybeFlash() {
   lastFlash = f.at;
   if (Date.now() - f.at > 2000 || !FLASH[f.type]) return;
   const [text, cls] = FLASH[f.type];
-  flashEl.textContent = text;
+  flashEl.innerHTML = esc(text) + (f.type === 'foul' && f.by ? `<small>called by ${esc(f.by)}</small>` : '');
   flashEl.className = `flash show ${cls}`;
   clearTimeout(maybeFlash.t);
   maybeFlash.t = setTimeout(() => { flashEl.className = 'flash'; }, f.type === 'timeup' ? 1600 : 800);
@@ -97,13 +107,26 @@ function tick() {
 }
 setInterval(tick, 200);
 
-sync.onMessage((m) => {
-  if (m?.type !== 'state') return;
-  game = m.game;
-  render();
-  maybeFlash();
-});
-sync.send({ type: 'hello' });
+if (room) {
+  connect({
+    code: room, role: 'screen',
+    on: {
+      state: (g) => {
+        if (g && g.kind !== 'hotseat') { location.replace(`class.html?room=${room}`); return; }
+        game = g; render(); maybeFlash();
+      },
+      error: (m) => { roomError = m.message; game = null; render(); },
+    },
+  });
+} else {
+  sync.onMessage((m) => {
+    if (m?.type !== 'state') return;
+    game = m.game;
+    render();
+    maybeFlash();
+  });
+  sync.send({ type: 'hello' });
+}
 render();
 
 const fs = () => (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.());

@@ -61,9 +61,11 @@ export function connect(opts) {
       if (m.type === 'saved') { on.saved?.(toLocal(m.game)); return; }
       on[m.type]?.(m);
     };
-    me.onclose = () => {
+    me.onclose = (ev) => {
       clearInterval(pingTimer);
       if (me !== ws) return;
+      // Another tab or page took over as host of this room.
+      if (ev?.code === 4002 && params.role === 'host') { stopped = true; status('taken'); on.takenOver?.(); return; }
       status('offline');
       if (stopped) return;
       tries += 1;
@@ -99,6 +101,7 @@ export function connect(opts) {
     assign: (moves) => send({ type: 'assign', moves }),
     closeRoom: () => { send({ type: 'close-room' }); stopped = true; },
     close: () => { stopped = true; clearInterval(pingTimer); try { ws?.close(); } catch { /* ignore */ } },
+    reopen: () => { stopped = false; tries = 0; open(); },
     get id() { return params.id; },
     get open() { return ws?.readyState === 1; },
   };

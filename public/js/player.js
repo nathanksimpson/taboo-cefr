@@ -2,6 +2,7 @@
 // then explain, watch for taboo words, or guess — depending on the turn.
 import { scoreTurn, sum, remainingMs, fmtTime, esc, skipRuleText, sfx, shortcutKey } from './core.js';
 import { connect, loadJSON, saveJSON, GUEST_KEY, cleanCode } from './online.js';
+import { STYLE, scoreHS, turnTotal, passRuleText } from './hotseat-shared.js';
 
 const $ = (s) => document.querySelector(s);
 const guest = loadJSON(GUEST_KEY, { ids: {}, name: '', team: {}, sound: true });
@@ -106,7 +107,7 @@ function setTeam(id) {
 function act(a, extra = {}) {
   if (!conn) return;
   const cardId = game?.card?.id;
-  if (['correct', 'taboo', 'skip'].includes(a)) {
+  if (['correct', 'taboo', 'skip', 'pass', 'foul'].includes(a)) {
     if (!cardId || sentFor === cardId) return; // one press per card
     sentFor = cardId;
   }
@@ -192,7 +193,82 @@ function cardHtml(c) {
     <ul class="taboo-list">${c.taboo.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>`;
 }
 
+const isHS = () => game?.kind === 'hotseat';
+const inSeat = () => isHS() && !!me.id && game.seatId === me.id;
+/** Hot Seat: may this device press Correct / Pass / Undo? (the seat's teammates; in Who Am I? anyone but the seat) */
+const hsRuns = () => isHS() && !inSeat() && (me.team === curTeamId() || game.settings.style === 'whoami'
+  // nobody else from the seat's team is online: anyone else may score for them
+  || !roster.some((p) => p.role === 'player' && p.team === curTeamId() && p.id !== game.seatId));
+const hsOnTeam = () => me.team === curTeamId() || inSeat();
+
+function hsPhaseHtml() {
+  const g = game;
+  const s = g.settings;
+  const style = STYLE[s.style] || STYLE.hotseat;
+  const team = curTeam();
+  const p = g.phase;
+  const seatName = inSeat() ? 'You' : g.seatName || (g.seatId === 'host' ? 'The teacher' : 'Someone in the room');
+  const c = (r) => g.log.filter((e) => e.result === r).length;
+  const total = turnTotal(g.log, s);
+  const tallyHS = `<div class="tally"><span class="t correct">✓ ${c('correct')}</span><span class="t skip">↷ ${c('pass')}</span><span class="t taboo">✕ ${c('foul')}</span><span class="t pts">${total >= 0 ? '+' : ''}${total}</span></div>`;
+
+  if (p === 'ready') {
+    if (inSeat()) {
+      return `<div class="ready"><p class="eyebrow">${esc(style.name)} · your turn</p><h1 class="ready-team">You're in the hot seat!</h1>
+        <p class="muted">${s.style === 'whoami' ? 'Ask yes/no questions to work out the word.' : 'Your team describes the word — you guess.'} Don't look at anyone else's screen!</p>
+        <button class="btn primary huge" data-act="start">Start turn</button></div>`;
+    }
+    return `<div class="ready"><p class="eyebrow">${esc(style.name)} · up next</p><h1 class="ready-team">${esc(team.name)}</h1>
+      <p class="seat-note">🪑 ${esc(seatName)} ${g.seatName || g.seatId === 'host' ? 'is in the hot seat' : 'sits in the hot seat'}</p>
+      <p class="muted">${esc(style.rule)}<br>${s.seconds} seconds · ${esc(passRuleText(s))}${s.foulPenalty ? ' · Rule broken −1' : ''}</p>
+      ${hsOnTeam() ? '<button class="btn primary huge" data-act="start">Start turn</button>' : ''}</div>`;
+  }
+  if (p === 'paused') {
+    return `<div class="ready"><p class="eyebrow">Paused</p><h1 class="ready-team">Word hidden</h1>
+      ${hsOnTeam() ? '<button class="btn primary huge" data-act="pause">Resume</button>' : ''}</div>`;
+  }
+  if (p === 'playing') {
+    if (inSeat() || !g.card) {
+      return `<div class="ready guess"><p class="eyebrow">${inSeat() ? 'You’re in the hot seat' : `${esc(team.name)} is playing`}</p>
+        <h1 class="ready-team">${inSeat() ? (s.style === 'whoami' ? 'Ask yes/no questions!' : 'Listen and guess!') : 'Watch and wait'}</h1>
+        <div class="big-timer" id="big-timer"></div>${tallyHS}
+        ${inSeat() ? '<button class="link" data-act="pause">Pause</button>' : ''}</div>`;
+    }
+    const w = g.card;
+    const runs = hsRuns();
+    return `<div class="card-wrap hs-wrap">
+      <p class="remote-note">🪑 ${esc(seatName)} ${seatName === 'You' ? 'are' : 'is'} in the hot seat${runs ? '' : ' — call it if a rule is broken!'}</p>
+      <div class="hs-card"><span class="level-tag">${esc(w.label || w.level)}</span><div class="hs-word">${esc(w.word)}</div>
+        ${s.showAvoid ? `<div class="hs-avoid"><span>Don’t say</span>${w.taboo.map((t) => `<b>${esc(t)}</b>`).join('')}</div>` : ''}</div>
+      ${tallyHS}
+      ${runs ? `<div class="act">
+        <button class="btn act-taboo" data-act="foul">Rule broken <kbd>X</kbd></button>
+        <button class="btn act-skip" data-act="pass">Pass <kbd>S</kbd></button>
+        <button class="btn act-correct" data-act="correct">Correct <kbd>Space</kbd></button></div>
+        <div class="act-minor"><button class="link" data-act="undo" ${g.log.length ? '' : 'disabled'}>↶ Undo last</button>
+          <button class="link" data-act="pause">Pause</button></div>`
+        : '<button class="btn act-taboo buzz" data-act="foul">Rule broken!</button>'}</div>`;
+  }
+  if (p === 'review') {
+    const pts = scoreHS(g.log, s);
+    const edit = hsOnTeam();
+    const sym = { correct: '✓', pass: '↷', foul: '✕' };
+    const cls = { correct: 'correct', pass: 'skip', foul: 'taboo' };
+    const rows = g.log.map((e, i) => `<div class="rv-row"><span class="rv-word">${esc(e.card?.word || '—')}</span>
+      <span class="rv-btns">${edit ? ['correct', 'pass', 'foul'].map((r) => `<button class="rv ${cls[r]} ${e.result === r ? 'on' : ''}" data-rv="${i}" data-r="${r}">${sym[r]}</button>`).join('')
+        : `<span class="rv ${cls[e.result]} on">${sym[e.result]}</span>`}</span>
+      <span class="rv-pts">${pts[i] > 0 ? '+' : ''}${pts[i]}</span></div>`).join('');
+    return `<div class="review"><p class="eyebrow">Time's up — the hot seat can look</p>
+      <h2>${esc(team.name)}: <span class="${total < 0 ? 'neg' : ''}">${total >= 0 ? '+' : ''}${total}</span></h2>
+      ${edit ? '<p class="muted">Fix any mis-taps, then confirm.</p>' : '<p class="muted">Waiting for the scores to be confirmed…</p>'}
+      <div class="rv-list">${rows || '<p class="muted">No words played this turn.</p>'}</div>
+      ${edit ? '<button class="btn primary huge" data-act="confirm">Confirm &amp; next team</button>' : ''}</div>`;
+  }
+  return null;
+}
+
 function phaseHtml() {
+  if (isHS()) { const h = hsPhaseHtml(); if (h) return h; }
   const g = game;
   const s = g.settings;
   const team = curTeam();
@@ -277,18 +353,19 @@ function renderTimer() {
   if (big) { big.textContent = txt; big.classList.toggle('low', low); }
 }
 
-const FLASH = { correct: ['Correct!', 'correct'], taboo: ['TABOO!', 'taboo'], skip: ['Skip', 'skip'], timeup: ['Time’s up!', 'timeup'], start: ['Go!', 'start'] };
+const FLASH = { correct: ['Correct!', 'correct'], taboo: ['TABOO!', 'taboo'], skip: ['Skip', 'skip'], timeup: ['Time’s up!', 'timeup'], start: ['Go!', 'start'], pass: ['Pass', 'skip'], foul: ['Rule broken!', 'taboo'] };
+const FLASH_SOUND = { pass: 'skip', foul: 'taboo', timeup: 'timeUp' };
 function maybeFlash() {
   const f = game?.flash;
   if (!f || f.at <= lastFlash) return;
   const first = lastFlash === 0;
   lastFlash = f.at;
   if (first || Date.now() - f.at > 2500 || !FLASH[f.type]) return;
-  play(f.type === 'timeup' ? 'timeUp' : f.type);
-  if (f.type === 'taboo' && iExplain()) navigator.vibrate?.(250);
+  play(FLASH_SOUND[f.type] || f.type);
+  if ((f.type === 'taboo' && iExplain()) || (f.type === 'foul' && hsRuns())) navigator.vibrate?.(250);
   const [text, cls] = FLASH[f.type];
   const el = $('#flash');
-  el.innerHTML = esc(text) + (f.type === 'taboo' && f.by ? `<small>called by ${esc(f.by)}</small>` : '');
+  el.innerHTML = esc(text) + ((f.type === 'taboo' || f.type === 'foul') && f.by ? `<small>called by ${esc(f.by)}</small>` : '');
   el.className = `flash show ${cls}`;
   clearTimeout(maybeFlash.t);
   maybeFlash.t = setTimeout(() => { el.className = 'flash'; }, f.type === 'timeup' ? 1600 : 900);
@@ -330,6 +407,14 @@ $('#sound-btn').onclick = () => { guest.sound = guest.sound === false; saveJSON(
 document.addEventListener('keydown', (e) => {
   if (!game || e.target.matches('input, textarea, select') || e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
   const k = shortcutKey(e);
+  if (isHS()) {
+    if (game.phase !== 'playing' || !game.card) return;
+    if (hsRuns() && (k === ' ' || k === 'enter' || k === 'arrowright')) { e.preventDefault(); act('correct'); }
+    else if (hsRuns() && k === 's') act('pass');
+    else if (hsRuns() && k === 'z') act('undo');
+    else if (k === 'x' && !inSeat()) act('foul');
+    return;
+  }
   if (game.phase === 'playing' && game.card) {
     if (iExplain() && (k === ' ' || k === 'enter' || k === 'arrowright')) { e.preventDefault(); act('correct'); }
     else if (iExplain() && k === 's') act('skip');
