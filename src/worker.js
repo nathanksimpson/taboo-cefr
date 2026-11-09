@@ -186,6 +186,17 @@ export class Room {
         const out = JSON.stringify({ type: 'lobby', lobby: this.lobby });
         for (const s of this.live()) if (s !== ws) try { s.send(out); } catch { /* gone */ }
         await this.ctx.storage.put('lobby', this.lobby);
+      } else if (msg.type === 'assign') {
+        // The teacher moves players between teams: moves = [{ id, team }] (team null = no team).
+        const moves = new Map((Array.isArray(msg.moves) ? msg.moves : []).map((m) => [m.id, teamOf(m.team)]));
+        for (const s of this.live()) {
+          const sa = s.deserializeAttachment();
+          if (sa.role !== 'player' || !moves.has(sa.id)) continue;
+          sa.team = moves.get(sa.id);
+          s.serializeAttachment(sa);
+          if (this.game) try { s.send(JSON.stringify({ type: 'state', game: viewFor(this.game, sa) })); } catch { /* gone */ }
+        }
+        this.broadcastRoster();
       } else if (msg.type === 'kick') {
         for (const s of this.live()) {
           if (s.deserializeAttachment().id === msg.id) {

@@ -514,10 +514,35 @@ const net = setupHostOnline({
     return settings.teams.map((name, i) => ({ id: i, name: name.trim() || `Team ${i + 1}`, color: settings.colors[i] }));
   },
   onAct: onRemote,
+  teamsApi: {
+    canResize: () => !game || game.phase === 'over',
+    rename(id, name) {
+      if (id < settings.teams.length) { settings.teams[id] = name; store.setSettings(settings); renderTeamList(); }
+      if (game && game.phase !== 'over') {
+        const t = game.teams.find((x, i) => teamId(i) === id);
+        if (t) { t.name = name.trim() || `Team ${id + 1}`; commit(); }
+      }
+    },
+    add() {
+      if (settings.teams.length >= 6) return;
+      settings.teams.push(`Team ${settings.teams.length + 1}`);
+      ensureColors(settings); saveSettings(); renderTeamList();
+    },
+    remove(id) {
+      if (settings.teams.length <= 2) return;
+      const order = settings.teams.map((_, i) => i).filter((i) => i !== id);
+      settings.teams.splice(id, 1); settings.colors.splice(id, 1);
+      saveSettings(); renderTeamList(); net.remap(order);
+    },
+  },
   onChange: () => { if (game) { pub(); if (!$('#play').hidden) render(); } },
 });
 renderDecks = setupDeckPicker({ settings, save: saveSettings });
 ensureColors(settings);
-setupTeams({ settings, min: 2, save: saveSettings, persist: () => store.setSettings(settings) });
+const renderTeamList = setupTeams({
+  settings, min: 2, save: saveSettings,
+  persist: () => { store.setSettings(settings); net.sendLobby(); net.render(); },
+  onReorder: (order) => net.remap(order),
+});
 if (game?.phase === 'playing' && game.endAt <= Date.now()) timeUp();
 renderSetup();

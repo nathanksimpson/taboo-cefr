@@ -31,8 +31,9 @@ export function ensureColors(settings) {
 /**
  * Wire up the Teams panel. Expects #team-names, #team-count, #team-minus, #team-plus.
  * save(): persist settings and re-render the rest of setup.
+ * onReorder(order): teams moved or one removed — order[newIndex] = oldIndex.
  */
-export function setupTeams({ settings, save, persist, min = 2, max = 6 }) {
+export function setupTeams({ settings, save, persist, onReorder = () => {}, min = 2, max = 6 }) {
   const $ = (s) => document.querySelector(s);
   const root = $('#team-names');
   let openPicker = null;
@@ -63,7 +64,8 @@ export function setupTeams({ settings, save, persist, min = 2, max = 6 }) {
     if (to < 0 || to >= settings.teams.length || from === to) return;
     const [n] = settings.teams.splice(from, 1); settings.teams.splice(to, 0, n);
     const [c] = settings.colors.splice(from, 1); settings.colors.splice(to, 0, c);
-    openPicker = null; save(); render();
+    const order = settings.teams.map((_, i) => i); const [o] = order.splice(from, 1); order.splice(to, 0, o);
+    openPicker = null; save(); render(); onReorder(order);
     root.querySelector(`[data-drag="${to}"]`)?.focus();
   }
 
@@ -76,7 +78,7 @@ export function setupTeams({ settings, save, persist, min = 2, max = 6 }) {
       if (openPicker !== null) openPicker = null;
       settings.teams = order.map((i) => settings.teams[i]);
       settings.colors = order.map((i) => settings.colors[i]);
-      save(); render();
+      save(); render(); onReorder(order);
     },
     onKey: (i, dir) => moveTeam(i, i + dir),
   });
@@ -104,7 +106,10 @@ export function setupTeams({ settings, save, persist, min = 2, max = 6 }) {
     settings.teams[i] = e.target.value; persist();
   });
   $('#team-minus').onclick = () => {
-    if (settings.teams.length > min) { settings.teams.pop(); settings.colors.pop(); openPicker = null; save(); render(); }
+    if (settings.teams.length > min) {
+      settings.teams.pop(); settings.colors.pop(); openPicker = null; save(); render();
+      onReorder(settings.teams.map((_, i) => i));
+    }
   };
   $('#team-plus').onclick = () => {
     if (settings.teams.length < max) { settings.teams.push(`Team ${settings.teams.length + 1}`); ensureColors(settings); save(); render(); }
@@ -121,7 +126,7 @@ export function setupTeams({ settings, save, persist, min = 2, max = 6 }) {
     if (order.every((v, i) => v === i) && order.length > 1) order.push(order.shift()); // always change something
     settings.teams = order.map((i) => settings.teams[i]);
     settings.colors = order.map((i) => settings.colors[i]);
-    openPicker = null; save(); render();
+    openPicker = null; save(); render(); onReorder(order);
   };
   $('#team-random').checked = !!settings.randomOrder;
   $('#team-random').onchange = (e) => { settings.randomOrder = e.target.checked; save(); };

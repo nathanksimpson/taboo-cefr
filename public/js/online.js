@@ -96,6 +96,7 @@ export function connect(opts) {
     act: (a) => send({ type: 'act', ...a }),
     profile: (p) => { Object.assign(params, p); return send({ type: 'profile', ...p }); },
     kick: (id) => send({ type: 'kick', id }),
+    assign: (moves) => send({ type: 'assign', moves }),
     closeRoom: () => { send({ type: 'close-room' }); stopped = true; },
     close: () => { stopped = true; clearInterval(pingTimer); try { ws?.close(); } catch { /* ignore */ } },
     get id() { return params.id; },

@@ -17,8 +17,9 @@ const HTML = `
  *   getTeams(): [{ id, name, color }] — the teams players can join right now
  *   onAct(msg): a button pressed on a player's device
  *   onChange(): the player list, connection or host role changed
+ *   teamsApi: { rename(id, name), add(), remove(id), canResize() } — edit the teams themselves
  */
-export function setupHostOnline({ getGame, getTeams, onAct, onChange }) {
+export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi }) {
   document.body.insertAdjacentHTML('beforeend', HTML);
   const dlg = document.getElementById('online-dlg');
   const body = document.getElementById('online-body');
@@ -51,6 +52,26 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange }) {
     sendLobby() {
       if (!conn) return;
       conn.sendLobby({ teams: getTeams(), started: !!getGame() && getGame().phase !== 'over' });
+    },
+    /** Move players: moves = [{ id, team }] (team null = no team). */
+    assign(moves) {
+      if (!moves.length) return;
+      for (const m of moves) { const p = roster.find((x) => x.id === m.id); if (p) p.team = m.team; }
+      conn?.assign(moves);
+      net.render(); onChange();
+    },
+    /** Teams were reordered or one removed in setup: order[newIndex] = oldIndex. Keep everyone on their team. */
+    remap(order) {
+      if (!saved) return;
+      const moves = roster.filter((p) => p.role === 'player' && p.team != null)
+        .map((p) => ({ id: p.id, team: order.indexOf(p.team) === -1 ? null : order.indexOf(p.team) }))
+        .filter((m) => m.team !== roster.find((p) => p.id === m.id).team);
+      if (saved.hostRole !== 'teacher') {
+        const i = order.indexOf(saved.hostRole);
+        saved.hostRole = i === -1 ? 'teacher' : i;
+        persist();
+      }
+      net.assign(moves);
     },
     open: () => { render(); dlg.showModal(); },
     render: () => { renderBtn(); if (dlg.open) render(); },
@@ -111,6 +132,18 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange }) {
 
   function render() {
     renderBtn();
+    if (drag) return; // don't redraw under a player being dragged
+    const ae = document.activeElement;
+    const keep = ae && body.contains(ae) ? (ae.dataset.rename != null ? { sel: `[data-rename="${ae.dataset.rename}"]`, value: ae.value, a: ae.selectionStart, b: ae.selectionEnd }
+      : ae.dataset.pid ? { sel: `[data-pid="${ae.dataset.pid}"]` } : null) : null;
+    draw();
+    if (keep) {
+      const el = body.querySelector(keep.sel);
+      if (el) { el.focus(); if (keep.value != null) { el.value = keep.value; el.setSelectionRange(keep.a, keep.b); } }
+    }
+  }
+
+  function draw() {
     if (!saved) {
       body.innerHTML = `<div class="online-intro">
         <p>Start a room and anyone can join from a phone, tablet or computer with a 4-letter code.</p>
@@ -127,11 +160,19 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange }) {
     const teams = getTeams();
     const players = roster.filter((p) => p.role === 'player');
     const screens = roster.filter((p) => p.role === 'screen').length;
+    const resize = teamsApi?.canResize();
+    const chip = (p) => `<li class="ro-player" data-pid="${esc(p.id)}" tabindex="0" title="Drag to another team (or use the arrow keys)">
+      <span class="ro-grip" aria-hidden="true">⠿</span><span class="ro-name">${esc(p.name)}</span>
+      <button class="ro-x" data-kick="${esc(p.id)}" title="Remove ${esc(p.name)} from the room" aria-label="Remove ${esc(p.name)}">×</button></li>`;
     const teamBlock = (t) => {
       const ps = players.filter((p) => p.team === t.id);
-      const host = net.hostRole === t.id ? '<li class="me">This screen</li>' : '';
-      return `<div class="ro-team" style="--team:${t.color}"><h4><span class="dot" style="background:${t.color}"></span>${esc(t.name)} <span class="muted">${ps.length + (host ? 1 : 0)}</span></h4>
-        <ul>${host}${ps.map((p) => `<li>${esc(p.name)} <button class="link small" data-kick="${esc(p.id)}" title="Remove from the room">remove</button></li>`).join('') || (host ? '' : '<li class="muted">Nobody yet</li>')}</ul></div>`;
+      const host = net.hostRole === t.id ? '<li class="ro-host">This screen</li>' : '';
+      return `<div class="ro-team" data-tid="${t.id}" style="--team:${t.color}">
+        <div class="ro-head"><span class="dot" style="background:${t.color}"></span>
+          <input class="ro-rename" data-rename="${t.id}" value="${esc(t.name)}" maxlength="24" aria-label="Team name">
+          <span class="ro-count">${ps.length + (host ? 1 : 0)}</span>
+          ${resize && teams.length > 2 ? `<button class="ro-x" data-remove-team="${t.id}" title="Remove this team" aria-label="Remove team ${esc(t.name)}">×</button>` : ''}</div>
+        <ul>${host}${ps.map(chip).join('')}${ps.length || host ? '' : '<li class="ro-empty">Drop players here</li>'}</ul></div>`;
     };
     const unassigned = players.filter((p) => !teams.some((t) => t.id === p.team));
     body.innerHTML = `
@@ -158,10 +199,16 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange }) {
       <div class="rule"><div class="rule-label">Other teams</div><div class="rule-body">
         <label class="check"><input type="checkbox" id="watchers" ${net.watchers ? 'checked' : ''}> See the card and can call <b>Taboo!</b> from their device</label>
       </div></div>
-      <h3 class="ro-title">Players <span class="muted">${players.length}${screens ? ` · ${screens} big screen${screens > 1 ? 's' : ''}` : ''}</span></h3>
-      <div class="ro-grid">${teams.map(teamBlock).join('')}</div>
-      ${unassigned.length ? `<p class="muted">Choosing a team: ${unassigned.map((p) => esc(p.name)).join(', ')}</p>` : ''}
-      <p class="hint">Each turn the next player on the team explains. You can change who explains on the “Up next” screen.</p>
+      <div class="ro-bar">
+        <h3 class="ro-title">Teams <span class="muted">${players.length} player${players.length === 1 ? '' : 's'}${screens ? ` · ${screens} big screen${screens > 1 ? 's' : ''}` : ''}</span></h3>
+        <button class="btn ghost small" id="ro-shuffle" ${players.length < 2 ? 'disabled' : ''} title="Mix everyone into even teams">🔀 Shuffle players</button>
+        ${resize && teams.length < 6 ? '<button class="btn ghost small" id="ro-add-team">+ Team</button>' : ''}
+      </div>
+      <div class="ro-grid">${teams.map(teamBlock).join('')}
+        <div class="ro-team ro-none" data-tid="none"><div class="ro-head"><span class="ro-none-title">Choosing a team</span><span class="ro-count">${unassigned.length}</span></div>
+          <ul>${unassigned.map(chip).join('') || '<li class="ro-empty">Nobody</li>'}</ul></div>
+      </div>
+      <p class="hint">Drag players between teams, or select one and use ← →. Rename a team by typing over its name. Each turn the next player on the team explains — you can change who on the “Up next” screen.</p>
       <div class="online-foot"><button class="btn ghost small danger" id="close-room">Close room</button></div>`;
   }
 
@@ -180,8 +227,107 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange }) {
       persist(); render(); onChange(); return;
     }
     const kick = e.target.closest('[data-kick]');
-    if (kick) { conn?.kick(kick.dataset.kick); }
+    if (kick) {
+      const name = net.nameOf(kick.dataset.kick);
+      if (confirm(`Remove ${name} from the room?`)) conn?.kick(kick.dataset.kick);
+      return;
+    }
+    if (e.target.closest('#ro-shuffle')) { shufflePlayers(); return; }
+    if (e.target.closest('#ro-add-team')) { document.activeElement?.blur(); teamsApi.add(); net.sendLobby(); net.render(); return; }
+    const rm = e.target.closest('[data-remove-team]');
+    if (rm) {
+      const id = +rm.dataset.removeTeam;
+      const n = net.players(id).length;
+      if (n && !confirm(`Remove this team? Its ${n} player${n > 1 ? 's' : ''} will need to pick another team.`)) return;
+      document.activeElement?.blur();
+      teamsApi.remove(id); net.sendLobby(); net.render();
+    }
   });
+
+  // Rename a team (sent to everyone as you type).
+  body.addEventListener('input', (e) => {
+    const id = e.target.dataset.rename;
+    if (id == null) return;
+    teamsApi.rename(+id, e.target.value);
+    net.sendLobby();
+  });
+  body.addEventListener('keydown', (e) => {
+    if (e.target.dataset.rename != null && e.key === 'Enter') { e.preventDefault(); e.target.blur(); return; }
+    const li = e.target.closest?.('.ro-player');
+    if (!li || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return;
+    e.preventDefault();
+    const ids = [...getTeams().map((t) => t.id), null];
+    const cur = roster.find((p) => p.id === li.dataset.pid)?.team;
+    let i = ids.indexOf(cur ?? null); if (i === -1) i = ids.length - 1;
+    const next = ids[(i + (e.key === 'ArrowRight' ? 1 : ids.length - 1)) % ids.length];
+    net.assign([{ id: li.dataset.pid, team: next }]);
+  });
+
+  /** Mix all players into teams as evenly as possible. */
+  function shufflePlayers() {
+    const teams = getTeams();
+    const ps = roster.filter((p) => p.role === 'player').map((p) => p.id);
+    for (let i = ps.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ps[i], ps[j]] = [ps[j], ps[i]]; }
+    // The teacher's screen counts as a player on its team.
+    const size = new Map(teams.map((t) => [t.id, net.hostRole === t.id ? 1 : 0]));
+    const moves = ps.map((id) => {
+      const t = [...size.entries()].sort((a, b) => a[1] - b[1] || Math.random() - 0.5)[0][0];
+      size.set(t, size.get(t) + 1);
+      return { id, team: t };
+    });
+    net.assign(moves);
+  }
+
+  /* Drag a player to another team: the name floats under the pointer, the team under it lights up. */
+  let drag = null;
+  body.addEventListener('pointerdown', (e) => {
+    const li = e.target.closest('.ro-player');
+    if (!li || e.button !== 0 || e.target.closest('button')) return;
+    const r = li.getBoundingClientRect();
+    drag = { li, id: li.dataset.pid, x: e.clientX, y: e.clientY, dx: e.clientX - r.left, dy: e.clientY - r.top, w: r.width, ghost: null, over: null, pointer: e.pointerId };
+  });
+  body.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.pointer) return;
+    if (!drag.ghost) {
+      if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 5) return;
+      drag.ghost = drag.li.cloneNode(true);
+      drag.ghost.classList.add('ro-ghost');
+      drag.ghost.style.width = `${drag.w}px`;
+      dlg.appendChild(drag.ghost);
+      drag.li.classList.add('ro-dragging');
+      body.classList.add('ro-is-dragging');
+      try { drag.li.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+    }
+    e.preventDefault();
+    const dr = dlg.getBoundingClientRect();
+    drag.ghost.style.transform = `translate(${e.clientX - drag.dx - dr.left}px, ${e.clientY - drag.dy - dr.top}px) rotate(-2deg)`;
+    const over = document.elementFromPoint(e.clientX, e.clientY)?.closest('.ro-team');
+    if (over !== drag.over) { drag.over?.classList.remove('ro-over'); over?.classList.add('ro-over'); drag.over = over; }
+  });
+  const endDrag = (e, cancel) => {
+    if (!drag || (e && e.pointerId !== drag.pointer)) return;
+    const d = drag; drag = null;
+    if (!d.ghost) return;
+    d.over?.classList.remove('ro-over');
+    body.classList.remove('ro-is-dragging');
+    const target = d.over?.dataset.tid;
+    const from = roster.find((p) => p.id === d.id)?.team ?? null;
+    const team = target == null ? undefined : target === 'none' ? null : +target;
+    if (!cancel && team !== undefined && team !== from) {
+      // Settle: the ghost glides to its new spot, then the list redraws.
+      d.ghost.remove();
+      net.assign([{ id: d.id, team }]);
+      const el = body.querySelector(`[data-pid="${CSS.escape(d.id)}"]`);
+      el?.classList.add('ro-landed');
+    } else {
+      const r = d.li.getBoundingClientRect(); const dr = dlg.getBoundingClientRect();
+      d.ghost.style.transition = 'transform 160ms ease';
+      d.ghost.style.transform = `translate(${r.left - dr.left}px, ${r.top - dr.top}px)`;
+      setTimeout(() => { d.ghost.remove(); d.li.classList.remove('ro-dragging'); }, 170);
+    }
+  };
+  body.addEventListener('pointerup', (e) => endDrag(e, false));
+  body.addEventListener('pointercancel', (e) => endDrag(e, true));
   dlg.addEventListener('change', (e) => {
     if (e.target.id === 'watchers') { saved.watchers = e.target.checked; persist(); onChange(); }
   });

@@ -54,7 +54,16 @@ function join() {
         render();
       },
       lobby: (m) => { lobby = m.lobby; render(); },
-      roster: (m) => { roster = m.players; hostOnline = m.hostOnline; render(); },
+      roster: (m) => {
+        roster = m.players; hostOnline = m.hostOnline;
+        // The teacher may have moved us to another team.
+        const mine = roster.find((p) => p.id === me.id);
+        if (mine && mine.team !== me.team) {
+          me.team = mine.team; guest.team[code] = mine.team; saveJSON(GUEST_KEY, guest);
+          if (mine.team != null) picking = false;
+        }
+        render();
+      },
       state: (g) => { if (g?.card?.id !== game?.card?.id) sentFor = null; game = g; render(); maybeFlash(); },
       error: (m) => {
         if (m.code === 'kicked' || m.code === 'closed') { game = null; showJoin(m.message); return; }
