@@ -24,12 +24,15 @@
       <p class="muted" id="home-count">About 950 words sorted by CEFR level, shared by every game.</p>
     </header>
     <div class="game-grid">
-      <a class="game-tile" href="taboo.html" style="--team:#ffc61a">
+      <div class="game-tile has-actions" style="--team:#ffc61a">
         <span class="game-mark">T</span>
         <span class="game-name">Taboo</span>
         <span class="game-desc">Describe the word without saying the taboo words. Only the explainer sees the card. Use a second screen for the class, or play online with phones.</span>
-        <span class="game-go">Play Taboo →</span>
-      </a>
+        <span class="game-actions">
+          <a class="game-go game-main" href="taboo.html">Play Taboo →</a>
+          <a class="game-go game-online" href="taboo.html#online" id="host-online" title="Start a room that phones and other computers can join">🌐 Host online</a>
+        </span>
+      </div>
       <a class="game-tile" href="hotseat.html" style="--team:#6b9bff">
         <span class="game-mark">H</span>
         <span class="game-name">Hot Seat / Who Am I?</span>
@@ -44,6 +47,11 @@
     import { openCardManager } from './js/cardmanager.js';
     const count = () => { document.getElementById('home-count').textContent = `${allCards().length} words sorted by CEFR level, shared by every game.`; };
     count();
+    // Already hosting a room? Say so on the button.
+    try {
+      const room = JSON.parse(localStorage.getItem('taboo.online.v1') || 'null');
+      if (room?.code) document.getElementById('host-online').textContent = `🌐 Room ${room.code} →`;
+    } catch { /* storage unavailable */ }
     document.getElementById('home-manage').onclick = () => openCardManager({ onClose: count });
   </script>
 </body>

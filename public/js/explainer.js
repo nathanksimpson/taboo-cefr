@@ -539,6 +539,11 @@ const net = setupHostOnline({
 });
 renderDecks = setupDeckPicker({ settings, save: saveSettings });
 ensureColors(settings);
+// taboo.html#online — "Host online" on the home page.
+if (location.hash === '#online') {
+  history.replaceState(null, '', location.pathname + location.search);
+  setTimeout(() => net.host(), 0);
+}
 const renderTeamList = setupTeams({
   settings, min: 2, save: saveSettings,
   persist: () => { store.setSettings(settings); net.sendLobby(); net.render(); },

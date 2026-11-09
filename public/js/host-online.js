@@ -74,6 +74,8 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi }
       net.assign(moves);
     },
     open: () => { render(); dlg.showModal(); },
+    /** From the home page's "Host online": open the panel and start a room if there isn't one. */
+    host: () => { render(); if (!dlg.open) dlg.showModal(); if (!saved && !busy) makeRoom(); },
     render: () => { renderBtn(); if (dlg.open) render(); },
   };
 
