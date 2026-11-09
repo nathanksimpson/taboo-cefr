@@ -2,9 +2,17 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "taboo-cefr",
   "compatibility_date": "2026-06-01",
-  // Static site only — no Worker script needed. Everything in ./public is served.
+  // The Worker only handles /api/* (online rooms). Everything else in ./public is served as static files.
+  "main": "src/worker.js",
   "assets": {
     "directory": "./public",
-    "not_found_handling": "single-page-application"
-  }
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  // One Durable Object per online room (free plan: SQLite-backed).
+  "durable_objects": {
+    "bindings": [{ "name": "ROOMS", "class_name": "Room" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }]
 }

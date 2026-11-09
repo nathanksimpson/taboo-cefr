@@ -7,6 +7,7 @@ import { setupDeckPicker, deckSummary } from './decks.js';
 let renderDecks = () => {};
 const seen = seenStore('taboo');
 import { openCardManager, cardManagerOpen } from './cardmanager.js';
+import { setupHostOnline } from './host-online.js';
 
 const $ = (s) => document.querySelector(s);
 let settings = store.getSettings();
@@ -14,7 +15,7 @@ let game = store.getGame();
 
 /* ---------------- setup ---------------- */
 
-function saveSettings() { store.setSettings(settings); renderSetup(); }
+function saveSettings() { store.setSettings(settings); renderSetup(); net?.sendLobby(); }
 
 function renderSetup() {
   renderDecks();
@@ -71,14 +72,16 @@ $('#start').onclick = () => {
     phase: 'ready',
     settings: { ...settings, teams: undefined },
     teams: (() => {
-      const t = settings.teams.map((name, i) => ({ name: name.trim() || `Team ${i + 1}`, score: 0, color: settings.colors[i], turns: 0 }));
+      // id stays the same if the order is shuffled, so players online keep their team.
+      const t = settings.teams.map((name, i) => ({ id: i, name: name.trim() || `Team ${i + 1}`, score: 0, color: settings.colors[i], turns: 0 }));
       return settings.randomOrder ? shuffle(t) : t;
     })(),
     current: 0,
     deck: ids, pos: 0, card: null, log: [], used: [],
     endAt: 0, remaining: 0, flash: null, lastTurn: null,
   };
-  publish(game);
+  pub();
+  net.sendLobby();
   showPlay();
 };
 $('#resume').onclick = () => { if (game) { if (game.phase === 'playing') pause(); showPlay(); } };
@@ -88,7 +91,67 @@ $('#resume').onclick = () => { if (game) { if (game.phase === 'playing') pause()
 const byId = () => new Map(allCards().map((c) => [c.id, c]));
 const play = (name) => { if (game?.settings.sounds) sfx[name](); };
 
-function commit() { publish(game); render(); }
+/** Send the game to the class view (same computer) and to the online room. */
+function pub() {
+  if (!game) return;
+  if (game.phase === 'ready') updateExplainer();
+  game.settings.watchers = net.active ? net.watchers : true;
+  game.online = net.active ? { code: net.code } : null;
+  publish(game);
+  net.publish(game);
+}
+function commit() { pub(); render(); }
+
+/* ---------------- online: who explains, who sees the card ---------------- */
+
+const teamId = (i = game.current) => game.teams[i].id ?? i;
+const hostRole = () => (net.active && game?.teams.some((t, i) => teamId(i) === net.hostRole) ? net.hostRole : 'teacher');
+/** Who can explain for this team: this screen (if it plays on the team) and the team's players online. */
+function candidates(tid = teamId()) {
+  if (!net.active) return [];
+  const list = net.players(tid).map((p) => ({ id: p.id, name: p.name }));
+  if (hostRole() === tid) list.unshift({ id: 'host', name: 'This screen' });
+  return list;
+}
+/** In the "Up next" phase, pick the next explainer for the team, in turn. */
+function updateExplainer() {
+  const list = candidates();
+  if (game.explainerManual && list.some((c) => c.id === game.explainerId)) return;
+  if (game.explainerManual && game.explainerId === 'host') return;
+  game.explainerManual = false;
+  if (!list.length) { game.explainerId = 'host'; game.explainerName = ''; return; }
+  const pick = list[game.teams[game.current].turns % list.length];
+  game.explainerId = pick.id;
+  game.explainerName = pick.id === 'host' ? '' : pick.name;
+}
+const hostExplains = () => !game.explainerId || game.explainerId === 'host';
+const explainerAway = () => !hostExplains() && !net.isOnline(game.explainerId);
+/** This screen shows the card: the teacher always; a playing host when explaining or watching another team. */
+function hostSees() {
+  const r = hostRole();
+  if (r === 'teacher' || hostExplains()) return true;
+  return game.settings.watchers !== false && r !== teamId();
+}
+/** This screen runs the turn (Correct / Skip / Undo …). */
+const hostControls = () => hostRole() === 'teacher' || hostExplains() || explainerAway();
+
+/** A button pressed on a player's device. */
+function onRemote(m) {
+  if (!game) return;
+  const p = game.phase;
+  const isExp = !!m.from && m.from === game.explainerId;
+  const sameCard = m.cardId && m.cardId === game.card?.id;
+  if (m.act === 'start' && p === 'ready' && isExp) startTurn();
+  else if ((m.act === 'correct' || m.act === 'skip') && p === 'playing' && isExp && sameCard) mark(m.act);
+  else if (m.act === 'taboo' && p === 'playing' && sameCard) {
+    const watcher = game.settings.watchers !== false && m.team != null && m.team !== teamId();
+    if (isExp) mark('taboo');
+    else if (watcher) mark('taboo', m.name);
+  } else if (m.act === 'undo' && p === 'playing' && isExp) undo();
+  else if (m.act === 'pause' && (p === 'playing' || p === 'paused') && isExp) pause();
+  else if (m.act === 'rv' && p === 'review' && isExp && game.log[m.i] && ['correct', 'taboo', 'skip'].includes(m.r)) { game.log[m.i].result = m.r; commit(); }
+  else if (m.act === 'confirm' && p === 'review' && isExp) confirmTurn();
+}
 
 function showPlay() { document.activeElement?.blur?.(); $('#setup').hidden = true; $('#play').hidden = false; render(); }
 function showSetup() { $('#play').hidden = true; $('#setup').hidden = false; renderSetup(); }
@@ -105,7 +168,7 @@ function drawCard() {
       if (game.used.includes(k)) continue; // never the same word twice in a round
       game.used.push(k);
       seen.add(k);
-      game.card = { id: c.id, word: c.word, taboo: c.taboo, level: c.level };
+      game.card = { id: c.id, word: c.word, taboo: c.taboo, level: c.level, label: SET_LABEL(c.level) };
       return;
     }
     // Every word has been played: start a new round, without repeating the card just shown.
@@ -128,10 +191,10 @@ function startTurn() {
   commit();
 }
 
-function mark(result) {
+function mark(result, by) {
   if (game.phase !== 'playing' || !game.card) return;
   game.log.push({ card: game.card, result });
-  game.flash = { type: result, at: Date.now() };
+  game.flash = { type: result, at: Date.now(), by: by || '' };
   play(result);
   drawCard();
   commit();
@@ -179,6 +242,7 @@ function confirmTurn() {
   team.score += pts;
   team.turns += 1;
   game.lastTurn = { team: game.current, pts, log: game.log };
+  game.explainerManual = false;
   game.log = [];
   game.current = (game.current + 1) % game.teams.length;
   const limit = game.settings.turnsPerTeam;
@@ -244,13 +308,18 @@ function renderStage() {
     st.innerHTML = `<div class="ready" style="--team:${team.color}">
       <p class="eyebrow">Up next</p>
       <h1 class="ready-team">${esc(team.name)}</h1>
-      <p class="muted">Hand the screen to the explainer. ${game.settings.seconds} seconds · ${esc(skipRuleText(game.settings))}${game.settings.tabooPenalty ? ' · Taboo −1' : ''}</p>
+      <p class="muted">${net.active ? '' : 'Hand the screen to the explainer. '}${game.settings.seconds} seconds · ${esc(skipRuleText(game.settings))}${game.settings.tabooPenalty ? ' · Taboo −1' : ''}</p>
       ${last}
+      ${explainerPicker()}
       <button class="btn primary huge" data-act="start">Start turn <kbd>Space</kbd></button>
     </div>`;
+  } else if (game.phase === 'playing' && game.card && !hostControls()) {
+    st.innerHTML = hostSees() ? watchHtml() : listenHtml();
   } else if (game.phase === 'playing' && game.card) {
     const c = game.card;
-    st.innerHTML = `<div class="card-wrap">
+    const away = explainerAway() ? `<p class="online-err">${esc(game.explainerName || 'The explainer')} has lost connection — you can run the turn from here.</p>`
+      : !hostExplains() ? `<p class="remote-note">📱 ${esc(game.explainerName)} is explaining on their device</p>` : '';
+    st.innerHTML = `<div class="card-wrap">${away}
       <div class="card">
         <div class="card-top"><span class="level-tag">${SET_LABEL(c.level)}</span></div>
         <div class="target">${esc(c.word)}</div>
@@ -285,7 +354,7 @@ function renderStage() {
     st.innerHTML = `<div class="review">
       <p class="eyebrow">Time's up</p>
       <h2>${esc(team.name)}: <span class="${total < 0 ? 'neg' : ''}">${total >= 0 ? '+' : ''}${total}</span></h2>
-      <p class="muted">Fix any mistakes before confirming — tap a symbol to change it.</p>
+      <p class="muted">${hostExplains() ? '' : `${esc(game.explainerName)} can check this on their device too. `}Fix any mistakes before confirming — tap a symbol to change it.</p>
       <div class="rv-list">${rows || '<p class="muted">No cards played this turn.</p>'}</div>
       <button class="btn primary huge" data-act="confirm">Confirm &amp; next team <kbd>Enter</kbd></button>
     </div>`;
@@ -303,6 +372,41 @@ function renderStage() {
       </div>
     </div>`;
   }
+}
+
+function explainerPicker() {
+  if (!net.active) return '';
+  const list = candidates();
+  if (!list.length) {
+    return `<p class="remote-note">Nobody from ${esc(game.teams[game.current].name)} has joined online, so the card shows on this screen.</p>`;
+  }
+  const opts = [...(list.some((c) => c.id === 'host') ? [] : [{ id: 'host', name: 'This screen' }]), ...list];
+  return `<label class="explainer-pick">Explainer
+    <select id="explainer-select">${opts.map((c) => `<option value="${esc(c.id)}" ${c.id === game.explainerId ? 'selected' : ''}>${esc(c.name)}${c.id === 'host' ? '' : ' 📱'}</option>`).join('')}</select></label>
+    ${hostExplains() ? '' : `<p class="remote-note">The card will show on ${esc(game.explainerName)}'s device. They can press Start too.</p>`}`;
+}
+
+/** Playing, on another team: the card plus a Taboo buzzer. */
+function watchHtml() {
+  const c = game.card;
+  return `<div class="card-wrap">
+    <p class="remote-note">${esc(game.teams[game.current].name)} is guessing — ${esc(game.explainerName || 'their explainer')} is explaining. Call it if they say a taboo word!</p>
+    <div class="card"><div class="card-top"><span class="level-tag">${esc(c.label || SET_LABEL(c.level))}</span></div>
+      <div class="target">${esc(c.word)}</div><div class="taboo-label">Don't say</div>
+      <ul class="taboo-list">${c.taboo.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>
+    ${tallyHtml(game.log)}
+    <button class="btn act-taboo buzz" data-act="taboo">Taboo! <kbd>X</kbd></button>
+  </div>`;
+}
+
+/** Playing, on the guessing team: no card. */
+function listenHtml() {
+  const c = (r) => game.log.filter((e) => e.result === r).length;
+  return `<div class="ready">
+    <p class="eyebrow">Your team is guessing</p>
+    <h1 class="ready-team">Listen to ${esc(game.explainerName || 'your explainer')}!</h1>
+    <div class="tally"><span class="t correct">✓ ${c('correct')}</span><span class="t taboo">✕ ${c('taboo')}</span><span class="t skip">↷ ${c('skip')}</span></div>
+  </div>`;
 }
 
 function renderScores() {
@@ -334,6 +438,13 @@ $('#stage').addEventListener('click', (e) => {
   else if (a === 'continue') { game.phase = 'ready'; commit(); }
   else mark(a);
 });
+$('#stage').addEventListener('change', (e) => {
+  if (e.target.id !== 'explainer-select' || game?.phase !== 'ready') return;
+  game.explainerId = e.target.value;
+  game.explainerName = e.target.value === 'host' ? '' : net.nameOf(e.target.value);
+  game.explainerManual = true;
+  commit();
+});
 $('#scoreboard').addEventListener('click', (e) => {
   const b = e.target.closest('[data-adj]'); if (!b) return;
   game.teams[+b.dataset.adj].score += +b.dataset.d; commit();
@@ -348,7 +459,9 @@ document.addEventListener('keydown', (e) => {
   const k = shortcutKey(e);
   const p = game.phase;
   if (p === 'ready' && (k === ' ' || k === 'enter')) { e.preventDefault(); startTurn(); }
-  else if (p === 'playing') {
+  else if (p === 'playing' && !hostControls()) {
+    if (k === 'x' && hostSees()) mark('taboo');
+  } else if (p === 'playing') {
     if (k === ' ' || k === 'enter' || k === 'arrowright') { e.preventDefault(); mark('correct'); }
     else if (k === 'x') mark('taboo');
     else if (k === 's') mark('skip');
@@ -393,6 +506,16 @@ $('#manage-cards').onclick = openCards;
 $('#manage-cards-top').onclick = openCards;
 
 /* ---------------- boot ---------------- */
+const net = setupHostOnline({
+  getGame: () => game,
+  getTeams: () => {
+    if (game && game.phase !== 'over') return game.teams.map((t, i) => ({ id: teamId(i), name: t.name, color: t.color }));
+    ensureColors(settings);
+    return settings.teams.map((name, i) => ({ id: i, name: name.trim() || `Team ${i + 1}`, color: settings.colors[i] }));
+  },
+  onAct: onRemote,
+  onChange: () => { if (game) { pub(); if (!$('#play').hidden) render(); } },
+});
 renderDecks = setupDeckPicker({ settings, save: saveSettings });
 ensureColors(settings);
 setupTeams({ settings, min: 2, save: saveSettings, persist: () => store.setSettings(settings) });

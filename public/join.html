@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Join Taboo</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="Taboo CEFR">
+  <meta name="theme-color" content="#ffc61a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="player">
+  <header class="topbar">
+    <a class="brand" href="./" title="All games"><span class="brand-mark">T</span> Taboo <span class="brand-sub">Online</span></a>
+    <div class="topbar-actions" id="room-actions" hidden>
+      <button class="btn ghost small" id="me-chip" title="Change name or team"></button>
+      <button class="btn ghost small" id="sound-btn" title="Sound on/off">🔊</button>
+    </div>
+  </header>
+
+  <!-- JOIN -->
+  <main id="join" class="join-main">
+    <form id="join-form" class="panel join-panel">
+      <h1 class="join-title">Join a game</h1>
+      <label class="field">Room code
+        <input id="code" class="code-input" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCD" required>
+      </label>
+      <label class="field">Your name
+        <input id="name" maxlength="24" autocomplete="nickname" placeholder="e.g. Minji" required>
+      </label>
+      <p class="online-err" id="join-err" hidden></p>
+      <button class="btn primary big" id="join-btn">Join ▶</button>
+    </form>
+  </main>
+
+  <!-- ROOM -->
+  <main id="room" class="play player-room" hidden>
+    <div class="playbar">
+      <div class="team-chip" id="cur-team"></div>
+      <div class="timer" id="timer"></div>
+      <div class="playbar-actions"><span class="net-status" id="net"></span></div>
+    </div>
+    <div id="pstage" class="stage"></div>
+    <div id="pscores" class="scoreboard"></div>
+  </main>
+
+  <div id="flash" class="flash"></div>
+  <script type="module" src="js/player.js"></script>
+</body>
+</html>

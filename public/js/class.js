@@ -1,8 +1,13 @@
 import { store, onMessage, send, scoreTurn, sum, remainingMs, fmtTime, esc, skipRuleText, shortcutKey } from './core.js';
+import { connect, loadJSON, ROOM_KEY, cleanCode, shortJoinHost } from './online.js';
+
+// class.html?room=ABCD — a big screen on another device, following an online room.
+const room = cleanCode(new URLSearchParams(location.search).get('room') || '');
+let roomError = '';
 
 const cv = document.getElementById('cv');
 const flashEl = document.getElementById('flash');
-let game = store.getGame();
+let game = room ? null : store.getGame();
 let lastFlash = game?.flash?.at || 0;
 
 function scoreboard() {
@@ -12,10 +17,16 @@ function scoreboard() {
     <span class="cv-score-name">${esc(t.name)}</span><b>${t.score}</b></div>`).join('')}</div>`;
 }
 
+function joinBanner() {
+  const code = room || game?.online?.code || (!game ? loadJSON(ROOM_KEY, null)?.code : null);
+  if (!code || roomError) return '';
+  return `<p class="cv-join">Join on your phone: <b>${esc(shortJoinHost())}</b> · code <b class="cv-code">${esc(code)}</b></p>`;
+}
+
 function render() {
   document.body.dataset.phase = game?.phase || 'waiting';
   if (!game || !game.teams) {
-    cv.innerHTML = `<div class="cv-center"><div class="cv-logo">Taboo</div><p class="cv-sub">Waiting for the teacher to start the game…</p></div>`;
+    cv.innerHTML = `<div class="cv-center"><div class="cv-logo">Taboo</div><p class="cv-sub">${roomError ? esc(roomError) : 'Waiting for the teacher to start the game…'}</p>${joinBanner()}</div>`;
     return;
   }
   const team = game.teams[game.current];
@@ -25,7 +36,8 @@ function render() {
   if (p === 'ready') {
     const last = game.lastTurn ? `<p class="cv-sub">${esc(game.teams[game.lastTurn.team].name)} scored ${game.lastTurn.pts >= 0 ? '+' : ''}${game.lastTurn.pts} last turn</p>` : '';
     main = `<div class="cv-center"><p class="cv-eyebrow">Get ready</p><h1 class="cv-team">${esc(team.name)}</h1>
-      <p class="cv-sub">${game.settings.seconds} seconds · ${esc(skipRuleText(game.settings))}${game.settings.tabooPenalty ? ' · Taboo word = −1' : ''}</p>${last}</div>`;
+      <p class="cv-sub">${game.settings.seconds} seconds · ${esc(skipRuleText(game.settings))}${game.settings.tabooPenalty ? ' · Taboo word = −1' : ''}</p>${last}
+      ${game.explainerName ? `<p class="cv-sub">📱 ${esc(game.explainerName)} explains</p>` : ''}${joinBanner()}</div>`;
   } else if (p === 'playing' || p === 'paused') {
     const log = game.log;
     const c = (r) => log.filter((e) => e.result === r).length;
@@ -49,7 +61,7 @@ function render() {
     document.body.style.setProperty('--team', winners[0].color);
     main = `<div class="cv-center"><p class="cv-eyebrow">Game over</p>
       <h1 class="cv-team">${winners.length > 1 ? 'It’s a tie!' : `${esc(winners[0].name)} wins!`}</h1>
-      <ol class="final big">${ranked.map((t) => `<li style="--team:${t.color}"><span>${esc(t.name)}</span><b>${t.score}</b></li>`).join('')}</ol></div>`;
+      <ol class="final big">${ranked.map((t) => `<li style="--team:${t.color}"><span>${esc(t.name)}</span><b>${t.score}</b></li>`).join('')}</ol>${joinBanner()}</div>`;
   }
   cv.innerHTML = main + (p === 'over' ? '' : scoreboard());
   tick();
@@ -62,7 +74,7 @@ function maybeFlash() {
   lastFlash = f.at;
   if (Date.now() - f.at > 2000 || !FLASH[f.type]) return;
   const [text, cls] = FLASH[f.type];
-  flashEl.textContent = text;
+  flashEl.innerHTML = esc(text) + (f.type === 'taboo' && f.by ? `<small>called by ${esc(f.by)}</small>` : '');
   flashEl.className = `flash show ${cls}`;
   clearTimeout(maybeFlash.t);
   maybeFlash.t = setTimeout(() => { flashEl.className = 'flash'; }, f.type === 'timeup' ? 1600 : 800);
@@ -79,13 +91,23 @@ function tick() {
 }
 setInterval(tick, 200);
 
-onMessage((m) => {
-  if (m?.type !== 'state') return;
-  game = m.game;
-  render();
-  maybeFlash();
-});
-send({ type: 'hello' });
+if (room) {
+  connect({
+    code: room, role: 'screen',
+    on: {
+      state: (g) => { game = g; render(); maybeFlash(); },
+      error: (m) => { roomError = m.message; game = null; render(); },
+    },
+  });
+} else {
+  onMessage((m) => {
+    if (m?.type !== 'state') return;
+    game = m.game;
+    render();
+    maybeFlash();
+  });
+  send({ type: 'hello' });
+}
 render();
 
 const fs = () => (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.());

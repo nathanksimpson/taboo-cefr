@@ -45,7 +45,19 @@ One student sits facing away from the screen; everyone else can see the word.
 - **Explainer view** (`/taboo.html`) — setup, the card with its taboo words, and the Correct / Taboo / Skip buttons. This is the screen the explaining student holds or sits at.
 - **Class view** (`/class.html`) — open it with the **⧉ Class view** button and drag that window to the projector. It shows the team, a big countdown ring, the turn tally, flashes for Correct / TABOO / Skip, and the scoreboard. It never shows the card while a turn is running.
 
-Both windows must be in the **same browser on the same computer** — they sync instantly with no server.
+Both windows must be in the **same browser on the same computer** — they sync instantly with no server. For other devices, use an online room (below).
+
+### Playing online (phones, or players in different places)
+
+Press **🌐 Online → Start online room** on the Taboo screen. You get a 4-letter room code; players open **/join** (there's a link on the home page), type the code and their name, and pick a team.
+
+- **In class:** keep the Taboo screen and Class view on the projector. Each turn, the next player on the team explains — the card shows on *their* phone with Correct / Taboo / Skip buttons. The Class view shows the join code between turns.
+- **Apart (e.g. on a video call):** everyone joins from their own device. The explainer and the other teams see the card (the other teams get a big **Taboo!** buzzer); the guessing team only sees the timer. If you're playing too, set **This screen is → Player on …** so your screen hides the card when your team guesses.
+- **Big screen on another device:** `/class.html?room=CODE`, or pick it from the team picker.
+- Change who explains on the *Up next* screen. Reloading or a phone going to sleep rejoins automatically.
+- The teacher's screen still runs the game (decks, scores, timer), so keep it open. Rooms are cleared 3 days after everyone leaves; **Close room** ends one straight away.
+
+The room is a small Worker + Durable Object in `src/worker.js` (free plan is fine). It never sees the deck, and it removes the card from what it sends to anyone who shouldn't see it.
 
 ### Setup options
 - Pick any mix of card sets: A1, A2, B1, B2, C1, C2 and **My cards**
@@ -77,7 +89,7 @@ To change the built-in decks, edit `public/js/cards.js` (one card per line: `wor
 
 ## Deploying to Cloudflare
 
-This is an assets-only Worker (see `wrangler.jsonc`) — no server code.
+The static files are served as assets; `src/worker.js` only handles `/api/*` for online rooms (one Durable Object per room — see `wrangler.jsonc`).
 
 **Option A — connected to GitHub (auto-deploys on every push)**
 1. Push this repo to GitHub.
