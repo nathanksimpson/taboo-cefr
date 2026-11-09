@@ -60,6 +60,18 @@ const K = {
 };
 export const GAME_KEY = K.game;
 
+/** Taboo words must be single words. Returns a message for the first phrase found, or ''. */
+export function phraseProblem(taboo) {
+  const bad = taboo.find((t) => /\s/.test(t));
+  return bad ? `Taboo words must be single words — “${bad}” is a phrase. Separate words with commas.` : '';
+}
+/** Wire a taboo input so it explains the single-word rule as you type. */
+export function singleWordInput(input) {
+  const check = () => input.setCustomValidity(phraseProblem(input.value.split(',').map((s) => s.trim()).filter(Boolean)));
+  input.addEventListener('input', check);
+  return check;
+}
+
 function load(key, fallback) {
   try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
 }

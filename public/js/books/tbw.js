@@ -66,7 +66,7 @@ curly: hair, wavy, straight
 hair: head, long, short
 orange: color, fruit, juice
 pink: color, girl, red
-straight: line, curly, not bent
+straight: line, curly, bent
 uncle: aunt, dad, family
 white: color, snow, milk
 # Unit 5 Snacks
@@ -79,11 +79,11 @@ popcorn: movie, corn, butter
 butter cookies: butter, cookies, sweet
 candies: sweet, sugar, lollipop
 chocolate chip cookies: chocolate, cookies, chips
-mint ice cream: mint, green, ice cream
+mint ice cream: mint, green, cone
 potato chips: potato, chips, salty
 sandwiches: bread, ham, lunch
-snacks: chips, eat, between meals
-vanilla ice cream: vanilla, white, ice cream
+snacks: chips, eat, cookies
+vanilla ice cream: vanilla, white, cone
 # Unit 6 Birthday Invitation
 house: home, live, family
 ice rink: ice, skate, cold
@@ -91,11 +91,11 @@ park: trees, play, slide
 pool: swim, water, summer
 restaurant: eat, food, waiter
 theater: movie, play, seats
-January: month, first, new year
+January: month, first, winter
 February: month, second, Valentine's
 March: month, third, spring
 April: month, fourth, spring
-May: month, fifth, Children's Day
+May: month, fifth, spring
 June: month, sixth, summer
 July: month, seventh, summer
 August: month, eighth, summer
@@ -146,9 +146,9 @@ wall: room, paint, house
 jungle gym: climb, playground, bars
 merry-go-round: spin, around, playground
 monkey bars: hang, climb, monkey
-seesaw: up, down, two people
+seesaw: up, down, playground
 slide: down, playground, slip
-swing: playground, back and forth, sit
+swing: playground, push, sit
 bar: metal, hold, long
 climb up: up, climb, high
 hang: hold, hands, down
@@ -159,7 +159,7 @@ upside down: head, down, flip
 # Unit 2 Morning Routine
 brush my teeth: teeth, toothbrush, toothpaste
 eat breakfast: breakfast, morning, eat
-get dressed: clothes, put on, wear
+get dressed: clothes, wear, shirt
 get up: bed, wake, morning
 take a class: class, learn, lesson
 walk to school: walk, school, feet
@@ -171,7 +171,7 @@ meet my friend: friend, meet, see
 dream: sleep, night, wish
 drone: fly, camera, remote
 guitar: music, strings, play
-hobby: free time, like, fun
+hobby: fun, like, weekend
 pet: dog, cat, animal
 tent: camping, sleep, outside
 apartment: building, home, live
@@ -183,8 +183,8 @@ town: city, small, village
 # Unit 4 My Favorite Things
 calm: quiet, relaxed, peaceful
 cool: awesome, great, cold
-excited: happy, can't wait, wow
-handsome: good-looking, man, cool
+excited: happy, wow, fun
+handsome: pretty, man, cool
 happy: smile, glad, sad
 pretty: beautiful, cute, nice
 art: draw, paint, picture
@@ -216,7 +216,7 @@ having no friends: alone, lonely, friends
 homework: school, study, teacher
 losing a game: lose, game, win
 loud music: music, loud, noisy
-school holiday: holiday, no school, vacation
+school holiday: holiday, vacation, break
 # Unit 6 At the Fair
 buy some snacks: buy, snacks, money
 drive a bumper car: bump, car, drive
@@ -228,7 +228,7 @@ balloon: air, pop, party
 churros: sugar, long, fried
 cool off: cold, cool, hot
 cotton candy: pink, sweet, fluffy
-Ferris wheel: big wheel, ride, high
+Ferris wheel: wheel, ride, high
 hear: ears, listen, sound
 remember: forget, memory, think
 roller coaster: ride, fast, scary
@@ -252,13 +252,13 @@ drawing: draw, pencil, picture
 singing: sing, song, voice
 sports: soccer, play, game
 writing: write, pen, pencil
-brave: not scared, hero, strong
+brave: fearless, hero, strong
 caring: kind, help, love
 clever: smart, brain, think
 cry: tears, sad, eyes
 giggle: laugh, small, funny
-laugh: funny, ha ha, smile
-polite: please, thank you, nice
+laugh: funny, haha, smile
+polite: please, thanks, nice
 quiet: loud, silent, shh
 baseball: bat, ball, hit
 golf: ball, club, hole
@@ -285,7 +285,7 @@ write songs: songs, write, music
 # Unit 2 Tastes of Food
 fresh: new, clean, old
 salty: salt, chips, taste
-savory: taste, not sweet, delicious
+savory: taste, salty, delicious
 sour: lemon, taste, face
 spicy: hot, pepper, kimchi
 sweet: sugar, candy, taste
@@ -304,15 +304,15 @@ go to sleep: sleep, bed, night
 have dinner: dinner, eat, evening
 have lunch: lunch, eat, noon
 take classes: class, learn, lesson
-wake up: morning, open eyes, bed
+wake up: morning, eyes, bed
 write a diary: diary, write, day
 at night: dark, moon, sleep
-come home: home, back, after school
+come home: home, back, school
 do my homework: homework, study, teacher
 eat breakfast: breakfast, morning, eat
 in the afternoon: lunch, after, sun
 in the evening: dinner, night, sunset
-in the morning: wake up, early, breakfast
+in the morning: wake, early, breakfast
 practice the piano: piano, practice, keys
 spend time with family: family, together, time
 take the school bus: bus, school, ride

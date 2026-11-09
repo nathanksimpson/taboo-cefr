@@ -1,6 +1,6 @@
 // Deck builder: make your own named decks from units, single words and new cards.
 import {
-  BOOKS, LEVELS, LEVEL_ORDER, BOOK_BY_ID, SET_LABEL, store, allCards, deckCardIds, wordKey, esc,
+  BOOKS, LEVELS, LEVEL_ORDER, BOOK_BY_ID, SET_LABEL, store, allCards, deckCardIds, wordKey, esc, phraseProblem, singleWordInput,
 } from './core.js';
 
 const HTML = `
@@ -34,7 +34,7 @@ const HTML = `
         <h3>In this deck <span class="bd-count" id="bd-count">0</span></h3>
         <form class="bd-own" id="bd-own">
           <input id="bd-own-word" placeholder="Your own word" maxlength="40" required>
-          <input id="bd-own-taboo" placeholder="3 taboo words, comma-separated" required>
+          <input id="bd-own-taboo" placeholder="3 single taboo words, comma-separated" required>
           <button class="btn primary small">Add</button>
         </form>
         <div class="bd-row bd-row-end">
@@ -162,11 +162,13 @@ function build() {
     store.setCustom(store.getCustom().filter((c) => c.level !== deck.id));
     saveDeck(); render();
   };
+  singleWordInput($('#bd-own-taboo'));
   $('#bd-own').addEventListener('submit', (e) => {
     e.preventDefault();
     const word = $('#bd-own-word').value.trim();
     const taboo = $('#bd-own-taboo').value.split(',').map((x) => x.trim()).filter(Boolean).slice(0, 5);
     if (!word || !taboo.length) return;
+    if (phraseProblem(taboo)) { $('#bd-own-taboo').setCustomValidity(phraseProblem(taboo)); $('#bd-own-taboo').reportValidity(); return; }
     const custom = store.getCustom();
     custom.push({ id: `C:${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`, level: deck.id, word, taboo });
     store.setCustom(custom);

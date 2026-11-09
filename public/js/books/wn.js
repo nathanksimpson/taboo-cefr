@@ -20,11 +20,11 @@ hair: head, long, short
 # Unit 2 My Friend Daisy
 smart: clever, brain, school
 kind: nice, help, friendly
-brave: not scared, hero, strong
+brave: fearless, hero, strong
 funny: laugh, joke, silly
-shy: quiet, nervous, red face
+shy: quiet, nervous, blush
 quiet: loud, silent, shh
-weak: strong, not strong, tired
+weak: strong, tired, muscles
 introduce: name, meet, hello
 tell: say, talk, story
 story: book, read, tell
@@ -111,7 +111,7 @@ get up: bed, wake, morning
 jog with my dad: jog, run, dad
 study math: math, numbers, study
 eat dinner: dinner, eat, night
-busy: lots to do, no time, free
+busy: work, schedule, free
 do my homework: homework, study, teacher
 take a shower: shower, water, wash
 water my plant: plant, water, grow
@@ -143,7 +143,7 @@ take pictures: camera, photo, pictures
 ride a bike: bike, wheels, ride
 blow bubbles: bubbles, blow, soap
 make a campfire: fire, camp, wood
-lie in the sun: sun, lie down, beach
+lie in the sun: sun, relax, beach
 write a letter: letter, write, mail
 play volleyball: volleyball, net, ball
 have a party: party, birthday, fun
@@ -170,7 +170,7 @@ police officer: police, catch, car
 astronaut: space, rocket, moon
 teacher: school, student, class
 firefighter: fire, truck, water
-famous: star, everyone knows, TV
+famous: star, popular, TV
 exercise: sports, gym, run
 grow up: adult, older, big
 future: tomorrow, later, past
@@ -186,7 +186,7 @@ drone: fly, camera, remote
 trophy: win, prize, cup
 game cards: cards, game, play
 racket: tennis, hit, ball
-secret: tell, hide, nobody knows
+secret: tell, hide, nobody
 closet: clothes, door, hang
 soft: hard, pillow, gentle
 top: bottom, high, up
@@ -206,16 +206,16 @@ taste: tongue, eat, flavor
 smell: nose, sniff, flower
 salty: salt, chips, taste
 spicy: hot, pepper, kimchi
-dessert: sweet, after dinner, cake
+dessert: sweet, dinner, cake
 crunchy: chips, sound, crispy
 # Unit 7 Drawing My Feelings
 glad: happy, pleased, smile
 scared: afraid, fear, ghost
 angry: mad, upset, red
 nervous: worried, scared, test
-excited: happy, can't wait, wow
+excited: happy, wow, fun
 sad: cry, unhappy, tears
-neighbor: next door, house, live
+neighbor: nearby, house, live
 noisy: loud, sound, quiet
 kind: nice, help, friendly
 missing: lost, gone, find
@@ -233,7 +233,7 @@ solve a math problem: math, problem, answer
 hallway: hall, walk, door
 shout: yell, loud, voice
 put away: tidy, put, away
-regular: normal, usual, every day
+regular: normal, usual, daily
 ask: question, answer, why
 garage: car, park, house
 take out: trash, out, carry
@@ -271,7 +271,7 @@ toothache: tooth, dentist, pain
 headache: head, pain, hurt
 medicine: sick, pill, doctor
 fever: hot, temperature, sick
-vomited: throw up, sick, stomach
+vomited: puke, sick, stomach
 felt a sharp pain: pain, sharp, hurt
 had a high temperature: fever, hot, temperature
 stayed warm: warm, blanket, cold
@@ -285,7 +285,7 @@ flour: white, bread, bake
 mushrooms: vegetable, brown, forest
 onions: cry, vegetable, smell
 # Unit 4 Back to School
-tease: make fun of, mean, laugh
+tease: bully, mean, laugh
 learn: study, school, teach
 shout: yell, loud, voice
 exercise: sports, gym, run
@@ -304,7 +304,7 @@ lake: water, fish, pond
 cousin: aunt, uncle, family
 take a walk: walk, outside, park
 go fishing: fish, rod, catch
-ride: bike, horse, sit on
+ride: bike, horse, sit
 swim: water, pool, fish
 bumper cars: cars, bump, ride
 collect eggs: eggs, chicken, farm
@@ -340,7 +340,7 @@ heavy: light, lift, weight
 pretty: beautiful, cute, nice
 small: big, little, tiny
 strong: muscles, weak, lift
-light: heavy, not heavy, bright
+light: heavy, bright, feather
 softer: soft, hard, more
 cool: awesome, great, cold
 toy: play, kids, fun
@@ -369,13 +369,13 @@ soccer field: soccer, grass, goal
 water park: water, slides, swim
 party: birthday, fun, friends
 invitation: invite, card, party
-wear: clothes, put on, dress
+wear: clothes, dress, shoes
 skate: skates, ice, wheels
 dance: music, move, party
-snack: chips, eat, between meals
+snack: chips, eat, cookies
 drink: water, juice, cup
 make cookies: bake, cookies, oven
 umbrella: rain, wet, open
-have dessert: dessert, sweet, after dinner
+have dessert: dessert, sweet, dinner
 ` },
 ];

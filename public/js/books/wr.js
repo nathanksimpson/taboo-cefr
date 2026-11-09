@@ -20,8 +20,8 @@ short hair: hair, short, boy
 ice cream: cold, sweet, cone
 muffins: bake, cake, small
 cookies: bake, sweet, snack
-looks: face, see, look like
-dislike: don't like, hate, like
+looks: face, see, appearance
+dislike: hate, like, yuck
 glasses: eyes, see, wear
 music: songs, listen, sing
 television: TV, watch, show
@@ -31,7 +31,7 @@ awesome: great, cool, wow
 # Lesson 3
 work: job, office, money
 do homework: homework, study, teacher
-help: help out, assist, kind
+help: assist, kind, support
 tired: sleepy, yawn, bed
 wash the dishes: dishes, wash, sink
 sleep: bed, night, tired
@@ -59,14 +59,14 @@ cake: birthday, sweet, candles
 candles: fire, birthday, cake
 balloons: air, pop, party
 presents: gifts, birthday, box
-greedy: want more, share, selfish
+greedy: more, share, selfish
 nothing: zero, empty, none
 games: play, win, fun
 decorations: party, pretty, hang
 pizza: cheese, slice, Italy
 wonderful: great, amazing, awesome
 # Lesson 6
-plain: simple, no pattern, one color
+plain: simple, boring, pattern
 striped: stripes, lines, zebra
 cap: hat, head, baseball
 headband: hair, head, band
@@ -82,22 +82,22 @@ smell: nose, sniff, flower
 taste: tongue, eat, flavor
 beautiful: pretty, nice, lovely
 awful: terrible, bad, yuck
-wake up: morning, open eyes, bed
+wake up: morning, eyes, bed
 yummy: delicious, tasty, good
 sweet: sugar, candy, taste
 fresh: new, clean, old
 tasty: yummy, delicious, good
-everywhere: all places, every, where
+everywhere: all, around, anywhere
 # Lesson 8
 be back from school: back, school, home
-find: look for, lost, search
+find: seek, lost, search
 problem: trouble, solve, wrong
 solution: answer, solve, problem
 call: phone, ring, talk
 wait for: wait, stay, line
 ask for directions: directions, way, lost
 take a bus: bus, ride, stop
-look for a telephone: phone, look for, call
+look for a telephone: phone, search, call
 cell phone: phone, call, mobile
 money: pay, cash, won
 # Lesson 9
@@ -106,20 +106,20 @@ library: books, read, quiet
 hospital: doctor, nurse, sick
 park: trees, play, slide
 supermarket: food, buy, store
-convenience store: GS25, snacks, 24 hours
+convenience store: GS25, CU, snacks
 bus stop: bus, wait, sign
 restaurant: eat, food, waiter
 playground: slide, swing, play
 subway station: subway, train, underground
 # Lesson 10
 vacation: holiday, trip, travel
-journal: diary, write, every day
+journal: diary, write, daily
 play games: games, play, win
 watch movies: movie, cinema, watch
 pool: swim, water, summer
 swim: water, pool, fish
 camp: tent, outside, fire
-amusement park: rides, roller coaster, fun
+amusement park: rides, rollercoaster, fun
 # Lesson 11
 have a race: race, run, fast
 finish: end, done, start
@@ -146,7 +146,7 @@ fly: sky, wings, airplane
 space shuttle: space, rocket, astronaut
 spacesuit: astronaut, space, wear
 work: job, office, money
-wear: clothes, put on, dress
+wear: clothes, dress, shoes
 doctor: hospital, sick, nurse
 white coat: doctor, white, coat
 hospital: doctor, nurse, sick
@@ -157,7 +157,7 @@ airplane: fly, airport, sky
 sunglasses: sun, eyes, dark
 uniform: clothes, same, school
 travel around the world: travel, world, countries
-become: turn into, be, change
+become: change, be, grow
 # Lesson 2 We Are Planning Our Vacation
 plan: think, before, schedule
 stay home: home, inside, house
@@ -174,7 +174,7 @@ cheap: expensive, money, price
 close: near, far, open
 far: near, close, away
 mall: shops, buy, big
-amusement park: rides, roller coaster, fun
+amusement park: rides, rollercoaster, fun
 library: books, read, quiet
 arcade: games, machines, coins
 # Lesson 3 My Terrible Day
@@ -211,7 +211,7 @@ take medicine: medicine, pill, sick
 fruit: apple, banana, healthy
 # Lesson 5 The Past and Now
 typewriter: type, old, letters
-crowded: many people, busy, full
+crowded: people, busy, full
 spend: money, use, time
 miss: sad, gone, want
 world: earth, countries, globe
@@ -219,7 +219,7 @@ clean: dirty, wash, tidy
 dirty: clean, messy, mud
 better: good, worse, best
 worse: bad, better, worst
-busy: lots to do, no time, free
+busy: work, schedule, free
 sew: needle, thread, clothes
 fix: repair, broken, tool
 make money: money, work, job
@@ -233,11 +233,11 @@ smooth: soft, flat, rough
 bumpy: rough, smooth, road
 seeds: plant, small, inside
 flesh: inside, eat, apple
-healthy: good for you, sick, vegetables
+healthy: vegetables, sick, exercise
 dark: black, night, light
 light: dark, bright, heavy
 large: big, small, huge
-tiny: very small, little, big
+tiny: small, little, big
 thick: thin, fat, wide
 thin: fat, skinny, slim
 bitter: taste, coffee, sweet
@@ -252,19 +252,19 @@ send: mail, letter, give
 live happily ever after: happy, end, story
 bark: dog, woof, sound
 talk: speak, say, mouth
-long, long ago: story, past, once upon a time
+long, long ago: story, past, once
 fairy: wings, magic, small
 genie: lamp, wish, magic
 witch: magic, broom, hat
 hero: save, brave, superhero
 save: help, rescue, money
-help: help out, assist, kind
+help: assist, kind, support
 shout: yell, loud, voice
 scream: loud, scared, yell
 explain: tell, why, understand
 turn into: change, become, magic
 # Lesson 8 Who Are the Most Important People?
-important: big deal, matter, special
+important: serious, matter, special
 kind: nice, help, friendly
 funny: laugh, joke, silly
 care about: care, love, important
@@ -275,13 +275,13 @@ lonely: alone, sad, friends
 upset: sad, angry, unhappy
 scared: afraid, fear, ghost
 comfort: hug, help, sad
-protect: keep safe, guard, help
+protect: safe, guard, help
 promise: keep, word, pinky
 keep promise: promise, keep, word
 trust: believe, friend, honest
 have a problem: problem, trouble, wrong
 # Lesson 9
-holiday: vacation, no school, Christmas
+holiday: vacation, break, Christmas
 caring: kind, help, love
 awesome: great, cool, wow
 wonderful: great, amazing, awesome

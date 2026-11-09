@@ -107,7 +107,7 @@ seeds: plant, small, grow
 inside: outside, house, in
 outside: inside, park, out
 plus: add, math, number
-minus: take away, math, number
+minus: subtract, math, number
 equals: math, answer, same
 ` },
 
@@ -134,7 +134,7 @@ hat: head, wear, cap
 tie: shirt, dad, neck
 # School Link 1
 clothes: wear, shirt, pants
-wear: clothes, put on, dress
+wear: clothes, dress, shoes
 special day: birthday, party, holiday
 # Unit 3 Lunch Time
 chicken: meat, fried, bird
@@ -169,7 +169,7 @@ fireplace: fire, warm, wood
 lamp: light, bright, table
 plant: green, grow, pot
 rug: floor, soft, carpet
-sofa: sit, couch, living room
+sofa: sit, couch, comfortable
 TV: watch, show, screen
 window: glass, open, look
 # Unit 6 In My Room
@@ -270,10 +270,10 @@ milk: white, cow, drink
 
 { id: 'HIH3', name: 'Hand in Hand 3', short: 'HiH 3', level: 'Yellow', raw: `
 # Unit 1 In the Morning
-in the morning: wake up, breakfast, early
+in the morning: wake, breakfast, early
 brush her teeth: teeth, toothbrush, toothpaste
 eat breakfast: morning, food, eat
-get dressed: clothes, put on, wear
+get dressed: clothes, wear, shirt
 get up: bed, morning, wake
 go to school: school, bus, walk
 wash his face: face, water, soap
@@ -310,7 +310,7 @@ post office: letter, mail, stamp
 restaurant: eat, food, waiter
 shopping mall: shop, buy, stores
 # Unit 6 Going Shopping
-across from: street, other side, front
+across from: street, opposite, front
 behind: back, front, hide
 between: middle, two, center
 in front of: behind, before, back
@@ -370,14 +370,14 @@ at home: house, family, home
 at school: school, teacher, class
 at work: job, office, work
 airport: airplane, fly, travel
-amusement park: rides, roller coaster, fun
+amusement park: rides, rollercoaster, fun
 beach: sand, sea, swim
 movie theater: movie, popcorn, screen
 museum: old, art, visit
 zoo: animals, lion, visit
 # Unit 12 Different Weather
 cloudy: clouds, gray, sky
-foggy: fog, can't see, gray
+foggy: fog, cloudy, gray
 rainy: rain, umbrella, wet
 snowy: snow, white, cold
 sunny: sun, hot, bright

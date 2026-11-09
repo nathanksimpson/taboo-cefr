@@ -19,7 +19,7 @@ thirteen: number, twelve, fourteen
 twelve: number, eleven, clock
 # Unit 2 My Family
 awesome: great, cool, wow
-brave: not scared, hero, strong
+brave: fearless, hero, strong
 brother: boy, family, sister
 creative: ideas, art, make
 dad: father, family, mom
@@ -28,11 +28,11 @@ grandma: old, mom, grandpa
 grandpa: old, dad, grandma
 kind: nice, help, friendly
 mom: mother, family, dad
-polite: please, thank you, nice
+polite: please, thanks, nice
 sister: girl, family, brother
 smart: clever, brain, school
 sporty: sports, run, soccer
-talkative: talk, a lot, chatty
+talkative: talk, chatty, loud
 # Unit 3 My Monster
 arm: hand, body, leg
 cry: tears, sad, eyes
@@ -52,7 +52,7 @@ tail: dog, back, wag
 big: small, large, huge
 candy bar: chocolate, sweet, snack
 cupcake: cake, small, sweet
-find: look for, lost, search
+find: seek, lost, search
 headphones: music, ears, listen
 ice cream cone: cold, sweet, cone
 long: short, hair, snake
@@ -122,7 +122,7 @@ play the piano: piano, keys, music
 skip: jump, hop, walk
 speak English: English, language, talk
 speak Spanish: Spanish, Spain, language
-stand on one’s hands: upside down, hands, legs up
+stand on one’s hands: handstand, upside, legs
 throw: ball, catch, hand
 use chopsticks: chopsticks, eat, Korea
 whistle: lips, blow, sound
@@ -144,7 +144,7 @@ music room: music, sing, room
 plant vegetables: garden, grow, seeds
 read books: books, read, story
 use the lockers: locker, put, key
-welcome: hello, come in, new
+welcome: hello, enter, new
 # Unit 2 My Style
 boots: shoes, rain, feet
 bright: light, color, sun
@@ -162,7 +162,7 @@ sweater: warm, winter, wool
 sweatshirt: warm, hoodie, top
 tank top: summer, shirt, arms
 # Unit 3 My Special Recipe
-add: put in, more, plus
+add: mix, more, plus
 boil: hot, water, cook
 cereal: milk, breakfast, bowl
 cut: knife, scissors, pieces
@@ -183,7 +183,7 @@ chocolate: brown, sweet, candy
 dance: music, move, party
 eat cake: cake, birthday, eat
 fried chicken: chicken, fried, KFC
-have a sleepover: sleep, friend's house, night
+have a sleepover: sleep, friend, night
 have fun: fun, enjoy, play
 juice: drink, orange, fruit
 pizza: cheese, slice, Italy
@@ -205,7 +205,7 @@ pond: water, ducks, small
 skate: skates, ice, wheels
 slide: playground, down, slip
 study: learn, books, homework
-swing: playground, back and forth, sit
+swing: playground, push, sit
 take a nap: sleep, short, rest
 talk to one’s friends: talk, friends, chat
 # Unit 6 Last Winter
@@ -255,7 +255,7 @@ theater: movie, play, seats
 traffic light: red, green, stop
 turn left: left, right, turn
 turn right: right, left, turn
-walk past: walk, past, go by
+walk past: walk, past, pass
 ` },
 
 { id: 'EW3', name: 'Early Writers 3', short: 'EW 3', level: 'Navy', raw: `
@@ -266,7 +266,7 @@ be messy: messy, clean, room
 drink sodas: soda, Coke, drink
 goal: dream, want, soccer
 inline skate: skates, wheels, roll
-junk food: unhealthy, chips, fast food
+junk food: unhealthy, chips, hamburger
 knit: wool, needles, scarf
 make new friends: friends, new, meet
 make pizza: pizza, cheese, cook
@@ -284,11 +284,11 @@ jump and kick: jump, kick, legs
 karate: kick, belt, fight
 mountain biking: bike, mountain, ride
 pass the ball: ball, teammate, throw
-ping pong: table tennis, paddle, ball
+ping pong: tennis, paddle, ball
 punch: hit, fist, boxing
 score points: points, goal, win
 stop goals: goalie, stop, soccer
-stretch: arms, legs, warm up
+stretch: arms, legs, exercise
 teammate: team, friend, play
 # Unit 3 My Animal Report
 antelope: deer, fast, Africa
@@ -334,7 +334,7 @@ recycle: reuse, bottles, bin
 reuse things: again, use, recycle
 stop using chemicals: chemicals, stop, dangerous
 stop using plastic: plastic, stop, bags
-take care of: care, look after, help
+take care of: care, help, baby
 take the subway: subway, train, underground
 use less energy: energy, electricity, less
 use less water: water, less, save
@@ -378,12 +378,12 @@ get a gift: present, gift, birthday
 have a restaurant: restaurant, food, own
 keep my secrets: secret, tell, promise
 listen to me: listen, ears, hear
-lucky: luck, four-leaf clover, chance
+lucky: luck, clover, chance
 make me laugh: laugh, funny, jokes
 match: same, pair, game
 share with me: share, give, together
 take a break: rest, stop, relax
-take care of me: care, help, look after
+take care of me: care, help, mom
 trophy: win, prize, cup
 ` },
 ];

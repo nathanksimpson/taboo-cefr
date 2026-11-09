@@ -3,7 +3,7 @@
 //   Deck view   — open a deck to add cards, search, and switch cards on or off.
 // Your own decks open in the deck builder (pick units, words, or write your own cards).
 import {
-  SETS, SET_NAME, SET_GROUP, SET_INFO, LEVEL_ORDER, LEVEL_COLORS, BOOK_BY_ID, store, allCards, esc, isDeck, deckCardIds,
+  SETS, SET_NAME, SET_GROUP, SET_INFO, LEVEL_ORDER, LEVEL_COLORS, BOOK_BY_ID, store, allCards, esc, isDeck, deckCardIds, phraseProblem, singleWordInput,
 } from './core.js';
 import { openDeckBuilder } from './builder.js';
 
@@ -25,7 +25,7 @@ const HTML = `
   <div id="cm-deck-view" class="cm-view" hidden>
     <form id="add-form" class="add-form">
       <input id="add-word" placeholder="New word" required maxlength="40" aria-label="New word">
-      <input id="add-taboo" placeholder="Taboo / clue words, separated by commas" required aria-label="Taboo / clue words, separated by commas">
+      <input id="add-taboo" placeholder="Taboo words (one word each), separated by commas" required aria-label="Taboo / clue words, separated by commas">
       <button class="btn primary small">Add card</button>
     </form>
     <div class="cm-tools">
@@ -172,11 +172,13 @@ function build() {
   $('#cm-include-all').onclick = () => bulk(true);
   $('#cm-exclude-all').onclick = () => bulk(false);
 
+  singleWordInput($('#add-taboo'));
   $('#add-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const word = $('#add-word').value.trim();
     const taboo = $('#add-taboo').value.split(',').map((s) => s.trim()).filter(Boolean);
     if (!word || !taboo.length || !open) return;
+    if (phraseProblem(taboo)) { $('#add-taboo').setCustomValidity(phraseProblem(taboo)); $('#add-taboo').reportValidity(); return; }
     const custom = store.getCustom();
     custom.push({ id: `C:${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`, level: open, word, taboo });
     store.setCustom(custom);

@@ -96,7 +96,7 @@ milk: cow, white, drink
 money: pay, buy, cash
 monkey: banana, animal, zoo
 moon: night, sky, stars
-morning: breakfast, wake up, early
+morning: breakfast, sunrise, early
 mother: mom, father, parent
 mountain: high, climb, hill
 mouth: teeth, eat, talk
@@ -252,7 +252,7 @@ headache: head, pain, hurt
 helmet: head, bike, safety
 hero: superhero, save, brave
 highway: road, car, fast
-hobby: free time, interest, like
+hobby: fun, interest, like
 honey: bee, sweet, yellow
 hotel: room, stay, travel
 hungry: food, eat, stomach
@@ -282,13 +282,13 @@ mirror: reflection, look, face
 mistake: wrong, error, correct
 museum: art, history, visit
 musician: music, play, instrument
-neighbor: next door, live, house
+neighbor: nearby, live, house
 nervous: worried, scared, anxious
 newspaper: news, read, daily
 nurse: hospital, doctor, help
 ocean: sea, water, Pacific
 passport: travel, country, airport
-penguin: bird, ice, black and white
+penguin: bird, ice, Antarctica
 pharmacy: medicine, drugstore, pills
 photographer: camera, picture, photo
 pilot: plane, fly, airport
@@ -378,7 +378,7 @@ comfortable: relaxed, soft, chair
 commute: travel, work, daily
 complain: unhappy, problem, angry
 confident: sure, believe, shy
-congratulations: well done, success, happy
+congratulations: success, happy, celebrate
 conversation: talk, chat, speak
 crime: police, illegal, criminal
 culture: tradition, country, customs
@@ -391,7 +391,7 @@ democracy: vote, people, government
 departure: leave, arrival, flight
 destination: place, travel, arrive
 detective: police, crime, investigate
-diet: food, eat, lose weight
+diet: food, eat, weight
 disappointed: sad, expect, hope
 discount: price, cheaper, sale
 documentary: film, real, TV
@@ -402,7 +402,7 @@ emergency: urgent, 119, help
 employee: work, boss, company
 environment: nature, earth, pollution
 equipment: tools, gear, machine
-escape: run away, free, prison
+escape: run, free, prison
 experiment: science, test, lab
 expert: knowledge, specialist, professional
 explore: discover, adventure, travel
@@ -424,7 +424,7 @@ guest: visitor, invite, host
 habit: always, routine, do
 headline: newspaper, title, news
 healthy: fit, good, sick
-hometown: born, city, grew up
+hometown: born, city, childhood
 honest: truth, lie, true
 housework: clean, chores, home
 identity: who, ID, self
@@ -433,7 +433,7 @@ immigrant: country, move, foreign
 independent: alone, free, rely
 injury: hurt, accident, wound
 insect: bug, small, ant
-instructions: how to, steps, manual
+instructions: steps, manual, directions
 interview: job, questions, ask
 invention: invent, new, create
 jealous: envy, want, angry
@@ -471,7 +471,7 @@ relationship: connection, couple, friends
 reservation: book, restaurant, hotel
 respect: honor, polite, admire
 responsible: duty, blame, care
-retire: stop working, old, job
+retire: pension, old, job
 review: check, again, opinion
 rumor: gossip, story, true
 salary: pay, money, job
@@ -480,12 +480,12 @@ scholarship: university, money, study
 scientist: science, lab, research
 selfish: share, me, generous
 sightseeing: tourist, visit, travel
-skill: ability, good at, talent
+skill: ability, talent, practice
 souvenir: gift, trip, buy
 stranger: unknown, person, know
 stress: pressure, worried, tired
 success: achieve, win, fail
-superstition: luck, belief, black cat
+superstition: luck, belief, magic
 survive: live, alive, die
 technology: computer, machine, science
 teenager: young, thirteen, adult
@@ -525,7 +525,7 @@ bias: unfair, prejudice, opinion
 bribe: money, illegal, police
 burden: heavy, carry, responsibility
 campaign: election, politics, advertise
-censorship: ban, media, free speech
+censorship: ban, media, speech
 chaos: disorder, mess, confusion
 clue: hint, detective, mystery
 commitment: promise, dedicate, loyal
@@ -543,7 +543,7 @@ curfew: home, time, night
 cynical: doubt, negative, trust
 debt: owe, money, loan
 deceive: lie, trick, cheat
-dedication: commitment, hard work, devote
+dedication: commitment, effort, devote
 defendant: court, accused, trial
 deforestation: trees, cut, forest
 demonstration: protest, march, show
@@ -558,7 +558,7 @@ drought: water, dry, rain
 eccentric: strange, odd, weird
 efficient: waste, effective, quick
 elderly: old, people, age
-eliminate: remove, get rid, out
+eliminate: remove, delete, out
 empathy: feel, understand, others
 endangered: species, extinct, animal
 entrepreneur: business, start, company
@@ -599,7 +599,7 @@ jury: court, trial, decide
 landmark: famous, building, place
 legacy: leave, after, death
 lottery: ticket, win, money
-mature: adult, grown up, old
+mature: adult, grown, old
 mediator: between, solve, conflict
 minimalism: less, simple, few
 misunderstanding: confusion, wrong, meaning
@@ -619,15 +619,15 @@ plagiarism: copy, essay, cheat
 podcast: listen, audio, episode
 precaution: safe, prevent, before
 prejudice: bias, judge, unfair
-procrastinate: delay, later, put off
+procrastinate: delay, later, postpone
 propaganda: government, information, spread
 prosperity: rich, wealth, success
 protest: demonstrate, against, march
 reluctant: unwilling, hesitate, want
 renewable energy: solar, wind, power
 reputation: name, known, opinion
-resilience: recover, strong, bounce back
-revenge: get back, hurt, angry
+resilience: recover, strong, tough
+revenge: payback, hurt, angry
 ridiculous: silly, crazy, stupid
 routine: daily, habit, same
 sarcasm: irony, mean, opposite
@@ -645,7 +645,7 @@ teamwork: together, group, cooperate
 temptation: want, resist, tempting
 tolerance: accept, different, patient
 tragedy: sad, disaster, death
-transparent: see through, clear, honest
+transparent: glass, clear, honest
 unanimous: everyone, agree, vote
 urban: city, rural, town
 vaccine: injection, virus, disease
@@ -681,10 +681,10 @@ bureaucracy: government, rules, paperwork
 catalyst: cause, change, speed
 charisma: charm, attractive, personality
 circumvent: avoid, around, rules
-coherent: logical, clear, make sense
+coherent: logical, clear, sense
 collaboration: work, together, team
 complacent: satisfied, lazy, comfortable
-condescending: superior, talk down, patronize
+condescending: superior, arrogant, patronize
 consensus: agree, everyone, general
 contemplate: think, consider, deeply
 credibility: believe, trust, reliable
@@ -692,12 +692,12 @@ cultivate: grow, develop, farm
 debris: pieces, broken, rubbish
 deficit: shortfall, money, less
 degrade: lower, worse, quality
-deliberate: intentional, purpose, on purpose
+deliberate: intentional, purpose, planned
 detrimental: harmful, bad, damage
 devastated: destroyed, upset, shocked
 dilapidated: old, broken, ruined
 discrepancy: difference, inconsistency, numbers
-disposable: throw away, single use, plastic
+disposable: trash, plastic, temporary
 dissent: disagree, protest, opposition
 dormant: sleeping, inactive, volcano
 eloquent: speak, persuasive, fluent
@@ -708,16 +708,16 @@ enigma: mystery, puzzle, strange
 entitlement: deserve, right, expect
 ephemeral: short, temporary, brief
 euphemism: polite, word, instead
-exploit: use, unfair, take advantage
+exploit: use, unfair, abuse
 facade: front, building, fake
 fallacy: false, belief, logic
 feasible: possible, practical, doable
-fluctuate: change, up and down, vary
+fluctuate: change, vary, unstable
 frugal: save, money, cheap
 gentrification: neighborhood, rich, rent
 grievance: complaint, unfair, wrong
 hierarchy: rank, level, order
-hindsight: after, past, looking back
+hindsight: after, past, regret
 hypothetical: imagine, if, theory
 idealistic: perfect, dream, realistic
 immersion: language, deep, surround
@@ -732,7 +732,7 @@ insight: understand, deep, idea
 intrinsic: natural, inside, essential
 irrational: logic, reason, unreasonable
 jeopardy: danger, risk, threat
-juxtaposition: side by side, contrast, compare
+juxtaposition: contrast, compare, together
 legitimate: legal, valid, real
 lenient: soft, strict, punish
 liability: legal, responsible, risk
@@ -747,16 +747,16 @@ narcissist: self, love, ego
 negligence: careless, fail, duty
 notorious: famous, bad, known
 novice: beginner, new, inexperienced
-obsolete: old, outdated, no longer
+obsolete: old, outdated, replaced
 ominous: threatening, bad, sign
 oppression: unfair, control, cruel
 outspoken: honest, say, opinion
-overwhelmed: too much, stress, emotion
+overwhelmed: stress, emotion, flooded
 paramount: important, most, supreme
 passive: active, voice, inactive
 patronizing: superior, condescending, talk
 perception: see, view, think
-perseverance: continue, keep going, give up
+perseverance: continue, effort, quit
 pragmatic: practical, realistic, sensible
 precedent: before, example, first
 prestige: respect, status, admire
@@ -767,7 +767,7 @@ proponent: support, advocate, argue
 provocative: provoke, react, controversial
 quarantine: isolate, disease, separate
 rapport: relationship, understand, connection
-reconcile: make up, friends, again
+reconcile: forgive, friends, again
 redundant: unnecessary, job, extra
 refugee: flee, war, country
 reinforce: strengthen, support, stronger
@@ -780,23 +780,23 @@ segregation: separate, race, divide
 sentiment: feeling, emotion, opinion
 solidarity: unity, support, together
 speculate: guess, theory, think
-stagnant: still, not moving, growth
+stagnant: still, motionless, growth
 stigma: shame, negative, disgrace
 subsidy: government, money, support
 subtle: slight, obvious, small
 superficial: shallow, surface, deep
 surveillance: watch, camera, spy
-synthetic: artificial, man-made, natural
+synthetic: artificial, fake, natural
 tangible: touch, real, physical
 tedious: boring, long, repetitive
-tenacious: determined, persistent, give up
+tenacious: determined, persistent, stubborn
 threshold: door, level, limit
 trivial: unimportant, small, minor
 turmoil: chaos, confusion, trouble
 unprecedented: never, before, first
 utopia: perfect, society, ideal
 validate: confirm, prove, check
-vindicate: prove right, clear, innocent
+vindicate: justify, clear, innocent
 volatile: unstable, change, explosive
 whistleblower: report, secret, company
 xenophobia: fear, foreign, hate
@@ -821,7 +821,7 @@ aplomb: confidence, poise, calm
 apprehensive: worried, anxious, nervous
 assiduous: hardworking, careful, diligent
 audacious: bold, daring, brave
-beleaguered: troubled, under pressure, attack
+beleaguered: troubled, pressure, attack
 benevolent: kind, generous, good
 bequeath: will, leave, death
 bolster: support, strengthen, boost
@@ -887,7 +887,7 @@ hubris: pride, arrogance, excessive
 iconoclast: challenge, beliefs, rebel
 idiosyncrasy: quirk, habit, peculiar
 impetuous: rash, impulsive, hasty
-incongruous: out of place, mismatch, strange
+incongruous: odd, mismatch, strange
 inexorable: unstoppable, relentless, inevitable
 ingenuous: innocent, naive, trusting
 innocuous: harmless, safe, inoffensive
@@ -897,7 +897,7 @@ inveterate: habitual, long, confirmed
 irrevocable: permanent, change, final
 juggernaut: unstoppable, powerful, huge
 kowtow: bow, submit, obey
-laconic: brief, few words, terse
+laconic: brief, quiet, terse
 lethargic: sluggish, tired, slow
 loquacious: talkative, chatty, words
 lugubrious: gloomy, sad, mournful
@@ -919,7 +919,7 @@ obfuscate: confuse, unclear, hide
 obsequious: servile, flatter, eager
 onerous: burdensome, heavy, difficult
 opulent: luxurious, rich, wealthy
-ostentatious: show off, flashy, pretentious
+ostentatious: showy, flashy, pretentious
 panacea: cure, all, solution
 paragon: model, perfect, example
 parsimonious: stingy, cheap, money
@@ -945,7 +945,7 @@ repudiate: reject, deny, refuse
 reticent: reserved, quiet, silent
 sagacious: wise, judgment, shrewd
 salient: important, noticeable, main
-sanctimonious: self-righteous, holier, moral
+sanctimonious: smug, hypocritical, moral
 schadenfreude: pleasure, misfortune, German
 scrupulous: careful, honest, thorough
 serendipity: chance, luck, happy
@@ -955,7 +955,7 @@ spurious: false, fake, invalid
 squander: waste, money, opportunity
 staunch: loyal, firm, committed
 stoic: endure, emotion, calm
-sycophant: flatterer, suck up, yes-man
+sycophant: flatterer, toady, praise
 taciturn: quiet, silent, reserved
 tenuous: weak, thin, slight
 truculent: aggressive, defiant, hostile
