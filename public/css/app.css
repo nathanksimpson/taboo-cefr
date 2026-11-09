@@ -79,7 +79,7 @@ a.brand { color: inherit; text-decoration: none; }
 .topbar .btn { padding: .5rem .95rem; }
 
 /* ---------- setup ---------- */
-.setup { max-width: 940px; margin: 0 auto; padding: clamp(18px, 3vw, 32px) clamp(16px, 3vw, 32px) 0; display: grid; gap: 1.25rem; }
+.setup { max-width: 940px; margin: 0 auto; padding: clamp(18px, 3vw, 32px) clamp(16px, 3vw, 32px) 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
 .banner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; background: var(--yellow); border: var(--line); box-shadow: var(--pop); padding: .8rem 1rem; border-radius: var(--radius); font-weight: 750; }
 .panel { background: var(--paper); border: var(--line); border-radius: var(--radius); padding: 1.25rem clamp(16px, 2.5vw, 1.6rem); box-shadow: 6px 6px 0 var(--ink); }
 .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
@@ -113,7 +113,7 @@ a.brand { color: inherit; text-decoration: none; }
 .stepper .btn { width: 36px; height: 36px; padding: 0; }
 
 /* team rows + colour picker */
-.team-names { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .7rem; }
+.team-names { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: .7rem; }
 .team-name { position: relative; display: flex; align-items: center; gap: .55rem; background: var(--soft); border: var(--line); border-radius: 14px; padding: .3rem .3rem .3rem .4rem; }
 .team-name:focus-within { background: var(--paper); }
 .team-name input { border: 0; background: transparent; padding: .5rem .3rem; width: 100%; font-weight: 750; outline: none; min-width: 0; }
@@ -135,7 +135,7 @@ a.brand { color: inherit; text-decoration: none; }
 .seg button { border: 2px solid transparent; background: transparent; padding: .4rem .85rem; border-radius: 999px; cursor: pointer; font-weight: 750; font-size: .92rem; color: var(--muted); }
 .seg button:hover { color: var(--ink); }
 .seg button.on { background: var(--yellow); color: var(--ink); border-color: var(--ink); }
-.inline { display: inline-flex; align-items: center; gap: .45rem; font-weight: 600; }
+.inline { display: inline-flex; align-items: center; flex-wrap: wrap; gap: .45rem; font-weight: 600; max-width: 100%; }
 .inline input, .add-form input, .add-form select, .cm-tools input { border: var(--line); background: var(--paper); border-radius: 12px; padding: .45rem .65rem; font-weight: 650; }
 .inline input { width: 5.4rem; }
 .check { display: flex; align-items: center; gap: .6rem; cursor: pointer; width: 100%; font-weight: 600; }
@@ -654,3 +654,61 @@ body.player { min-height: 100vh; min-height: 100dvh; display: flex; flex-directi
 .ro-is-dragging, .ro-is-dragging * { cursor: grabbing !important; }
 .ro-landed { animation: ro-land .3s ease; }
 @keyframes ro-land { from { transform: scale(1.08); background: var(--yellow); } to { transform: none; } }
+
+
+/* =========================================================
+   UI review fixes
+   ========================================================= */
+/* chips: long names get an ellipsis instead of spilling */
+.team-chip { max-width: 100%; min-width: 0; }
+.chip-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.check > span { min-width: 0; }
+
+/* join page: the form must never be wider than the screen */
+.join-main { grid-template-columns: minmax(0, 1fr); }
+.join-panel { justify-self: center; box-sizing: border-box; }
+.field input, .field select { width: 100%; min-width: 0; box-sizing: border-box; }
+.code-input { padding: .55rem .4rem !important; letter-spacing: .35em; text-indent: .35em; }
+.join-panel .btn.big { width: 100%; }
+
+/* player's device */
+#me-chip { display: inline-flex; max-width: 42vw; }
+.player .topbar { gap: .6rem; }
+.player .topbar-actions { min-width: 0; flex-wrap: nowrap; }
+@media (min-width: 561px) { .player .playbar { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); } }
+@media (max-width: 560px) { .player .playbar { grid-template-columns: minmax(0, 1fr) auto; } }
+.player .playbar-actions { justify-self: end; }
+.player-room.big-clock .playbar .timer { visibility: hidden; }
+@media (max-width: 560px) { .player-room.big-clock .playbar .timer { display: none; } }
+.player .rv-word { min-width: 0; overflow-wrap: anywhere; }
+.picker .field.narrow { margin-top: .4rem; }
+
+/* online panel: who this screen is */
+.role-pick { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr)); gap: .5rem; }
+.role-pick button { display: flex; align-items: center; gap: .6rem; text-align: left; border: var(--line); border-radius: 14px; background: var(--soft); padding: .55rem .75rem; cursor: pointer; color: var(--ink); min-width: 0; }
+.role-pick button > span:last-child { display: grid; min-width: 0; }
+.role-pick b { font: 800 1rem var(--display); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.role-pick small { color: var(--muted); font-weight: 650; font-size: .8rem; }
+.role-pick button:hover { background: var(--paper); }
+.role-pick button.on { background: var(--yellow); box-shadow: var(--pop-sm); }
+.role-pick .role-ico { font-size: 1.15rem; line-height: 1; }
+.role-pick .dot { flex: none; }
+
+/* online panel: team boxes — names never push the box wider */
+.ro-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); }
+.ro-team { min-width: 0; }
+.ro-team ul { grid-template-columns: minmax(0, 1fr); }
+.ro-player { min-width: 0; }
+.ro-rename { text-overflow: ellipsis; }
+.ro-none { border-left-width: 2.5px; }
+.room-meta .btn { white-space: nowrap; }
+@media (max-width: 560px) {
+  .online-body { padding: 1rem .9rem; }
+  .room-code-box { padding: .9rem; }
+  .room-meta { grid-template-columns: 1fr 1fr; width: 100%; justify-items: stretch; }
+  .room-meta .net-status { grid-column: 1 / -1; justify-self: start; }
+  .room-meta .btn { text-align: center; white-space: normal; }
+  .ro-bar .ro-title { flex-basis: 100%; }
+  .online-body .rule { gap: .5rem; }
+}
+.role-pick { width: 100%; align-self: stretch; }

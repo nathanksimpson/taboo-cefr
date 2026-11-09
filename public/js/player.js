@@ -127,14 +127,15 @@ function render() {
   if ($('#room').hidden) return;
   renderNet();
   const t = myTeam();
-  $('#me-chip').innerHTML = `${t ? `<span class="dot" style="background:${t.color}"></span>` : ''}${esc(me.name)}${t ? ` · ${esc(t.name)}` : ''}`;
+  $('#me-chip').innerHTML = `${t ? `<span class="dot" style="background:${t.color}"></span>` : ''}<span class="chip-text">${esc(me.name)}</span>`;
+  $('#me-chip').title = t ? `${me.name} · ${t.name} — tap to change` : 'Pick a team';
   $('#sound-btn').textContent = guest.sound === false ? '🔇' : '🔊';
 
   const team = curTeam();
   const live = game?.teams && game.phase !== 'over';
   document.body.style.setProperty('--team', team?.color || t?.color || 'var(--coral)');
   $('#cur-team').hidden = !live;
-  if (live) $('#cur-team').innerHTML = `<span class="dot" style="background:${team.color}"></span>${esc(team.name)}`;
+  if (live) $('#cur-team').innerHTML = `<span class="dot" style="background:${team.color}"></span><span class="chip-text">${esc(team.name)}</span>`;
   $('#timer').hidden = !live;
   $('#room').dataset.phase = game?.phase || 'lobby';
   renderTimer();
@@ -143,6 +144,8 @@ function render() {
   if (picking || !t) st.innerHTML = pickerHtml();
   else if (!game?.teams) st.innerHTML = lobbyHtml();
   else st.innerHTML = phaseHtml();
+  // The guessing screen has its own big timer, so hide the small one.
+  $('#room').classList.toggle('big-clock', !!document.getElementById('big-timer'));
 
   $('#pscores').hidden = !game?.teams;
   if (game?.teams) {

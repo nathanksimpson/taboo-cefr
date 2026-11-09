@@ -212,7 +212,7 @@ function endGame() {
 function render() {
   if (!game) return;
   const team = game.teams[game.current];
-  $('#cur-team').innerHTML = `<span class="dot" style="background:${team.color}"></span>${esc(team.name)}`;
+  $("#cur-team").innerHTML = `<span class="dot" style="background:${team.color}"></span><span class="chip-text">${esc(team.name)}</span>`;
   $('#cur-team').style.setProperty('--team', team.color);
   $('#pause').hidden = !['playing', 'paused'].includes(game.phase);
   $('#pause').textContent = game.phase === 'paused' ? 'Resume' : 'Pause';

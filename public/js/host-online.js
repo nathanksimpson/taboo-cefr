@@ -190,14 +190,14 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi }
       </div>
       ${error ? `<p class="online-err">${esc(error)}</p>` : ''}
       <div class="rule"><div class="rule-label">This screen is</div><div class="rule-body">
-        <div class="seg" id="host-role">
-          <button data-role="teacher" class="${net.hostRole === 'teacher' ? 'on' : ''}">Teacher (sees every card)</button>
-          ${teams.map((t) => `<button data-role="${t.id}" class="${net.hostRole === t.id ? 'on' : ''}">Player on ${esc(t.name)}</button>`).join('')}
+        <div class="role-pick" id="host-role" role="radiogroup">
+          <button role="radio" aria-checked="${net.hostRole === 'teacher'}" data-role="teacher" class="${net.hostRole === 'teacher' ? 'on' : ''}"><span class="role-ico">👀</span><span><b>Teacher</b><small>Sees every card</small></span></button>
+          ${teams.map((t) => `<button role="radio" aria-checked="${net.hostRole === t.id}" data-role="${t.id}" class="${net.hostRole === t.id ? 'on' : ''}" style="--team:${t.color}"><span class="dot" style="background:${t.color}"></span><span><b>${esc(t.name)}</b><small>I'm playing on this team</small></span></button>`).join('')}
         </div>
-        <p class="hint">Pick a team if you're playing too — then this screen hides the card when your team is guessing.</p>
+        <p class="hint">If you play on a team, this screen hides the card while your team is guessing.</p>
       </div></div>
       <div class="rule"><div class="rule-label">Other teams</div><div class="rule-body">
-        <label class="check"><input type="checkbox" id="watchers" ${net.watchers ? 'checked' : ''}> See the card and can call <b>Taboo!</b> from their device</label>
+        <label class="check"><input type="checkbox" id="watchers" ${net.watchers ? 'checked' : ''}> <span>See the card and can call <b>Taboo!</b> from their device</span></label>
       </div></div>
       <div class="ro-bar">
         <h3 class="ro-title">Teams <span class="muted">${players.length} player${players.length === 1 ? '' : 's'}${screens ? ` · ${screens} big screen${screens > 1 ? 's' : ''}` : ''}</span></h3>
