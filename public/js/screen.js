@@ -24,7 +24,11 @@ if (!/^[A-Z]{4}$/.test(code)) {
   history.replaceState(null, '', `?room=${code}`);
 }
 const pid = `scr${Array.from(crypto.getRandomValues(new Uint8Array(10)), (b) => 'abcdefghijklmnopqrstuvwxyz0123456789'[b % 36]).join('')}`;
-const joinUrl = `${location.host}${location.pathname.replace(/screen\.html$/, '')}online.html`;
+// Where players join. Resolved against this page's address, so it's right whether the screen
+// is at /screen.html or (as Cloudflare serves it) /screen.
+const joinPage = new URL('online.html', location.href);
+const joinUrl = `${joinPage.host}${joinPage.pathname}`;
+const joinLink = () => new URL(`online.html?room=${code}`, location.href).href;
 
 let state = null;
 let online = new Set();
@@ -101,9 +105,19 @@ function render() {
   document.title = $('#scr-brand').textContent;
   $('#code-chip').textContent = code;
   $('#sound').textContent = sounds ? t('scrSoundOn') : t('scrSoundOff');
-  if (!s) { $('#scr').innerHTML = `<div class="scr-lobby"><p class="eyebrow">${esc(t('connecting'))}</p></div>`; return; }
+  // Before the room answers, still show how to join: the code (and QR) is known already.
+  if (!s) { $('#scr').innerHTML = `<div class="scr-lobby">${joinBlock()}<div class="scr-side"><p class="scr-hint">${esc(t('connecting'))}</p></div></div>`; return; }
   if (s.phase === 'lobby') return renderLobby();
   renderGame();
+}
+
+function joinBlock() {
+  return `<div class="scr-join">
+      <p class="eyebrow">${esc(t('scrJoin'))}</p>
+      <div class="scr-qr">${qrSvg(joinLink(), { title: `Scan to join room ${code}` })}</div>
+      <div class="scr-code">${esc(code)}</div>
+      <p class="scr-url">${esc(t('scrJoinAt', { url: joinUrl }))}</p>
+    </div>`;
 }
 
 function renderLobby() {
@@ -116,12 +130,7 @@ function renderLobby() {
   }).join('');
   $('#scoreboard').hidden = true;
   $('#scr').innerHTML = `<div class="scr-lobby">
-    <div class="scr-join">
-      <p class="eyebrow">${esc(t('scrJoin'))}</p>
-      <div class="scr-qr">${qrSvg(`${location.origin}${location.pathname.replace(/screen\.html$/, '')}online.html?room=${code}`, { title: `Scan to join room ${code}` })}</div>
-      <div class="scr-code">${esc(code)}</div>
-      <p class="scr-url">${esc(t('scrJoinAt', { url: joinUrl }))}</p>
-    </div>
+    ${joinBlock()}
     <div class="scr-side">
       <p class="scr-game"><b>${esc(T[ui].titleOf[st.style])}</b> · ${esc(st.mode === 'coop' ? t('coop') : `${t('teams')} (${st.teamCount})`)} · ${st.seconds}s · ${esc(st.rounds ? `${t('rounds')} ${st.rounds}` : t('roundOpen', { n: '∞' }))}</p>
       <h2>${esc(t('players'))} · ${s.order.length}</h2>
