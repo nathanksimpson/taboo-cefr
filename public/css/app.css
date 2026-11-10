@@ -916,3 +916,9 @@ html[data-edition="nadu"] .room-qr-big .qr { width: min(260px, 70vw); border: 3p
 /* the code must fit beside the QR on the Nadu main screen */
 html[data-edition="nadu"] .scr-join { min-width: 0; overflow: hidden; }
 html[data-edition="nadu"] .scr-code { font-size: clamp(3rem, min(8.5vw, 15vh), 9rem); letter-spacing: .1em; margin: .1em 0; }
+/* Nadu main screen: pick the game before anyone joins */
+html[data-edition="nadu"] .scr-pick { display: grid; gap: .5rem; margin-bottom: 1rem; }
+html[data-edition="nadu"] .scr-pick h2 { margin: 0; }
+html[data-edition="nadu"] .scr-pick-seg { display: flex; flex-wrap: wrap; }
+html[data-edition="nadu"] .scr-pick-seg button { flex: 1 1 auto; font: 800 clamp(1rem, 1.6vw, 1.4rem) var(--display); padding: .55em .9em; }
+html[data-edition="nadu"] .scr-pick .muted { margin: 0; }

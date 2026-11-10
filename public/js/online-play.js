@@ -348,9 +348,13 @@ let timeUpSent = false;
 function onState(s) {
   const was = prev;
   state = s;
-  if (createdHere && pendingStyle && s.phase === 'lobby') {
+  // A room made here from a game's link, or one I'm first into (a main screen's QR carries the game):
+  // set it to that game once. Anyone can change it afterwards.
+  const firstIn = s.order.length === 1 && s.order[0] === pid;
+  if ((createdHere || firstIn) && pendingStyle && s.phase === 'lobby') {
     if (s.settings.style !== pendingStyle) send({ type: 'settings', patch: { style: pendingStyle } });
     createdHere = false;
+    pendingStyle = null;
   }
   translateStatic();
   if (s.phase === 'lobby') { show('lobby'); renderLobby(); prev = { phase: s.phase, logLen: 0 }; return; }

@@ -52,7 +52,7 @@ export const T = {
     scrSoundOn: '🔊 Sound on', scrSoundOff: '🔇 Sound off', scrDontLook: "{seat}, don't look at the screen!",
     scrScreens: '📺 Main screen connected', openScreen: '📺 Open main screen',
     useScreen: '📺 Use this device as the main screen', useScreenNote: 'For a TV, projector or laptop everyone can see. Players join on their phones.',
-    scrNoPlayers: 'No players yet', scrTimer: 'Turn timer', scrWords: "This turn's words",
+    scrNoPlayers: 'No players yet', scrPick: 'Which game?', scrPickHint: 'Pick a game, then scan the code.', scrChangeOnPhone: 'Change the game on any phone.', scrTimer: 'Turn timer', scrWords: "This turn's words",
   },
   ko: {
     title: '타부 온라인', eyebrow: 'English · 한국어', sub: '각자 자기 기기로 함께 하는 타부 게임',
@@ -106,6 +106,6 @@ export const T = {
     scrSoundOn: '🔊 소리 켜짐', scrSoundOff: '🔇 소리 꺼짐', scrDontLook: '{seat} 님, 화면을 보지 마세요!',
     scrScreens: '📺 메인 화면 연결됨', openScreen: '📺 메인 화면 열기',
     useScreen: '📺 이 기기를 메인 화면으로 쓰기', useScreenNote: '모두가 볼 수 있는 TV, 프로젝터, 노트북용이에요. 플레이어는 휴대폰으로 입장해요.',
-    scrNoPlayers: '아직 플레이어가 없어요', scrTimer: '제한 시간', scrWords: '이번 턴 단어',
+    scrNoPlayers: '아직 플레이어가 없어요', scrPick: '어떤 게임?', scrPickHint: '게임을 고른 뒤 코드를 스캔하세요.', scrChangeOnPhone: '게임은 아무 휴대폰에서나 바꿀 수 있어요.', scrTimer: '제한 시간', scrWords: '이번 턴 단어',
   },
 };

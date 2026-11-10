@@ -28,7 +28,14 @@ const pid = `scr${Array.from(crypto.getRandomValues(new Uint8Array(10)), (b) => 
 // is at /screen.html or (as Cloudflare serves it) /screen.
 const joinPage = new URL('online.html', location.href);
 const joinUrl = `${joinPage.host}${joinPage.pathname}`;
-const joinLink = () => new URL(`online.html?room=${code}`, location.href).href;
+// The game this screen is for, until someone joins: it rides along in the QR link, and the first
+// player in sets the room to it. After that, players change the game on their phones.
+const GAMES = ['taboo', 'hotseat', 'whoami'];
+const MARK = { taboo: 'T', hotseat: 'H', whoami: '?' };
+let wantGame = GAMES.includes(params.get('game')) ? params.get('game') : 'taboo';
+const nobodyYet = () => !state || state.order.length === 0;
+const gameNow = () => (nobodyYet() ? wantGame : state.settings.style);
+const joinLink = () => new URL(`online.html?room=${code}${nobodyYet() ? `&game=${wantGame}` : ''}`, location.href).href;
 
 let state = null;
 let online = new Set();
@@ -53,6 +60,13 @@ function connect() {
   ws.onclose = () => { setConn(t('reconnecting')); retry += 1; setTimeout(connect, Math.min(8000, 500 * 2 ** retry)); };
   setInterval(() => { if (ws.readyState === 1) ws.send(JSON.stringify({ type: 'ping' })); }, 25000);
 }
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-game]');
+  if (!b || !nobodyYet()) return;
+  wantGame = b.dataset.game;
+  history.replaceState(null, '', `?room=${code}&game=${wantGame}`);
+  render();
+});
 function setConn(text) { $('#conn').hidden = !text; $('#conn').textContent = text; }
 const serverNow = () => Date.now() + offset;
 
@@ -101,7 +115,8 @@ function onState(s) {
 function render() {
   const s = state;
   document.documentElement.lang = ui;
-  $('#scr-brand').textContent = s ? `${T[ui].titleOf[s.settings.style]} · ${t('scrTitle')}` : t('scrTitle');
+  $('#scr-brand').textContent = `${T[ui].titleOf[gameNow()]} · ${t('scrTitle')}`;
+  document.querySelector('.brand-mark').textContent = MARK[gameNow()];
   document.title = $('#scr-brand').textContent;
   $('#code-chip').textContent = code;
   $('#sound').textContent = sounds ? t('scrSoundOn') : t('scrSoundOff');
@@ -109,6 +124,12 @@ function render() {
   if (!s) { $('#scr').innerHTML = `<div class="scr-lobby">${joinBlock()}<div class="scr-side"><p class="scr-hint">${esc(t('connecting'))}</p></div></div>`; return; }
   if (s.phase === 'lobby') return renderLobby();
   renderGame();
+}
+
+function pickerHtml() {
+  return `<div class="scr-pick"><h2>${esc(t('scrPick'))}</h2>
+    <div class="seg scr-pick-seg" role="radiogroup">${GAMES.map((g) => `<button type="button" role="radio" data-game="${g}" aria-checked="${g === wantGame}" class="${g === wantGame ? 'on' : ''}">${esc(T[ui].titleOf[g].replace(/ Online$| 온라인$/, ''))}</button>`).join('')}</div>
+    <p class="muted">${esc(t('scrPickHint'))}</p></div>`;
 }
 
 function joinBlock() {
@@ -132,7 +153,8 @@ function renderLobby() {
   $('#scr').innerHTML = `<div class="scr-lobby">
     ${joinBlock()}
     <div class="scr-side">
-      <p class="scr-game"><b>${esc(T[ui].titleOf[st.style])}</b> · ${esc(st.mode === 'coop' ? t('coop') : `${t('teams')} (${st.teamCount})`)} · ${st.seconds}s · ${esc(st.rounds ? `${t('rounds')} ${st.rounds}` : t('roundOpen', { n: '∞' }))}</p>
+      ${nobodyYet() ? pickerHtml() : `<p class="scr-hint">${esc(t('scrChangeOnPhone'))}</p>`}
+      <p class="scr-game"><b>${esc(T[ui].titleOf[gameNow()])}</b> · ${esc(st.mode === 'coop' ? t('coop') : `${t('teams')} (${st.teamCount})`)} · ${st.seconds}s · ${esc(st.rounds ? `${t('rounds')} ${st.rounds}` : t('roundOpen', { n: '∞' }))}</p>
       <h2>${esc(t('players'))} · ${s.order.length}</h2>
       ${players ? `<ul class="scr-players">${players}</ul>` : `<p class="muted">${esc(t('scrNoPlayers'))}</p>`}
       <p class="scr-hint">${esc(s.order.length < 2 ? t('scrWaiting') : t('scrStartHint'))}</p>
