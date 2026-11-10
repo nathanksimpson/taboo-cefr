@@ -47,6 +47,15 @@ One student sits facing away from the screen; everyone else can see the word.
 
 Both windows must be in the **same browser on the same computer** — they sync instantly with no server. For other devices, use an online room (below).
 
+### Editions (Classroom and Nadu)
+
+One codebase, two front doors. `public/js/edition.js` holds each edition's name, colours and features, and the site picks one from the address it's opened at:
+
+- **Classroom** (default, e.g. `taboo-cefr.…workers.dev`) — for teaching: CEFR levels plus the Simson book decks.
+- **Nadu** (any address containing "nadu") — for playing at home: no book decks, its own name and colours. Nadu-Taboo's extras (Korean decks, choosing your language, co-op) move into this edition in later steps.
+
+Preview the other edition on any address with `?edition=nadu` or `?edition=classroom` (it sticks for that tab). To add a difference between editions, add a feature to both in `edition.js` and check `EDITION.features.…` where it matters.
+
 ### Playing online (phones, or players in different places)
 
 Press **🌐 Online → Start online room** on the Taboo screen. You get a 4-letter room code; players open **/join** (there's a link on the home page), type the code and their name, and pick a team.

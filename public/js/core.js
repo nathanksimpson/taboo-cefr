@@ -1,8 +1,12 @@
 // Shared data, storage and sync used by both windows.
 import { RAW } from './cards.js';
-import { BOOKS, LEVEL_ORDER, LEVEL_COLORS } from './books/index.js';
+import { BOOKS as ALL_BOOKS, LEVEL_ORDER as ALL_LEVEL_ORDER, LEVEL_COLORS } from './books/index.js';
+import { EDITION } from './edition.js';
 
-export { BOOKS, LEVEL_ORDER, LEVEL_COLORS };
+// The Simson book decks belong to the Classroom edition only.
+const BOOKS = EDITION.features.bookDecks ? ALL_BOOKS : [];
+const LEVEL_ORDER = EDITION.features.bookDecks ? ALL_LEVEL_ORDER : [];
+export { BOOKS, LEVEL_ORDER, LEVEL_COLORS, EDITION };
 export const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 export const BOOK_IDS = BOOKS.map((b) => b.id);
 export const BOOK_BY_ID = Object.fromEntries(BOOKS.map((b) => [b.id, b]));

@@ -727,3 +727,7 @@ body.player { min-height: 100vh; min-height: 100dvh; display: flex; flex-directi
 .game-online { position: relative; z-index: 1; }
 .net-dot.taken { background: var(--skip); }
 .game-tile:nth-child(2).has-actions { background: #d8cfff; }
+
+/* Nadu edition: its own colours (Classroom keeps the defaults above) */
+[data-edition="nadu"] .topbar { background: var(--teal, #27c3c9); }
+[data-edition="nadu"] body.hotseat .topbar, [data-edition="nadu"] .hotseat .topbar { background: #8fd3a6; }
