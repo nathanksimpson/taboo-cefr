@@ -1,5 +1,5 @@
 import { store, onMessage, send, scoreTurn, sum, remainingMs, fmtTime, esc, skipRuleText, shortcutKey } from './core.js';
-import { connect, loadJSON, ROOM_KEY, cleanCode, shortJoinHost } from './online.js';
+import { connect, loadJSON, ROOM_KEY, cleanCode, joinCardHtml } from './online.js';
 
 // class.html?room=ABCD — a big screen on another device, following an online room.
 const room = cleanCode(new URLSearchParams(location.search).get('room') || '');
@@ -17,16 +17,16 @@ function scoreboard() {
     <span class="cv-score-name">${esc(t.name)}</span><b>${t.score}</b></div>`).join('')}</div>`;
 }
 
-function joinBanner() {
+function joinBanner(compact = true) {
   const code = room || game?.online?.code || (!game ? loadJSON(ROOM_KEY, null)?.code : null);
   if (!code || roomError) return '';
-  return `<p class="cv-join">Join on your phone: <b>${esc(shortJoinHost())}</b> · code <b class="cv-code">${esc(code)}</b></p>`;
+  return joinCardHtml(code, { compact });
 }
 
 function render() {
   document.body.dataset.phase = game?.phase || 'waiting';
   if (!game || !game.teams) {
-    cv.innerHTML = `<div class="cv-center"><div class="cv-logo">Taboo</div><p class="cv-sub">${roomError ? esc(roomError) : 'Waiting for the teacher to start the game…'}</p>${joinBanner()}</div>`;
+    cv.innerHTML = `<div class="cv-center"><div class="cv-logo">Taboo</div><p class="cv-sub">${roomError ? esc(roomError) : 'Waiting for the teacher to start the game…'}</p>${joinBanner(false)}</div>`;
     return;
   }
   const team = game.teams[game.current];

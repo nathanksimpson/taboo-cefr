@@ -1,6 +1,7 @@
 // Host side of an online room: the Online dialog on the teacher's screen,
 // the connection, the player list and what gets sent to the room.
 import { connect, createRoom, loadJSON, saveJSON, ROOM_KEY, joinUrl, shortJoinHost } from './online.js';
+import { qrSvg } from './qr.js';
 import { esc } from './core.js';
 
 const HTML = `
@@ -201,6 +202,7 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi, 
     const unassigned = players.filter((p) => !teams.some((t) => t.id === p.team));
     body.innerHTML = `
       <div class="room-code-box">
+        <div class="room-qr" title="Students can scan this to join">${qrSvg(joinUrl(saved.code), { title: `Scan to join room ${saved.code}` })}</div>
         <div>
           <p class="eyebrow">Room code</p>
           <div class="room-code">${esc(saved.code)}</div>

@@ -1,3 +1,5 @@
+import { qrSvg } from './qr.js';
+
 // Online rooms: a WebSocket to /api/rooms/CODE/ws with automatic reconnect
 // and a clock offset, so every device counts down to the same moment.
 
@@ -14,6 +16,14 @@ export function saveJSON(key, val) {
 export const cleanCode = (s) => String(s || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
 export const joinUrl = (code) => `${location.origin}/join?room=${code}`;
 export const shortJoinHost = () => `${location.host}/join`;
+
+/** Big-screen join card: a QR code to scan, plus the address and code to type. */
+export function joinCardHtml(code, { compact = false } = {}) {
+  const c = cleanCode(code);
+  const host = String(shortJoinHost()).replace(/[&<>"]/g, '');
+  return `<div class="cv-join ${compact ? 'compact' : ''}">${qrSvg(joinUrl(c), { title: `Scan to join room ${c}` })}
+    <div class="cv-join-text"><span class="cv-join-scan">📷 Scan to join</span><span>or go to <b>${host}</b></span><span>code <b class="cv-code">${c}</b></span></div></div>`;
+}
 
 export async function createRoom() {
   const res = await fetch('/api/rooms', { method: 'POST' });

@@ -287,6 +287,15 @@ $('#players').addEventListener('click', (e) => {
 });
 $('#start').onclick = () => send({ type: 'start' });
 $('#leave').onclick = leaveRoom;
+$('#show-qr').onclick = async () => {
+  const box = $('#room-qr');
+  box.hidden = !box.hidden;
+  $('#show-qr').setAttribute('aria-expanded', String(!box.hidden));
+  if (!box.hidden) {
+    const { qrSvg } = await import('./qr.js');
+    box.innerHTML = qrSvg(`${location.origin}${location.pathname}?room=${state.code}`, { title: `Scan to join room ${state.code}` });
+  }
+};
 $('#copy-link').onclick = async () => {
   const link = `${location.origin}${location.pathname}?room=${state.code}`;
   try { await navigator.clipboard.writeText(link); } catch { prompt('Invite link', link); return; }

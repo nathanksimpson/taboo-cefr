@@ -892,3 +892,27 @@ html[data-edition="nadu"] .ro-ghost { position: fixed; left: 0; top: 0; z-index:
 @media (max-width: 560px) {
   html[data-edition="nadu"] .online-body { padding: 1rem .9rem; }
 }
+
+/* =========================================================
+   QR codes to join
+   ========================================================= */
+.qr { display: block; width: 100%; height: auto; border-radius: 6px; }
+/* big screen (Class view): QR + how to join */
+.cv-join { display: flex; align-items: center; gap: 1.1em; text-align: left; border-radius: 1.2em; padding: .7em 1.3em .7em .7em; margin-top: 2vh; }
+.cv-join .qr { width: clamp(150px, 26vmin, 340px); flex: none; }
+.cv-join-text { display: grid; gap: .35em; font-size: clamp(1rem, 2.6vmin, 1.8rem); }
+.cv-join-scan { font: 800 1.35em var(--display); }
+.cv-join.compact { padding: .45em 1em .45em .45em; gap: .8em; margin-top: 1.2vh; }
+.cv-join.compact .qr { width: clamp(90px, 13vmin, 170px); }
+.cv-join.compact .cv-join-text { font-size: clamp(.9rem, 2vmin, 1.4rem); gap: .2em; }
+.cv-join.compact .cv-join-scan { font-size: 1.15em; }
+/* teacher's Online panel */
+.room-qr { width: 132px; flex: none; border: 3px solid var(--ink); border-radius: 12px; overflow: hidden; background: #fff; }
+@media (max-width: 560px) { .room-qr { width: 104px; } }
+/* Nadu: main screen lobby, and the room panel on a phone */
+html[data-edition="nadu"] .scr-qr { width: clamp(160px, 24vmin, 300px); margin: .6em auto .2em; border: 4px solid var(--ink); border-radius: 18px; overflow: hidden; }
+html[data-edition="nadu"] .room-qr-big { flex-basis: 100%; display: flex; justify-content: center; }
+html[data-edition="nadu"] .room-qr-big .qr { width: min(260px, 70vw); border: 3px solid var(--ink); border-radius: 14px; }
+/* the code must fit beside the QR on the Nadu main screen */
+html[data-edition="nadu"] .scr-join { min-width: 0; overflow: hidden; }
+html[data-edition="nadu"] .scr-code { font-size: clamp(3rem, min(8.5vw, 15vh), 9rem); letter-spacing: .1em; margin: .1em 0; }

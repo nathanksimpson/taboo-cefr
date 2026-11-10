@@ -2,6 +2,7 @@
 // It watches only — players act on their own phones. It never shows the Taboo card
 // (the guessers can see it), but does show the Hot Seat / Who Am I? word, like the class view.
 import { SET_LABEL, TEAM_COLORS, esc, sfx } from './core.js';
+import { qrSvg } from './qr.js';
 import { teamCount, teamName, members, explainerOf, seatFor, turnLimit, scoreLog } from './online-engine.js';
 import { T } from './online-text.js';
 import { getLang, onLangChange } from './i18n.js';
@@ -117,6 +118,7 @@ function renderLobby() {
   $('#scr').innerHTML = `<div class="scr-lobby">
     <div class="scr-join">
       <p class="eyebrow">${esc(t('scrJoin'))}</p>
+      <div class="scr-qr">${qrSvg(`${location.origin}${location.pathname.replace(/screen\.html$/, '')}online.html?room=${code}`, { title: `Scan to join room ${code}` })}</div>
       <div class="scr-code">${esc(code)}</div>
       <p class="scr-url">${esc(t('scrJoinAt', { url: joinUrl }))}</p>
     </div>

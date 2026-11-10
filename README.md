@@ -83,6 +83,7 @@ Press **🌐 Online → Start online room** on the Taboo screen. You get a 4-let
 - **Apart (e.g. on a video call):** everyone joins from their own device. The explainer and the other teams see the card (the other teams get a big **Taboo!** buzzer); the guessing team only sees the timer. If you're playing too, set **This screen is → Player on …** so your screen hides the card when your team guesses.
 - **Big screen on another device:** `/class.html?room=CODE`, or pick it from the team picker.
 - **Edit teams in the Online panel** at any time, even mid-game: drag players between teams (or select one and press ← →), type over a team's name to rename it, 🔀 **Shuffle players** into even teams, and add or remove teams between games. Players' devices update straight away.
+- **QR code to join:** the Class view (and Hot Seat's) shows a QR code next to the room code, big while waiting and smaller between turns; the Online panel has one too. Students scan it with the phone camera and land on the join page with the code filled in. Nadu's main screen shows one, and **📷 QR code** in a Nadu room shows it on your phone. The codes are drawn by `js/qr.js` in the browser — no outside service.
 - Change who explains on the *Up next* screen. Reloading or a phone going to sleep rejoins automatically.
 - The teacher's screen still runs the game (decks, scores, timer), so keep it open. Rooms are cleared 3 days after everyone leaves; **Close room** ends one straight away.
 
