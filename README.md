@@ -71,7 +71,7 @@ Markup for one edition only carries `data-only="classroom"` or `data-only="nadu"
 
 **Deploying:** both Workers build from this repo's `main` branch.
 - `taboo-cefr` uses `wrangler.jsonc` (deploy command `npx wrangler deploy`).
-- `nadu-taboo` uses `wrangler.nadu.jsonc` (deploy command `npx wrangler deploy --config wrangler.nadu.jsonc`, or `npm run deploy:nadu`).
+- `nadu-taboo` uses `sites/nadu/wrangler.jsonc`: in Cloudflare its build has **Root directory** `sites/nadu` and the plain deploy command `npx wrangler deploy` (Cloudflare checks the Worker name against the settings file in the root directory, so each Worker gets its own folder).
 
 Preview the other edition on any address with `?edition=nadu` or `?edition=classroom` (it sticks for that tab). To add a difference between editions, add a feature to both in `edition.js` and check `EDITION.features.…` where it matters.
 

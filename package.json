@@ -8,8 +8,8 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "check": "node scripts/check-cards.mjs",
-    "deploy:nadu": "wrangler deploy --config wrangler.nadu.jsonc",
-    "dev:nadu": "wrangler dev --config wrangler.nadu.jsonc"
+    "deploy:nadu": "cd sites/nadu && wrangler deploy",
+    "dev:nadu": "cd sites/nadu && wrangler dev"
   },
   "devDependencies": {
     "wrangler": "^4"
