@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // The Nadu edition: the same code as wrangler.jsonc, deployed as the "nadu-taboo" Worker.
+  // The site picks the Nadu edition by itself because its address contains "nadu".
+  // Deploy command (Cloudflare → nadu-taboo → Settings → Build): npx wrangler deploy --config wrangler.nadu.jsonc
+  "name": "nadu-taboo",
+  "compatibility_date": "2026-06-01",
+  "main": "src/worker.js",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "durable_objects": {
+    "bindings": [
+      { "name": "ROOMS", "class_name": "Room" },
+      { "name": "NADU_ROOMS", "class_name": "NaduRoom" }
+    ]
+  },
+  // v1 already exists on nadu-taboo (its old "Room" rooms; they expire within 3 days and are
+  // cleared by Room's alarm). v2 adds the room type the Nadu edition uses now.
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["Room"] },
+    { "tag": "v2", "new_sqlite_classes": ["NaduRoom"] }
+  ]
+}

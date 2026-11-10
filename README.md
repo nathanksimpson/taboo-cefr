@@ -69,6 +69,10 @@ One codebase, two front doors. `public/js/edition.js` holds each edition's name,
 
 Markup for one edition only carries `data-only="classroom"` or `data-only="nadu"`; Nadu-only styles at the end of `app.css` are scoped to `html[data-edition="nadu"]`.
 
+**Deploying:** both Workers build from this repo's `main` branch.
+- `taboo-cefr` uses `wrangler.jsonc` (deploy command `npx wrangler deploy`).
+- `nadu-taboo` uses `wrangler.nadu.jsonc` (deploy command `npx wrangler deploy --config wrangler.nadu.jsonc`, or `npm run deploy:nadu`).
+
 Preview the other edition on any address with `?edition=nadu` or `?edition=classroom` (it sticks for that tab). To add a difference between editions, add a feature to both in `edition.js` and check `EDITION.features.…` where it matters.
 
 ### Playing online (phones, or players in different places)
