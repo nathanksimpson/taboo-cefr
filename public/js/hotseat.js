@@ -3,6 +3,7 @@ import {
 } from './core.js';
 import { setupTeams, ensureColors, teamLang, langWarning, teamOwnSets, allSets, teamFilter, ownDecksNote, everyTeamHasCards } from './teams.js';
 import { setupHostOnline } from './host-online.js';
+import { isCoop, coopTeams, trackBest, coopOver, bestChip, setupModeSwitch } from './coop.js';
 import { setupDeckPicker, deckSummary } from './decks.js';
 let renderDecks = () => {};
 const seen = seenStore('hotseat');
@@ -22,7 +23,9 @@ let game = sync.load();
 function saveSettings() { hsSettings.set(settings); renderSetup(); net?.sendLobby(); }
 const clampNum = (v, lo, hi, d) => { const n = parseInt(v, 10); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
 
+let renderMode = null; // co-op switch (set up at boot)
 function renderSetup() {
+  renderMode?.();
   document.querySelectorAll('#style-grid [data-style]').forEach((b) => {
     const on = b.dataset.style === settings.style;
     b.classList.toggle('on', on); b.setAttribute('aria-pressed', on);
@@ -36,7 +39,7 @@ function renderSetup() {
     : '') + langWarning(settings).map((x) => `<br><b>${esc(x)}</b>`).join('');
   $('#start').disabled = n === 0 || !everyTeamHasCards(settings);
   $('#setup-summary').textContent = n
-    ? `${STYLE[settings.style].name} · ${n} cards · ${settings.teams.length} teams · ${settings.seconds}s turns`
+    ? `${STYLE[settings.style].name} · ${n} cards · ${isCoop(settings) ? 'whole class' : `${settings.teams.length} teams`} · ${settings.seconds}s turns`
     : 'Pick at least one card set to start.';
 
 
@@ -88,7 +91,8 @@ $('#start').onclick = () => {
     kind: 'hotseat',
     phase: 'ready',
     settings: { ...settings, sets: allSets(settings), teams: undefined },
-    teams: (() => {
+    coop: isCoop(settings),
+    teams: isCoop(settings) ? coopTeams(settings).map((t) => ({ ...t, lang: teamLang(settings, 0) })) : (() => {
       // id stays the same if the order is shuffled, so players online keep their team.
       const t = settings.teams.map((name, i) => ({ id: i, name: name.trim() || `Team ${i + 1}`, score: 0, color: settings.colors[i], turns: 0, lang: teamLang(settings, i), sets: teamOwnSets(settings, i) || undefined }));
       return settings.randomOrder ? shuffle(t) : t;
@@ -113,6 +117,7 @@ const SOUND = { correct: 'correct', pass: 'skip', foul: 'taboo' };
 function pub() {
   if (!game) return;
   game.kind = 'hotseat';
+  trackBest(game, game.settings.style);
   if (game.phase === 'ready') updateSeat();
   game.online = net.active ? { code: net.code } : null;
   sync.publish(game);
@@ -379,7 +384,17 @@ function renderStage() {
       <h2>${esc(team.name)}: <span class="${total < 0 ? 'neg' : ''}">${total >= 0 ? '+' : ''}${total}</span></h2>
       <p class="muted">Fix any mistakes before confirming — tap a symbol to change it.</p>
       <div class="rv-list">${rows || '<p class="muted">No words played this turn.</p>'}</div>
-      <button class="btn primary huge" data-act="confirm">Confirm &amp; next team <kbd>Enter</kbd></button>
+      <button class="btn primary huge" data-act="confirm">${game.coop ? 'Confirm &amp; next turn' : 'Confirm &amp; next team'} <kbd>Enter</kbd></button>
+    </div>`;
+  } else if (game.phase === 'over' && game.coop) {
+    const o = coopOver(game);
+    st.innerHTML = `<div class="ready">
+      <p class="eyebrow">Game over · whole class</p>
+      <h1 class="ready-team">${o.title}</h1>${o.line}
+      <div class="row-btns">
+        <button class="btn ghost" data-act="continue">Keep playing</button>
+        <button class="btn primary" data-act="setup">New game</button>
+      </div>
     </div>`;
   } else if (game.phase === 'over') {
     const ranked = [...game.teams].sort((a, b) => b.score - a.score);
@@ -401,7 +416,7 @@ function renderScores() {
   $('#scoreboard').innerHTML = game.teams.map((t, i) => `<div class="score ${i === game.current && game.phase !== 'over' ? 'cur' : ''}" style="--team:${t.color}">
     <span class="score-name">${esc(t.name)}</span>
     <span class="score-adj"><button data-adj="${i}" data-d="-1" aria-label="Minus one">−</button><b>${t.score}</b><button data-adj="${i}" data-d="1" aria-label="Plus one">+</button></span>
-  </div>`).join('');
+  </div>`).join('') + bestChip(game, game.settings.style);
 }
 
 /* ---------------- events ---------------- */
@@ -493,13 +508,14 @@ const net = setupHostOnline({
   getGame: () => game,
   getTeams: () => {
     if (game && game.phase !== 'over') return game.teams.map((t, i) => ({ id: teamId(i), name: t.name, color: t.color }));
+    if (isCoop(settings)) return coopTeams(settings).map(({ id, name, color }) => ({ id, name, color }));
     ensureColors(settings);
     return settings.teams.map((name, i) => ({ id: i, name: name.trim() || `Team ${i + 1}`, color: settings.colors[i] }));
   },
   onAct: onRemote,
   onChange: () => { if (game) { pub(); if (!$('#play').hidden) render(); } },
   teamsApi: {
-    canResize: () => !game || game.phase === 'over',
+    canResize: () => (!game || game.phase === 'over') && !isCoop(settings),
     rename(id, name) {
       if (id < settings.teams.length) { settings.teams[id] = name; hsSettings.set(settings); renderTeamList(); }
       if (game && game.phase !== 'over') {
@@ -531,5 +547,6 @@ const renderTeamList = setupTeams({
   persist: () => { hsSettings.set(settings); net.sendLobby(); net.render(); },
   onReorder: (order) => net.remap(order),
 });
+renderMode = setupModeSwitch({ settings, save: saveSettings, kind: () => settings.style });
 if (game?.phase === 'playing' && game.endAt <= Date.now()) timeUp();
 renderSetup();

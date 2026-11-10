@@ -8,6 +8,7 @@ let renderDecks = () => {};
 const seen = seenStore('taboo');
 import { openCardManager, cardManagerOpen } from './cardmanager.js';
 import { setupHostOnline } from './host-online.js';
+import { isCoop, coopTeams, trackBest, coopOver, bestChip, setupModeSwitch } from './coop.js';
 
 const $ = (s) => document.querySelector(s);
 let settings = store.getSettings();
@@ -17,7 +18,9 @@ let game = store.getGame();
 
 function saveSettings() { store.setSettings(settings); renderSetup(); net?.sendLobby(); }
 
+let renderMode = null; // co-op switch (set up at boot)
 function renderSetup() {
+  renderMode?.();
   renderDecks();
   const n = activeCards(allSets(settings)).length;
   const unseen = n ? unplayedCount(activeCards(allSets(settings)), seen) : 0;
@@ -26,7 +29,7 @@ function renderSetup() {
     : '') + langWarning(settings).map((x) => `<br><b>${esc(x)}</b>`).join('');
   $('#start').disabled = n === 0 || !everyTeamHasCards(settings);
   $('#setup-summary').textContent = n
-    ? `${n} cards · ${settings.teams.length} teams · ${settings.seconds}s turns`
+    ? `${n} cards · ${isCoop(settings) ? 'whole class' : `${settings.teams.length} teams`} · ${settings.seconds}s turns`
     : 'Pick at least one card set to start.';
 
 
@@ -71,7 +74,8 @@ $('#start').onclick = () => {
   game = {
     phase: 'ready',
     settings: { ...settings, sets: allSets(settings), teams: undefined },
-    teams: (() => {
+    coop: isCoop(settings),
+    teams: isCoop(settings) ? coopTeams(settings).map((t) => ({ ...t, lang: teamLang(settings, 0) })) : (() => {
       // id stays the same if the order is shuffled, so players online keep their team.
       const t = settings.teams.map((name, i) => ({ id: i, name: name.trim() || `Team ${i + 1}`, score: 0, color: settings.colors[i], turns: 0, lang: teamLang(settings, i), sets: teamOwnSets(settings, i) || undefined }));
       return settings.randomOrder ? shuffle(t) : t;
@@ -95,6 +99,7 @@ const play = (name) => { if (game?.settings.sounds) sfx[name](); };
 function pub() {
   if (!game) return;
   game.kind = 'taboo';
+  trackBest(game, 'taboo');
   if (game.phase === 'ready') updateExplainer();
   game.settings.watchers = net.active ? net.watchers : true;
   game.online = net.active ? { code: net.code } : null;
@@ -359,7 +364,17 @@ function renderStage() {
       <h2>${esc(team.name)}: <span class="${total < 0 ? 'neg' : ''}">${total >= 0 ? '+' : ''}${total}</span></h2>
       <p class="muted">${hostExplains() ? '' : `${esc(game.explainerName)} can check this on their device too. `}Fix any mistakes before confirming — tap a symbol to change it.</p>
       <div class="rv-list">${rows || '<p class="muted">No cards played this turn.</p>'}</div>
-      <button class="btn primary huge" data-act="confirm">Confirm &amp; next team <kbd>Enter</kbd></button>
+      <button class="btn primary huge" data-act="confirm">${game.coop ? 'Confirm &amp; next turn' : 'Confirm &amp; next team'} <kbd>Enter</kbd></button>
+    </div>`;
+  } else if (game.phase === 'over' && game.coop) {
+    const o = coopOver(game);
+    st.innerHTML = `<div class="ready">
+      <p class="eyebrow">Game over · whole class</p>
+      <h1 class="ready-team">${o.title}</h1>${o.line}
+      <div class="row-btns">
+        <button class="btn ghost" data-act="continue">Keep playing</button>
+        <button class="btn primary" data-act="setup">New game</button>
+      </div>
     </div>`;
   } else if (game.phase === 'over') {
     const ranked = [...game.teams].sort((a, b) => b.score - a.score);
@@ -416,7 +431,7 @@ function renderScores() {
   $('#scoreboard').innerHTML = game.teams.map((t, i) => `<div class="score ${i === game.current && game.phase !== 'over' ? 'cur' : ''}" style="--team:${t.color}">
     <span class="score-name">${esc(t.name)}</span>
     <span class="score-adj"><button data-adj="${i}" data-d="-1" aria-label="Minus one">−</button><b>${t.score}</b><button data-adj="${i}" data-d="1" aria-label="Plus one">+</button></span>
-  </div>`).join('');
+  </div>`).join('') + bestChip(game, 'taboo');
 }
 
 /* ---------------- events ---------------- */
@@ -513,12 +528,13 @@ const net = setupHostOnline({
   getGame: () => game,
   getTeams: () => {
     if (game && game.phase !== 'over') return game.teams.map((t, i) => ({ id: teamId(i), name: t.name, color: t.color }));
+    if (isCoop(settings)) return coopTeams(settings).map(({ id, name, color }) => ({ id, name, color }));
     ensureColors(settings);
     return settings.teams.map((name, i) => ({ id: i, name: name.trim() || `Team ${i + 1}`, color: settings.colors[i] }));
   },
   onAct: onRemote,
   teamsApi: {
-    canResize: () => !game || game.phase === 'over',
+    canResize: () => (!game || game.phase === 'over') && !isCoop(settings),
     rename(id, name) {
       if (id < settings.teams.length) { settings.teams[id] = name; store.setSettings(settings); renderTeamList(); }
       if (game && game.phase !== 'over') {
@@ -552,5 +568,6 @@ const renderTeamList = setupTeams({
   persist: () => { store.setSettings(settings); net.sendLobby(); net.render(); },
   onReorder: (order) => net.remap(order),
 });
+renderMode = setupModeSwitch({ settings, save: saveSettings, kind: 'taboo' });
 if (game?.phase === 'playing' && game.endAt <= Date.now()) timeUp();
 renderSetup();

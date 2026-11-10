@@ -1,6 +1,6 @@
 // Taboo Online — each player on their own device, synced through a room on the server.
 import {
-  SET_LABEL, SET_LANG, TEAM_COLORS, cardLang, activeCards, wordKey, seenStore, buildDeck, esc, sfx, shortcutKey,
+  SET_LABEL, SET_LANG, TEAM_COLORS, cardLang, activeCards, wordKey, seenStore, buildDeck, esc, sfx, shortcutKey, EDITION,
 } from './core.js';
 import { setupDeckPicker, deckSummary } from './decks.js';
 import { openCardManager, cardManagerOpen } from './cardmanager.js';
@@ -30,7 +30,9 @@ const langName = (l) => T[ui].langName[l];
 
 /* ---------------- my profile & decks (this device) ---------------- */
 
+const KOREAN = EDITION.features.korean; // Classroom: everyone explains in English
 const profile = load('online.profile.v1', { name: '', lang: ui === 'ko' ? 'en' : 'ko' });
+if (!KOREAN) profile.lang = 'en';
 const DEFAULT_SETS = { en: ['A2', 'B1'], ko: ['K1', 'K2'] };
 const deckSettings = { sets: load('online.sets.v1', null) || DEFAULT_SETS[profile.lang] };
 let sounds = load('online.sounds.v1', true);
@@ -170,6 +172,7 @@ $('#my-lang').addEventListener('click', (e) => {
 });
 
 function setMyLang(lang) {
+  if (!KOREAN) return;
   if (lang === profile.lang) return;
   profile.lang = lang; saveProfile();
   // switch to the new language's starter decks if every chosen deck was in the old language
@@ -203,7 +206,7 @@ function renderLobby() {
   $('#show-avoid').checked = !!s.showAvoid;
   $('#pen-label').textContent = T[ui].penLabel[s.style];
   document.querySelectorAll('#mode button').forEach((b) => b.classList.toggle('on', b.dataset.mode === s.mode));
-  $('#mode-desc').textContent = s.mode === 'coop' ? t('coopDesc') : t('teamsDesc');
+  $('#mode-desc').textContent = s.mode === 'coop' ? (KOREAN ? t('coopDesc') : 'Everyone plays on one side. Take turns explaining and try to beat your best score.') : t('teamsDesc');
   $('#teams-rule').hidden = s.mode !== 'teams';
   $('#team-count').textContent = s.teamCount;
   const inputs = $('#team-name-inputs');

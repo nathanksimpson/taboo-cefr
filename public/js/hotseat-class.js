@@ -1,6 +1,7 @@
 import { SET_LABEL, remainingMs, fmtTime, esc, shortcutKey } from './core.js';
 import { sync, STYLE, turnTotal, passRuleText } from './hotseat-shared.js';
 import { connect, loadJSON, ROOM_KEY, cleanCode, joinCardHtml } from './online.js';
+import { coopOver } from './coop.js';
 
 // hotseat-class.html?room=ABCD — a big screen on another device, following an online room.
 const room = cleanCode(new URLSearchParams(location.search).get('room') || '');
@@ -58,6 +59,10 @@ function render() {
       ? `<div class="cv-words">${game.log.map((e) => `<span class="cv-word ${{ correct: 'correct', pass: 'skip', foul: 'taboo' }[e.result]}">${esc(e.card.word)}</span>`).join('')}</div>` : '';
     main = `<div class="cv-center"><p class="cv-eyebrow">Time's up! Hot seat, turn around</p><h1 class="cv-team">${esc(team.name)}</h1>
       <p class="cv-turn-pts">${total >= 0 ? '+' : '−'}${Math.abs(total)} point${Math.abs(total) === 1 ? '' : 's'}</p>${words}</div>`;
+  } else if (p === 'over' && game.coop) {
+    const o = coopOver(game, { big: true });
+    document.body.style.setProperty('--team', game.teams[0].color);
+    main = `<div class="cv-center"><p class="cv-eyebrow">Game over · whole class</p><h1 class="cv-team">${o.title}</h1>${o.line}${joinBanner()}</div>`;
   } else if (p === 'over') {
     const ranked = [...game.teams].sort((a, b) => b.score - a.score);
     const winners = ranked.filter((t) => t.score === ranked[0].score);

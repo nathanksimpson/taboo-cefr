@@ -3,6 +3,7 @@
 import { scoreTurn, sum, remainingMs, fmtTime, esc, skipRuleText, sfx, shortcutKey } from './core.js';
 import { connect, loadJSON, saveJSON, GUEST_KEY, cleanCode } from './online.js';
 import { STYLE, scoreHS, turnTotal, passRuleText } from './hotseat-shared.js';
+import { coopOver } from './coop.js';
 
 const $ = (s) => document.querySelector(s);
 const guest = loadJSON(GUEST_KEY, { ids: {}, name: '', team: {}, sound: true });
@@ -142,6 +143,8 @@ function render() {
   renderTimer();
 
   const st = $('#pstage');
+  // Whole-class co-op (one team): no need to pick, just join it.
+  if (!t && !picking && teams().length === 1 && conn) { setTeam(teams()[0].id); return; }
   if (picking || !t) st.innerHTML = pickerHtml();
   else if (!game?.teams) st.innerHTML = lobbyHtml();
   else st.innerHTML = phaseHtml();
@@ -262,7 +265,7 @@ function hsPhaseHtml() {
       <h2>${esc(team.name)}: <span class="${total < 0 ? 'neg' : ''}">${total >= 0 ? '+' : ''}${total}</span></h2>
       ${edit ? '<p class="muted">Fix any mis-taps, then confirm.</p>' : '<p class="muted">Waiting for the scores to be confirmed…</p>'}
       <div class="rv-list">${rows || '<p class="muted">No words played this turn.</p>'}</div>
-      ${edit ? '<button class="btn primary huge" data-act="confirm">Confirm &amp; next team</button>' : ''}</div>`;
+      ${edit ? `<button class="btn primary huge" data-act="confirm">${g.coop ? 'Confirm &amp; next turn' : 'Confirm &amp; next team'}</button>` : ''}</div>`;
   }
   return null;
 }
@@ -326,9 +329,15 @@ function phaseHtml() {
       <h2>${esc(team.name)}: <span class="${total < 0 ? 'neg' : ''}">${total >= 0 ? '+' : ''}${total}</span></h2>
       ${edit ? '<p class="muted">Fix any mis-taps, then confirm.</p>' : '<p class="muted">Waiting for the scores to be confirmed…</p>'}
       <div class="rv-list">${rows || '<p class="muted">No cards played this turn.</p>'}</div>
-      ${edit ? '<button class="btn primary huge" data-act="confirm">Confirm &amp; next team</button>' : ''}</div>`;
+      ${edit ? `<button class="btn primary huge" data-act="confirm">${g.coop ? 'Confirm &amp; next turn' : 'Confirm &amp; next team'}</button>` : ''}</div>`;
   }
 
+  if (p === 'over' && g.coop) {
+    const o = coopOver(g);
+    return `<div class="ready"><p class="eyebrow">Game over · whole class</p>
+      <h1 class="ready-team">${o.title}</h1>${o.line}
+      <p class="muted">Stay here — the next game will appear when the teacher starts it.</p></div>`;
+  }
   if (p === 'over') {
     const ranked = [...g.teams].sort((a, b) => b.score - a.score);
     const winners = ranked.filter((x) => x.score === ranked[0].score);

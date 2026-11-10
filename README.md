@@ -65,7 +65,7 @@ One codebase, two front doors. `public/js/edition.js` holds each edition's name,
 | `korean` — TOPIK decks, team languages | | ✓ |
 | `koreanMenus` — EN / 한국어 switch | | ✓ |
 | `teacherRooms` — 🌐 Online, phones join the teacher's room (`join.html`, `/api/rooms`) | ✓ | |
-| `playerRooms` — Own devices, server-run rooms (`online.html`, `/api/room`) | | ✓ |
+| `playerRooms` — student groups / Own devices: server-run rooms (`online.html`, `/api/room`) | ✓ | ✓ |
 
 Markup for one edition only carries `data-only="classroom"` or `data-only="nadu"`; Nadu-only styles at the end of `app.css` are scoped to `html[data-edition="nadu"]`.
 
@@ -74,6 +74,11 @@ Markup for one edition only carries `data-only="classroom"` or `data-only="nadu"
 - `nadu-taboo` uses `wrangler.nadu.jsonc` (deploy command `npx wrangler deploy --config wrangler.nadu.jsonc`, or `npm run deploy:nadu`).
 
 Preview the other edition on any address with `?edition=nadu` or `?edition=classroom` (it sticks for that tab). To add a difference between editions, add a feature to both in `edition.js` and check `EDITION.features.…` where it matters.
+
+### Collab mode
+
+- **Whole class together** (Teams panel → *Whole class together*): no teams, one shared score for the class. Each turn the next student explains (or takes the hot seat); with phones joined, they take turns automatically. Name the class to keep a **class best** for each game — the end screen says when it's beaten (saved in this browser). Works in Taboo, Hot Seat and Who Am I?, on one screen, with phones and on the big screen.
+- **Student groups** (home page → *👥 Student groups*, or `online.html`): students start their own rooms on their phones, no teacher screen needed — co-op or teams, Taboo / Hot Seat / Who Am I?, with the CEFR and book decks. In the Classroom edition these rooms are English only (no language choice, no Korean menus); in the Nadu edition they're the "Own devices" rooms.
 
 ### Playing online (phones, or players in different places)
 

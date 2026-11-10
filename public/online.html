@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="room-ui">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -34,11 +34,11 @@
   <!-- JOIN -->
   <main id="join" class="setup narrow">
     <section class="panel">
-      <p class="eyebrow" data-t="eyebrow">English · 한국어</p>
+      <p class="eyebrow" data-t="eyebrow" data-only="nadu">English · 한국어</p>
       <h2 class="join-title" data-t="sub">Play Taboo together on your own devices.</h2>
       <label class="field"><span data-t="yourName">Your name</span>
         <input id="my-name" maxlength="24" autocomplete="nickname"></label>
-      <div class="field"><span data-t="explainIn">I explain in</span>
+      <div class="field" id="lang-field"><span data-t="explainIn">I explain in</span>
         <div class="seg" id="my-lang"><button data-lang="en">English</button><button data-lang="ko">한국어</button></div>
         <span class="hint" data-t="explainInNote">The language you're practising. Your cards come from decks in this language.</span>
       </div>

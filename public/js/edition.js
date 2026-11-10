@@ -21,7 +21,7 @@ export const EDITIONS = {
       korean: false, // Korean TOPIK decks, and each team choosing the language it explains in
       koreanMenus: false, // EN / 한국어 switch for the menus
       teacherRooms: true, // 🌐 Online: the teacher's screen runs a room that phones join (join.html)
-      playerRooms: false, // "Own devices": rooms the server runs, everyone equal (online.html, screen.html)
+      playerRooms: true, // student-run rooms: groups play on their own phones, no teacher screen (online.html, screen.html)
     },
   },
   nadu: {

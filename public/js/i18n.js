@@ -9,10 +9,14 @@ const OLD_KEY = 'online.ui.v1';
 const read = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
 let lang = read(KEY) || read(OLD_KEY) || ((navigator.language || '').startsWith('ko') ? 'ko' : 'en');
 const listeners = new Set();
+// The Classroom edition is English only: no switch, nothing translated.
+const MENUS = (() => { try { return document.documentElement.dataset.edition !== 'classroom'; } catch { return true; } })();
+if (!MENUS) lang = 'en';
 
 export const getLang = () => lang;
 export function setLang(l) {
   if (l !== 'en' && l !== 'ko') return;
+  if (!MENUS) return;
   if (l === lang) return;
   lang = l;
   try { localStorage.setItem(KEY, JSON.stringify(l)); } catch { /* storage off */ }
@@ -292,6 +296,7 @@ for (const name of ['alert', 'confirm', 'prompt']) {
 }
 
 function mountToggle() {
+  if (!MENUS) return;
   if (document.querySelector('.uilang')) return; // the page has its own (online.html)
   const html = '<div class="seg uilang" aria-label="Language"><button type="button" data-ui="en">EN</button><button type="button" data-ui="ko">한국어</button></div>';
   const slot = document.querySelector('.topbar-actions');

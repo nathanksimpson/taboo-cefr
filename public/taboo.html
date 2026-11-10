@@ -51,6 +51,14 @@
           <span id="team-count">2</span>
           <button class="btn ghost small" id="team-plus" aria-label="More teams">+</button>
         </div></div>
+      <div class="seg mode-seg" id="play-mode" role="radiogroup" aria-label="How to play">
+        <button type="button" role="radio" data-mode="teams">Teams compete</button>
+        <button type="button" role="radio" data-mode="coop">Whole class together</button>
+      </div>
+      <div id="coop-box" class="coop-box" hidden>
+        <label class="field"><span>Class name <span class="muted">(for the class best)</span></span><input id="class-name" maxlength="24" placeholder="e.g. Rainbow 3"></label>
+        <p class="hint" id="coop-hint"></p>
+      </div>
       <div id="team-names" class="team-names"></div>
     </section>
 
@@ -80,7 +88,7 @@
       </div>
       <div class="rule">
         <div class="rule-label">Game length</div>
-        <div class="rule-body"><label class="inline"><input type="number" id="turns-per-team" min="0" max="50"> <span>turns per team <span class="muted">(0 = until you end it)</span></span></label></div>
+        <div class="rule-body"><label class="inline"><input type="number" id="turns-per-team" min="0" max="50"> <span><span data-per-team>turns per team</span> <span class="muted">(0 = until you end it)</span></span></label></div>
       </div>
       <div class="rule">
         <div class="rule-label">Extras</div>
