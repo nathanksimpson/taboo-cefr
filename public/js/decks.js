@@ -1,13 +1,15 @@
 // Deck picker shared by both games: filter by level, search, sort, select.
 import {
-  SETS, SET_INFO, SET_NAME, SET_GROUP, BOOK_BY_ID, LEVEL_ORDER, LEVEL_COLORS, allCards, store, esc, isDeck, deckCardIds,
+  SETS, SET_INFO, SET_NAME, SET_GROUP, BOOK_BY_ID, LEVEL_ORDER, LEVEL_COLORS, KO_LEVELS, allCards, store, esc, isDeck, deckCardIds,
 } from './core.js';
 import { openDeckBuilder } from './builder.js';
 
 const VIEW_KEY = 'decks.view.v1';
-const CEFR_COLORS = { A1: '#ffc61a', A2: '#ffa24d', B1: '#ff8577', B2: '#6b9bff', C1: '#9a6cff', C2: '#27c3c9' };
-const FILTERS = ['All', ...LEVEL_ORDER, 'CEFR', 'MY', 'Selected'];
-const FILTER_LABEL = { MY: 'My decks' };
+const CEFR_COLORS = { A1: '#ffc61a', A2: '#ffa24d', B1: '#ff8577', B2: '#6b9bff', C1: '#9a6cff', C2: '#27c3c9',
+  K1: '#ffd6e0', K2: '#ffb3c7', K3: '#ff8fb0', K4: '#f06a99', K5: '#d94d84', K6: '#b8336a' };
+const KO = KO_LEVELS.length ? ['Korean'] : []; // Korean decks: Nadu edition only
+const FILTERS = ['All', ...LEVEL_ORDER, 'CEFR', ...KO, 'MY', 'Selected'];
+const FILTER_LABEL = { MY: 'My decks', Korean: '한국어' };
 const SORTS = { level: 'Level order', az: 'A–Z', cards: 'Most cards' };
 
 function loadView() {
@@ -16,14 +18,13 @@ function loadView() {
 function saveView(v) { try { localStorage.setItem(VIEW_KEY, JSON.stringify({ filter: v.filter, sort: v.sort })); } catch { /* ignore */ } }
 
 const colorOf = (s) => (BOOK_BY_ID[s] ? LEVEL_COLORS[BOOK_BY_ID[s].level] : CEFR_COLORS[s] || '#ff6fb5');
-const darkTile = (s) => BOOK_BY_ID[s]?.level === 'Navy';
+const darkTile = (s) => BOOK_BY_ID[s]?.level === 'Navy' || s === 'K6' || s === 'K5';
 
 /**
  * Mount the picker into #deck-picker.
  * settings.sets is updated in place; save() persists and re-renders the rest of setup.
  */
-export function setupDeckPicker({ settings, save }) {
-  const root = document.getElementById('deck-picker');
+export function setupDeckPicker({ settings, save, root = document.getElementById('deck-picker') }) {
   const view = loadView();
   view.q = '';
 
@@ -31,7 +32,7 @@ export function setupDeckPicker({ settings, save }) {
     <div class="deck-tools">
       <div class="deck-filters" role="tablist" aria-label="Filter decks"></div>
       <div class="deck-row">
-        <input type="search" class="deck-search" placeholder="Search decks, e.g. Write Now" aria-label="Search decks">
+        <input type="search" class="deck-search" placeholder="Search decks, e.g. ${Object.keys(BOOK_BY_ID).length ? 'Write Now' : KO_LEVELS.length ? 'TOPIK' : 'B1'}" aria-label="Search decks">
         <label class="deck-sort">Sort <select>${Object.entries(SORTS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></label>
         <button type="button" class="link small deck-clear">Clear selection</button>
       </div>
@@ -63,8 +64,9 @@ export function setupDeckPicker({ settings, save }) {
     const c = cnt[s] || { total: 0, active: 0 };
     const book = BOOK_BY_ID[s];
     const deck = isDeck(s);
-    const title = book ? book.name : s === 'MY' ? 'My cards' : deck ? SET_NAME(s) : s;
-    const sub = book ? `<span class="lvl-chip" style="--lc:${colorOf(s)}">${book.level}</span>` : `<span class="set-name">${s === 'MY' ? 'Cards you added' : deck ? 'Your deck' : `CEFR · ${SET_INFO[s]}`}</span>`;
+    const ko = SET_GROUP(s) === 'Korean';
+    const title = book ? book.name : s === 'MY' ? 'My cards' : deck ? SET_NAME(s) : ko ? `TOPIK ${s.slice(1)}` : s;
+    const sub = book ? `<span class="lvl-chip" style="--lc:${colorOf(s)}">${book.level}</span>` : `<span class="set-name">${s === 'MY' ? 'Cards you added' : deck ? 'Your deck' : ko ? `한국어 · ${SET_INFO[s].split('· ')[1]}` : `CEFR · ${SET_INFO[s]}`}</span>`;
     const btn = `<button type="button" class="set-tile ${on ? 'on' : ''} ${book || deck ? 'book' : ''} ${darkTile(s) ? 'dark' : ''}" style="--c:${colorOf(s)}" data-set="${s}" aria-pressed="${on}" title="${esc(SET_NAME(s))}">
       <span class="set-code">${esc(title)}</span>
       ${sub}
@@ -100,11 +102,11 @@ export function setupDeckPicker({ settings, save }) {
       return;
     }
     if (view.sort === 'level') {
-      const groups = [...LEVEL_ORDER, 'CEFR', 'MY'];
+      const groups = [...LEVEL_ORDER, 'CEFR', ...KO, 'MY'];
       listEl.innerHTML = groups.map((g) => {
         const inG = sets.filter((s) => SET_GROUP(s) === g);
         if (!inG.length) return '';
-        const head = LEVEL_COLORS[g] ? `<span class="fdot" style="background:${LEVEL_COLORS[g]}"></span>${g}` : g === 'CEFR' ? 'CEFR levels' : 'My decks';
+        const head = LEVEL_COLORS[g] ? `<span class="fdot" style="background:${LEVEL_COLORS[g]}"></span>${g}` : g === 'CEFR' ? 'CEFR levels' : g === 'Korean' ? '한국어 · TOPIK levels' : 'My decks';
         const allOn = inG.every((s) => settings.sets.includes(s));
         return `<section class="deck-group">
           <div class="deck-group-head"><h3>${head}</h3>${inG.length > 1 ? `<button type="button" class="link small" data-group="${g}">${allOn ? 'Unselect all' : 'Select all'}</button>` : ''}</div>

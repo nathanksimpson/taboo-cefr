@@ -1,8 +1,8 @@
 import {
   SETS, SET_INFO, SET_LABEL, TEAM_COLORS, store, allCards, activeCards, wordKey, seenStore, buildDeck, unplayedCount, scoreTurn, sum,
-  skipRuleText, remainingMs, fmtTime, shuffle, esc, publish, onMessage, sfx, shortcutKey,
+  skipRuleText, remainingMs, fmtTime, shuffle, esc, publish, onMessage, sfx, shortcutKey, bringMatch, LANG_NAME,
 } from './core.js';
-import { setupTeams, ensureColors } from './teams.js';
+import { setupTeams, ensureColors, teamLang, langWarning, teamOwnSets, allSets, teamFilter, ownDecksNote, everyTeamHasCards } from './teams.js';
 import { setupDeckPicker, deckSummary } from './decks.js';
 let renderDecks = () => {};
 const seen = seenStore('taboo');
@@ -19,12 +19,12 @@ function saveSettings() { store.setSettings(settings); renderSetup(); net?.sendL
 
 function renderSetup() {
   renderDecks();
-  const n = activeCards(settings.sets).length;
-  const unseen = n ? unplayedCount(activeCards(settings.sets), seen) : 0;
-  $('#deck-count').innerHTML = esc(deckSummary(settings.sets, n)) + (n && unseen < n
+  const n = activeCards(allSets(settings)).length;
+  const unseen = n ? unplayedCount(activeCards(allSets(settings)), seen) : 0;
+  $('#deck-count').innerHTML = esc(deckSummary(settings.sets, activeCards(settings.sets).length)) + ownDecksNote(settings).map((x) => `<br>${esc(x)}`).join('') + (n && unseen < n
     ? ` <span class="seen-note">${unseen ? `${unseen} not played yet, so those come first.` : 'Every word has been played, so the next game starts a fresh round.'} <button type="button" class="link small" data-reset-seen>Start fresh</button></span>`
-    : '');
-  $('#start').disabled = n === 0;
+    : '') + langWarning(settings).map((x) => `<br><b>${esc(x)}</b>`).join('');
+  $('#start').disabled = n === 0 || !everyTeamHasCards(settings);
   $('#setup-summary').textContent = n
     ? `${n} cards · ${settings.teams.length} teams · ${settings.seconds}s turns`
     : 'Pick at least one card set to start.';
@@ -66,14 +66,14 @@ $('#deck-count').addEventListener('click', (e) => {
 $('#start').onclick = () => {
   if (game && game.phase !== 'over' && !confirm('Start a new game? The current scores will be cleared.')) return;
   ensureColors(settings);
-  const ids = buildDeck(activeCards(settings.sets), seen);
+  const ids = buildDeck(activeCards(allSets(settings)), seen);
   if (!ids.length) return;
   game = {
     phase: 'ready',
-    settings: { ...settings, teams: undefined },
+    settings: { ...settings, sets: allSets(settings), teams: undefined },
     teams: (() => {
       // id stays the same if the order is shuffled, so players online keep their team.
-      const t = settings.teams.map((name, i) => ({ id: i, name: name.trim() || `Team ${i + 1}`, score: 0, color: settings.colors[i], turns: 0 }));
+      const t = settings.teams.map((name, i) => ({ id: i, name: name.trim() || `Team ${i + 1}`, score: 0, color: settings.colors[i], turns: 0, lang: teamLang(settings, i), sets: teamOwnSets(settings, i) || undefined }));
       return settings.randomOrder ? shuffle(t) : t;
     })(),
     current: 0,
@@ -162,7 +162,8 @@ function drawCard() {
   const ex = store.getExcluded();
   game.used ||= [];
   for (let guard = 0; guard < 2; guard++) {
-    while (game.pos < game.deck.length) {
+    const ok = teamFilter(game, game.teams[game.current]); // Nadu: the team's own decks and language
+    while (bringMatch(game.deck, game.pos, ok, map)) {
       const c = map.get(game.deck[game.pos++]);
       if (!c || ex.has(c.id)) continue;
       const k = wordKey(c.word);
@@ -309,6 +310,7 @@ function renderStage() {
     st.innerHTML = `<div class="ready" style="--team:${team.color}">
       <p class="eyebrow">Up next</p>
       <h1 class="ready-team">${esc(team.name)}</h1>
+      ${team.lang ? `<p class="muted"><span class="lang-tag ${team.lang}">${LANG_NAME[team.lang]}</span> Explain in ${team.lang === 'ko' ? 'Korean' : 'English'}</p>` : ''}
       <p class="muted">${net.active ? '' : 'Hand the screen to the explainer. '}${game.settings.seconds} seconds · ${esc(skipRuleText(game.settings))}${game.settings.tabooPenalty ? ' · Taboo −1' : ''}</p>
       ${last}
       ${explainerPicker()}

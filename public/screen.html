@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Main screen</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="Nadu Taboo">
+  <meta name="theme-color" content="#27c3c9">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+  <script>/* edition first, so the page never flashes the wrong one (details in js/edition.js) */
+    (function () { var d = document.documentElement, h = /nadu/i.test(location.hostname) ? 'nadu' : 'classroom';
+      try { var a = new URLSearchParams(location.search).get('edition'); if (a === 'nadu' || a === 'classroom') sessionStorage.setItem('edition', a); h = sessionStorage.getItem('edition') || h; } catch (e) {}
+      d.dataset.edition = h; })();</script>
+</head>
+<body class="online screen">
+  <header class="topbar">
+    <a class="brand" href="./" title="All games"><span class="brand-mark">T</span> <span id="scr-brand">Main screen</span></a>
+    <div class="topbar-actions">
+      <span class="conn" id="conn" hidden></span>
+      <span class="scr-code-chip" id="code-chip"></span>
+      <button class="btn ghost small" id="sound" type="button"></button>
+      <button class="btn ghost small" id="fullscreen" type="button" title="Full screen (F)">⛶</button>
+    </div>
+  </header>
+  <main id="scr" class="scr"></main>
+  <div id="scoreboard" class="scoreboard" hidden></div>
+  <script type="module" src="js/screen.js"></script>
+  <script type="module" src="js/i18n.js"></script>
+</body>
+</html>

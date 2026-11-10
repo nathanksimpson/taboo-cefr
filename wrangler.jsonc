@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "taboo-cefr",
   "compatibility_date": "2026-06-01",
-  // The Worker only handles /api/* (online rooms). Everything else in ./public is served as static files.
+  // The Worker only handles /api/* (online rooms for both editions). Everything else in ./public is served as static files.
   "main": "src/worker.js",
   "assets": {
     "directory": "./public",
@@ -12,7 +12,13 @@
   },
   // One Durable Object per online room (free plan: SQLite-backed).
   "durable_objects": {
-    "bindings": [{ "name": "ROOMS", "class_name": "Room" }]
+    "bindings": [
+      { "name": "ROOMS", "class_name": "Room" },          // Classroom: the teacher's screen runs the game
+      { "name": "NADU_ROOMS", "class_name": "NaduRoom" }  // Nadu: "Own devices" rooms run by the server
+    ]
   },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }]
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["Room"] },
+    { "tag": "v2", "new_sqlite_classes": ["NaduRoom"] }
+  ]
 }

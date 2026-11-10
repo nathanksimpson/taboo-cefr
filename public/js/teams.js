@@ -1,6 +1,8 @@
 // Team names + colour picker, shared by both games' setup screens.
 import { makeSortable } from './sortable.js';
-import { esc } from './core.js';
+import { esc, activeCards, langsIn, LANG_NAME, wordKey, SETS } from './core.js';
+import { setupDeckPicker, deckSummary } from './decks.js';
+import { has } from './edition.js';
 
 export const PALETTE = [
   { c: '#ff5a4e', n: 'Red' },
@@ -15,6 +17,113 @@ export const PALETTE = [
   { c: '#b07a4f', n: 'Brown' },
 ];
 const DEFAULT_ORDER = ['#ff5a4e', '#5b8cff', '#ffc61a', '#1fb36b', '#9a6cff', '#ff6fb5'];
+
+/* ---------------- Nadu edition: each team's language and own decks ----------------
+   In the Classroom edition these all answer "no": English, shared decks, no warnings. */
+/** The language a team explains in (kept with the team's colour, so it follows reordering). */
+export const teamLang = (settings, i) => (has('korean') ? settings.teamLangs?.[settings.colors?.[i]] || 'en' : undefined);
+
+/** A team's own decks, or null if it uses the shared ones (also kept with the team's colour). */
+export const teamOwnSets = (settings, i) => {
+  if (!has('korean')) return null;
+  const own = settings.teamDecks?.[settings.colors?.[i]];
+  return own ? own.filter((s) => SETS.includes(s)) : null;
+};
+/** The decks a team draws from. */
+export const teamSets = (settings, i) => teamOwnSets(settings, i) || settings.sets;
+/** Every deck any team draws from (the game's shared pile). */
+export function allSets(settings) {
+  if (!settings.teams.some((_, i) => teamOwnSets(settings, i))) return settings.sets; // the usual case
+  const out = new Set();
+  settings.teams.forEach((_, i) => teamSets(settings, i).forEach((s) => out.add(s)));
+  return SETS.filter((s) => out.has(s));
+}
+
+/** Warnings (one line each) for teams whose language or decks won't work as set. */
+export function langWarning(settings) {
+  if (!has('korean')) return [];
+  const notes = [];
+  settings.teams.forEach((t, i) => {
+    const cards = activeCards(teamSets(settings, i));
+    const name = t || `Team ${i + 1}`;
+    if (!cards.length) { notes.push(`${name} has no cards: pick some decks for it.`); return; }
+    const have = langsIn(cards);
+    const l = teamLang(settings, i);
+    if (!have.includes(l)) notes.push(`${name} explains in ${LANG_NAME[l]}, but its decks have no ${LANG_NAME[l]} cards, so it'll get ${have.map((x) => LANG_NAME[x]).join(' / ')} cards.`);
+  });
+  return notes;
+}
+/** True if every team has at least one card to draw. */
+export const everyTeamHasCards = (settings) => settings.teams.every((_, i) => activeCards(teamSets(settings, i)).length > 0);
+/** "Team 2 uses its own decks: TOPIK 1 (35 cards)." for the setup summary. */
+export function ownDecksNote(settings) {
+  return settings.teams.map((t, i) => {
+    const own = teamOwnSets(settings, i);
+    if (!own) return '';
+    return `${t || `Team ${i + 1}`} uses its own decks: ${deckSummary(own, activeCards(own).length)}`;
+  }).filter(Boolean);
+}
+
+/** Each team's word filter during a game: only words from its own decks, in its language. */
+const POOLS = new Map(); // decks → { word keys, languages }, kept out of the saved game
+export function teamFilter(game, team) {
+  const sets = team?.sets || game.settings.sets;
+  const key = sets.join('|');
+  let pool = POOLS.get(key);
+  if (!pool) {
+    const cards = activeCards(sets);
+    pool = { keys: new Set(cards.map((c) => wordKey(c.word))), langs: langsIn(cards) };
+    POOLS.set(key, pool);
+  }
+  const own = key !== game.settings.sets.join('|');
+  const lang = team?.lang && pool.langs.includes(team.lang) ? team.lang : null;
+  if (!own && !lang) return null;
+  return (c) => (!own || pool.keys.has(wordKey(c.word))) && (!lang || (c.lang || (/[\u3131-\u318e\uac00-\ud7a3]/.test(c.word) ? 'ko' : 'en')) === lang);
+}
+
+/* ---------------- a team's own decks (dialog) ---------------- */
+let tdDlg = null;
+function openTeamDecks(settings, i, done) {
+  if (!tdDlg) {
+    document.body.insertAdjacentHTML('beforeend', `<dialog id="team-decks-dlg" class="dlg team-decks">
+      <div class="dlg-head"><h2 id="td-title"></h2><button type="button" class="btn primary small" id="td-done">Done</button></div>
+      <div class="td-body">
+        <label class="check td-shared"><input type="checkbox" id="td-shared"> <span>Same decks as everyone</span></label>
+        <p class="hint" id="td-note"></p>
+        <div id="td-picker"></div>
+      </div></dialog>`);
+    tdDlg = document.getElementById('team-decks-dlg');
+    tdDlg.querySelector('#td-done').onclick = () => tdDlg.close();
+  }
+  const color = settings.colors[i];
+  const state = { sets: [...(teamOwnSets(settings, i) || settings.sets)] };
+  let shared = !teamOwnSets(settings, i);
+  const $d = (s) => tdDlg.querySelector(s);
+  const commit = () => {
+    const td = { ...(settings.teamDecks || {}) };
+    if (shared) delete td[color]; else td[color] = [...state.sets];
+    settings.teamDecks = td;
+    // own decks all in one language: the team explains in that language
+    if (!shared) {
+      const langs = langsIn(activeCards(state.sets));
+      if (langs.length === 1) settings.teamLangs = { ...(settings.teamLangs || {}), [color]: langs[0] };
+    }
+  };
+  const show = () => {
+    $d('#td-shared').checked = shared;
+    $d('#td-picker').hidden = shared;
+    $d('#td-note').textContent = shared
+      ? 'This team uses the decks picked in step 1. Untick to give it its own.'
+      : deckSummary(state.sets, activeCards(state.sets).length);
+  };
+  $d('#td-title').textContent = `${settings.teams[i] || `Team ${i + 1}`}: decks`;
+  const renderPicker = setupDeckPicker({ settings: state, save: () => { commit(); renderPicker(); show(); }, root: $d('#td-picker') });
+  $d('#td-shared').onchange = (e) => { shared = e.target.checked; if (!shared) state.sets = [...settings.sets]; commit(); renderPicker(); show(); };
+  renderPicker(); show();
+  tdDlg.onclose = () => { commit(); done(); };
+  tdDlg.showModal();
+}
+
 
 /** Make sure settings.colors has one distinct colour per team. */
 export function ensureColors(settings) {
@@ -50,6 +159,8 @@ export function setupTeams({ settings, save, persist, onReorder = () => {}, min 
         <span class="team-order" aria-hidden="true">${i + 1}</span>
         <button type="button" class="swatch" data-pick="${i}" aria-label="Team ${i + 1} colour: ${name}. Change colour" aria-expanded="${openPicker === i}"></button>
         <input data-team="${i}" value="${esc(t)}" maxlength="24" aria-label="Team ${i + 1} name">
+        ${has('korean') ? `<button type="button" class="team-decks-btn ${teamOwnSets(settings, i) ? 'own' : ''}" data-tdecks="${i}" title="Pick the decks this team draws from">${teamOwnSets(settings, i) ? `Own decks · ${activeCards(teamOwnSets(settings, i)).length}` : 'Shared decks'}</button>
+        <span class="seg team-lang" role="group" aria-label="${esc(t)} explains in">${['en', 'ko'].map((l) => `<button type="button" data-tlang="${l}" data-for="${i}" class="${teamLang(settings, i) === l ? 'on' : ''}" title="Explains in ${LANG_NAME[l]}">${l === 'en' ? 'EN' : '한국어'}</button>`).join('')}</span>` : ''}
         ${openPicker === i ? `<div class="palette" role="listbox" aria-label="Pick a colour">${PALETTE.map((p) => {
           const owner = settings.colors.indexOf(p.c);
           const taken = owner !== -1 && owner !== i;
@@ -72,7 +183,7 @@ export function setupTeams({ settings, save, persist, onReorder = () => {}, min 
   // Drag to reorder: the team you hold floats under the pointer and the others slide out of the way.
   makeSortable(root, {
     items: '.team-name',
-    ignore: 'input, button, .palette, .team-lang',
+    ignore: 'input, button, .palette, .team-lang, .team-decks-btn',
     onChange: () => root.querySelectorAll('.team-order').forEach((el, i) => { el.textContent = i + 1; }),
     onDrop: (order) => {
       if (openPicker !== null) openPicker = null;
@@ -84,6 +195,13 @@ export function setupTeams({ settings, save, persist, onReorder = () => {}, min 
   });
 
   root.addEventListener('click', (e) => {
+    const td = e.target.closest('[data-tdecks]');
+    if (td) { openTeamDecks(settings, +td.dataset.tdecks, () => { save(); render(); }); return; }
+    const tl = e.target.closest('[data-tlang]');
+    if (tl) {
+      settings.teamLangs = { ...(settings.teamLangs || {}), [settings.colors[+tl.dataset.for]]: tl.dataset.tlang };
+      save(); render(); return;
+    }
     const sw = e.target.closest('[data-pick]');
     const pal = e.target.closest('[data-color]');
     if (sw) { const i = +sw.dataset.pick; openPicker = openPicker === i ? null : i; render(); return; }

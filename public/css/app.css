@@ -731,3 +731,164 @@ body.player { min-height: 100vh; min-height: 100dvh; display: flex; flex-directi
 /* Nadu edition: its own colours (Classroom keeps the defaults above) */
 [data-edition="nadu"] .topbar { background: var(--teal, #27c3c9); }
 [data-edition="nadu"] body.hotseat .topbar, [data-edition="nadu"] .hotseat .topbar { background: #8fd3a6; }
+
+/* Edition-only markup: data-only="classroom" / data-only="nadu" (the edition is set before the page draws) */
+html[data-edition="nadu"] [data-only="classroom"],
+html:not([data-edition="nadu"]) [data-only="nadu"] { display: none !important; }
+
+/* =========================================================
+   Nadu edition: online "own devices" play, main screen, Korean,
+   team languages and its home page. Everything here is scoped to
+   html[data-edition="nadu"], so the Classroom edition never sees it.
+   ========================================================= */
+html[data-edition="nadu"] body.online .topbar { background: var(--teal); }
+html[data-edition="nadu"] .setup.narrow { max-width: 600px; }
+html[data-edition="nadu"] .join-title { font: 800 clamp(1.4rem, 4vw, 1.9rem)/1.15 var(--display); margin: .2rem 0 .4rem; }
+html[data-edition="nadu"] .field { display: flex; flex-direction: column; gap: .45rem; margin: 1.1rem 0 0; font-weight: 750; }
+html[data-edition="nadu"] .field input, html[data-edition="nadu"] .join-code input { border: var(--line); border-radius: 12px; padding: .6rem .8rem; font-size: 1.1rem; background: var(--paper); min-width: 0; }
+html[data-edition="nadu"] .field .hint { margin: 0; }
+html[data-edition="nadu"] .join-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 1.4rem; }
+html[data-edition="nadu"] .join-code { display: flex; gap: .5rem; }
+html[data-edition="nadu"] .join-code input { width: 7.2rem; letter-spacing: .3em; font: 800 1.3rem var(--display); text-transform: uppercase; text-align: center; }
+html[data-edition="nadu"] .rejoin { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; width: 100%; }
+html[data-edition="nadu"] .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+html[data-edition="nadu"] .conn { font-weight: 750; background: var(--yellow); border: 2px solid var(--ink); border-radius: 999px; padding: .2rem .7rem; font-size: .85rem; }
+html[data-edition="nadu"] .uilang button { padding: .3rem .7rem; font-size: .85rem; }
+html[data-edition="nadu"] .room-panel { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+html[data-edition="nadu"] .room-panel .eyebrow { margin: 0; }
+html[data-edition="nadu"] .code-big { font: 800 clamp(2.4rem, 9vw, 3.4rem)/1 var(--display); letter-spacing: .18em; }
+html[data-edition="nadu"] .mode-seg button { font-size: 1.05rem; padding: .55rem 1.5rem; }
+html[data-edition="nadu"] .players { display: flex; flex-direction: column; gap: .5rem; }
+html[data-edition="nadu"] .player { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; padding: .55rem .8rem; border: 2px solid var(--ink); border-radius: 14px; background: var(--soft); }
+html[data-edition="nadu"] .player.me { background: #fff6cf; }
+html[data-edition="nadu"] .player-name { font-weight: 750; flex: 1 1 8rem; }
+html[data-edition="nadu"] .online-dot { width: 13px; height: 13px; border-radius: 50%; background: #c9c2e6; border: 2px solid var(--ink); flex: none; }
+html[data-edition="nadu"] .online-dot.on { background: var(--green); }
+html[data-edition="nadu"] .lang-tag { display: inline-block; font-weight: 800; font-size: .78rem; line-height: 1.3; padding: .1rem .55rem; border-radius: 999px; border: 2px solid var(--ink); background: var(--blue); color: #fff; vertical-align: .12em; }
+html[data-edition="nadu"] .lang-tag.ko { background: var(--pink); color: var(--ink); }
+html[data-edition="nadu"] .team-pick button, html[data-edition="nadu"] .lang-pick button { font-size: .85rem; padding: .3rem .65rem; }
+html[data-edition="nadu"] .team-pick .swatch { display: inline-block; width: .7rem; height: .7rem; border-radius: 50%; margin-right: .3rem; border: 1.5px solid var(--ink); vertical-align: -.05em; }
+html[data-edition="nadu"] .guess-screen .eyebrow { display: flex; gap: .5rem; align-items: center; justify-content: center; flex-wrap: wrap; }
+html[data-edition="nadu"] .guess-big { font: 800 clamp(3rem, 13vw, 6.5rem)/1 var(--display); margin: .4rem 0 .2rem; }
+html[data-edition="nadu"] .guess-count { font: 800 clamp(2rem, 7vw, 3rem) var(--display); margin-bottom: .8rem; }
+html[data-edition="nadu"] .coop-score { font-size: clamp(4rem, 15vw, 7.5rem); margin: .1rem 0; }
+html[data-edition="nadu"] .hint.center { text-align: center; }
+html[data-edition="nadu"] .act .buzz { font-size: 1.6rem; padding: 1rem 3.2rem; }
+html[data-edition="nadu"] .small-names { font-size: .8rem; font-weight: 600; }
+@media (max-width: 560px) {
+  html[data-edition="nadu"] .topbar .brand-sub, html[data-edition="nadu"] .topbar #manage-cards-top { display: none; }
+  html[data-edition="nadu"] .join-code { width: 100%; }
+  html[data-edition="nadu"] .join-code input { flex: 1; }
+}
+html[data-edition="nadu"]:lang(ko) body { word-break: keep-all; }
+html[data-edition="nadu"] body.online .team-chip, html[data-edition="nadu"] body.online .playbar-actions .btn { white-space: nowrap; }
+@media (max-width: 560px) {
+  html[data-edition="nadu"] body.online .team-chip { font-size: .85rem; padding: .35rem .7rem; }
+  html[data-edition="nadu"] body.online .timer { font-size: 1.9rem; }
+  html[data-edition="nadu"] body.online kbd { display: none; }
+}
+html[data-edition="nadu"] .act.act-single { grid-template-columns: 1fr; }
+html[data-edition="nadu"] .small-names { margin-left: .4rem; }
+@media (max-width: 560px) {
+  html[data-edition="nadu"] body.online .playbar { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "chip actions" "timer timer"; gap: .6rem; }
+  html[data-edition="nadu"] body.online .team-chip { grid-area: chip; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  html[data-edition="nadu"] body.online .playbar-actions { grid-area: actions; }
+  html[data-edition="nadu"] body.online .playbar .timer { grid-area: timer; justify-self: center; }
+  html[data-edition="nadu"] body.online .small-names { display: none; }
+}
+html[data-edition="nadu"] .activity-seg { margin-bottom: .2rem; }
+html[data-edition="nadu"] .activity-seg button { font-size: 1.05rem; padding: .55rem 1.1rem; }
+html[data-edition="nadu"] .role-note { font-weight: 750; }
+html[data-edition="nadu"] .card-rule { margin: 0; padding: .7rem 1rem; text-align: center; font-weight: 750; border-top: 2px dashed var(--ink); background: var(--soft); }
+html[data-edition="nadu"] .team-name .team-lang { flex: none; }
+html[data-edition="nadu"] .team-name .team-lang button { font-size: .78rem; padding: .25rem .55rem; }
+html[data-edition="nadu"] div.game-tile { cursor: default; }
+html[data-edition="nadu"] .game-modes { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: auto; padding-top: .8rem; }
+html[data-edition="nadu"] .game-modes .btn { display: flex; flex-direction: column; align-items: flex-start; gap: .15rem; text-align: left; padding: .7rem .85rem; text-decoration: none; }
+html[data-edition="nadu"] .game-modes small { font-weight: 600; font-size: .78rem; opacity: .85; line-height: 1.25; }
+html[data-edition="nadu"] .home-langs { text-align: center; font-weight: 700; margin: 1.6rem auto 0; max-width: 46rem; }
+@media (max-width: 420px) {
+  html[data-edition="nadu"] .game-modes { grid-template-columns: 1fr; }
+}
+html[data-edition="nadu"] div.game-tile:hover, html[data-edition="nadu"] div.game-tile:active { transform: none; box-shadow: 8px 8px 0 var(--ink); }
+html[data-edition="nadu"] =======
+
+.tile-wrap { position: relative; display: grid; }
+html[data-edition="nadu"] .game-modes { grid-template-columns: 1fr; }
+html[data-edition="nadu"] .game-modes .btn { border-radius: 16px; color: var(--ink); font-size: 1.05rem; }
+html[data-edition="nadu"] .game-modes .btn.primary { color: #fff; }
+html[data-edition="nadu"] .game-modes .btn small { display: block; }
+html[data-edition="nadu"] .uilang-float { position: fixed; top: 12px; right: 12px; z-index: 50; }
+html[data-edition="nadu"] .uilang-float .uilang { background: var(--paper); box-shadow: var(--pop-sm); }
+html[data-edition="nadu"] .uilang button { padding: .3rem .7rem; font-size: .85rem; }
+html[data-edition="nadu"] .team-name { flex-wrap: wrap; }
+html[data-edition="nadu"] .team-name input { flex: 1 1 9rem; width: auto; min-width: 7rem; }
+html[data-edition="nadu"] .team-name .team-lang { margin-left: auto; }
+html[data-edition="nadu"] .team-decks-btn { flex: none; border: 2px solid var(--ink); background: var(--paper); border-radius: 999px; padding: .25rem .65rem; font-weight: 750; font-size: .78rem; cursor: pointer; }
+html[data-edition="nadu"] .team-decks-btn:hover { background: var(--yellow); }
+html[data-edition="nadu"] .team-decks-btn.own { background: var(--team, var(--blue)); }
+html[data-edition="nadu"] .dlg.team-decks { width: min(980px, calc(100vw - 24px)); }
+html[data-edition="nadu"] .td-body { padding: 1rem 1.2rem 1.2rem; overflow: auto; }
+html[data-edition="nadu"] .td-shared { font-weight: 750; }
+html[data-edition="nadu"] body.screen { min-height: 100vh; display: flex; flex-direction: column; }
+html[data-edition="nadu"] .scr { flex: 1; display: flex; flex-direction: column; padding: clamp(12px, 2.5vw, 40px); }
+html[data-edition="nadu"] .scr-code-chip { font: 800 1.2rem var(--display); letter-spacing: .2em; background: var(--yellow); border: var(--line); border-radius: 12px; padding: .25rem .7rem; box-shadow: var(--pop-sm); }
+html[data-edition="nadu"] .scr-lobby { flex: 1; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(16px, 3vw, 48px); align-items: center; }
+html[data-edition="nadu"] .scr-join { text-align: center; background: var(--paper); border: 4px solid var(--ink); border-radius: 32px; box-shadow: 10px 10px 0 var(--ink); padding: clamp(18px, 3vw, 48px); }
+html[data-edition="nadu"] .scr-code { font: 800 clamp(4rem, 14vw, 11rem)/1 var(--display); letter-spacing: .12em; margin: .2em 0 .15em; }
+html[data-edition="nadu"] .scr-url { font-weight: 750; font-size: clamp(1rem, 1.8vw, 1.5rem); margin: 0; overflow-wrap: anywhere; }
+html[data-edition="nadu"] .scr-side { background: var(--paper); border: 3px solid var(--ink); border-radius: 24px; box-shadow: var(--pop); padding: clamp(16px, 2vw, 32px); }
+html[data-edition="nadu"] .scr-side h2 { font: 800 clamp(1.3rem, 2.4vw, 2rem) var(--display); margin: .4rem 0 .8rem; }
+html[data-edition="nadu"] .scr-game { font-size: clamp(1rem, 1.6vw, 1.35rem); margin: 0; }
+html[data-edition="nadu"] .scr-players { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: .6rem; }
+html[data-edition="nadu"] .scr-players li { display: flex; align-items: center; gap: .5rem; font-size: clamp(1.05rem, 1.8vw, 1.5rem); padding: .55rem .8rem; border: 2.5px solid var(--ink); border-radius: 14px; background: var(--soft); animation: pop-in .35s ease; }
+html[data-edition="nadu"] .scr-players li.away { opacity: .5; }
+html[data-edition="nadu"] .scr-players .swatch { width: .9em; height: .9em; border-radius: 50%; border: 2px solid var(--ink); flex: none; }
+html[data-edition="nadu"] .scr-hint { font-weight: 750; font-size: clamp(1rem, 1.7vw, 1.4rem); margin: 1rem 0 0; }
+@keyframes pop-in { from { transform: scale(.85); opacity: 0; } }
+html[data-edition="nadu"] .scr-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+html[data-edition="nadu"] .scr-bar .team-chip { font-size: clamp(1.1rem, 2vw, 1.8rem); }
+html[data-edition="nadu"] .scr-timer { font-size: clamp(2.6rem, 6vw, 5.5rem); }
+html[data-edition="nadu"] .scr-center { flex: 1; display: grid; justify-items: center; align-content: center; gap: clamp(8px, 1.4vw, 20px); text-align: center; padding: 1rem 0; }
+html[data-edition="nadu"] .scr-center .eyebrow { display: flex; gap: .5rem; align-items: center; justify-content: center; flex-wrap: wrap; font-size: clamp(.9rem, 1.5vw, 1.3rem); }
+html[data-edition="nadu"] .scr-big { font: 800 clamp(2.4rem, 7vw, 6.5rem)/1.05 var(--display); margin: 0; letter-spacing: -.02em; }
+html[data-edition="nadu"] .scr-sub { font-weight: 750; font-size: clamp(1.05rem, 2vw, 1.8rem); margin: 0; }
+html[data-edition="nadu"] .scr-warn { font: 800 clamp(1.1rem, 2.4vw, 2.2rem) var(--display); background: var(--bad); color: #fff; border: 3px solid var(--ink); border-radius: 999px; padding: .3em 1em; margin: 0; box-shadow: var(--pop-sm); }
+html[data-edition="nadu"] .scr-count { font: 800 clamp(3rem, 9vw, 8rem)/1 var(--display); }
+html[data-edition="nadu"] .scr-score { font: 800 clamp(5rem, 18vw, 14rem)/1 var(--display); }
+html[data-edition="nadu"] .scr-card { width: min(900px, 92vw); }
+html[data-edition="nadu"] .scr-card .target { font-size: clamp(3rem, 10vw, 8.5rem); padding: .2rem 1.5rem 1.5rem; }
+html[data-edition="nadu"] .scr-card .taboo-list li { font-size: clamp(1.4rem, 3vw, 2.6rem); }
+html[data-edition="nadu"] .scr-tally { font-size: clamp(1rem, 1.8vw, 1.6rem); }
+html[data-edition="nadu"] .scr-words { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .6rem; width: min(1200px, 100%); }
+html[data-edition="nadu"] .scr-words li { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: .6rem; text-align: left; padding: .55rem .9rem; border: 2.5px solid var(--ink); border-radius: 14px; background: var(--paper); font-size: clamp(1rem, 1.8vw, 1.5rem); }
+html[data-edition="nadu"] .scr-words li.correct { background: #e3f8ea; }
+html[data-edition="nadu"] .scr-words li.taboo { background: #ffe3df; }
+html[data-edition="nadu"] .scr-words li.skip { background: var(--soft); }
+html[data-edition="nadu"] .scr-words em { font-style: normal; font-size: .7em; font-weight: 750; color: var(--muted); }
+html[data-edition="nadu"] .scr-words i { font-style: normal; font-weight: 800; }
+html[data-edition="nadu"] body.screen .scoreboard .score { font-size: clamp(1rem, 1.8vw, 1.5rem); }
+@media (max-width: 760px) {
+  html[data-edition="nadu"] .scr-lobby { grid-template-columns: 1fr; }
+}
+html[data-edition="nadu"] .screen-link { display: flex; flex-direction: column; gap: .3rem; margin-top: 1.2rem; padding-top: 1rem; border-top: 2px dashed var(--ink); }
+html[data-edition="nadu"] .screen-on { font-weight: 750; font-size: .85rem; background: var(--green); border: 2px solid var(--ink); border-radius: 999px; padding: .15rem .6rem; }
+html[data-edition="nadu"] .team-board { margin-top: .8rem; display: grid; gap: .6rem; }
+html[data-edition="nadu"] .ro-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; justify-content: flex-end; }
+html[data-edition="nadu"] .ro-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: .6rem; }
+html[data-edition="nadu"] .ro-team { min-width: 0; border: var(--line); border-radius: 14px; padding: .6rem .8rem; background: var(--paper); border-left: 10px solid var(--team); transition: background .12s, transform .12s; }
+html[data-edition="nadu"] .ro-rename { flex: 1; min-width: 0; font: 800 1rem var(--display); border: 2px solid transparent; border-radius: 8px; padding: .15rem .35rem; background: transparent; color: var(--ink); text-overflow: ellipsis; }
+html[data-edition="nadu"] .ro-rename:hover { border-color: #c9c3e6; }
+html[data-edition="nadu"] .ro-count { font-weight: 800; color: var(--muted); font-size: .9rem; }
+html[data-edition="nadu"] .ro-team ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: .3rem; min-height: 2.2rem; }
+html[data-edition="nadu"] .ro-player { display: flex; align-items: center; gap: .4rem; min-width: 0; background: var(--soft); border: 2px solid var(--ink); border-radius: 10px; padding: .25rem .35rem .25rem .45rem; cursor: grab; touch-action: none; user-select: none; font-weight: 650; }
+html[data-edition="nadu"] .ro-player.me { background: color-mix(in srgb, var(--yellow) 35%, var(--paper)); }
+html[data-edition="nadu"] .ro-player:focus-visible { outline: 3px solid var(--blue); outline-offset: 1px; }
+html[data-edition="nadu"] .ro-player .lang-tag { flex: none; }
+html[data-edition="nadu"] .ro-grip { color: var(--muted); font-size: .9rem; }
+html[data-edition="nadu"] .ro-x { border: 0; background: transparent; font: 800 1.1rem/1 var(--body); color: var(--muted); cursor: pointer; padding: 0 .2rem; border-radius: 6px; }
+html[data-edition="nadu"] .ro-empty { color: var(--muted); font-weight: 600; font-size: .9rem; padding: .25rem .2rem; border: 2px dashed #c9c3e6; border-radius: 10px; text-align: center; }
+html[data-edition="nadu"] .ro-ghost { position: fixed; left: 0; top: 0; z-index: 1000; pointer-events: none; box-shadow: 5px 5px 0 var(--ink); background: var(--yellow); margin: 0; list-style: none; }
+@media (max-width: 560px) {
+  html[data-edition="nadu"] .online-body { padding: 1rem .9rem; }
+}

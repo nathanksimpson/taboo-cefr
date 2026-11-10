@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#27c3c9"/>
+  <g transform="rotate(10 360 250)">
+    <rect x="262" y="84" width="210" height="270" rx="38" fill="#1a1230" transform="translate(14 16)"/>
+    <rect x="262" y="84" width="210" height="270" rx="38" fill="#ff8fb0" stroke="#1a1230" stroke-width="13"/>
+    <text x="378" y="268" font-family="Noto Sans CJK KR, Noto Sans CJK TC, sans-serif" font-weight="900" font-size="140" fill="#1a1230" text-anchor="middle">타</text>
+  </g>
+  <g transform="rotate(-9 160 290)">
+    <rect x="52" y="160" width="210" height="270" rx="38" fill="#1a1230" transform="translate(14 16)"/>
+    <rect x="52" y="160" width="210" height="270" rx="38" fill="#ef4b3f" stroke="#1a1230" stroke-width="13"/>
+    <text x="157" y="362" font-family="Poppins, Arial, sans-serif" font-weight="800" font-size="180" fill="#ffffff" text-anchor="middle">T</text>
+  </g>
+</svg>

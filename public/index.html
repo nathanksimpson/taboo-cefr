@@ -14,17 +14,22 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css">
+  <script>/* edition first, so the page never flashes the wrong one (details in js/edition.js) */
+    (function () { var d = document.documentElement, h = /nadu/i.test(location.hostname) ? 'nadu' : 'classroom';
+      try { var a = new URLSearchParams(location.search).get('edition'); if (a === 'nadu' || a === 'classroom') sessionStorage.setItem('edition', a); h = sessionStorage.getItem('edition') || h; } catch (e) {}
+      d.dataset.edition = h; })();</script>
   <script type="module" src="js/edition.js"></script>
 </head>
 <body class="home">
   <main class="home-main">
     <header class="home-head">
-      <p class="eyebrow">Vocabulary games · A1 to C2</p>
+      <p class="eyebrow" data-only="classroom">Vocabulary games · A1 to C2</p>
+      <p class="eyebrow" data-only="nadu">Vocabulary games · A1 to C2 · 한국어 TOPIK 1–6</p>
       <h1>Pick a game</h1>
       <button type="button" class="btn home-manage" id="home-manage">🗂 Manage cards</button>
       <p class="muted" id="home-count">About 950 words sorted by CEFR level, shared by every game.</p>
     </header>
-    <div class="game-grid">
+    <div class="game-grid" data-only="classroom">
       <div class="game-tile has-actions" style="--team:#ffc61a">
         <span class="game-mark">T</span>
         <span class="game-name">Taboo</span>
@@ -44,12 +49,43 @@
         </span>
       </div>
     </div>
-    <a class="join-strip" href="join">📱 Got a room code? <b>Join an online game →</b></a>
+    <a class="join-strip" data-only="classroom" href="join">📱 Got a room code? <b>Join an online game →</b></a>
+    <div class="game-grid" data-only="nadu">
+      <div class="game-tile" style="--team:#ffc61a">
+        <span class="game-mark">T</span>
+        <span class="game-name">Taboo</span>
+        <span class="game-desc">Explain the word without saying the taboo words. Only the explainer sees the card.</span>
+        <span class="game-modes">
+          <a class="btn primary" href="taboo.html">One screen<small>Class or table, teams share a screen</small></a>
+          <a class="btn" href="online.html?game=taboo">Own devices<small>Everyone on their own phone, anywhere</small></a>
+        </span>
+      </div>
+      <div class="game-tile" style="--team:#6b9bff">
+        <span class="game-mark">H</span>
+        <span class="game-name">Hot Seat</span>
+        <span class="game-desc">One player can’t see the word. Their team describes it until they guess.</span>
+        <span class="game-modes">
+          <a class="btn primary" href="hotseat.html?style=hotseat">One screen<small>Class or table, teams share a screen</small></a>
+          <a class="btn" href="online.html?game=hotseat">Own devices<small>Everyone on their own phone, anywhere</small></a>
+        </span>
+      </div>
+      <div class="game-tile" style="--team:#ff6fb5">
+        <span class="game-mark">?</span>
+        <span class="game-name">Who Am I?</span>
+        <span class="game-desc">The player in the hot seat asks yes/no questions. Everyone else answers only yes, no or maybe.</span>
+        <span class="game-modes">
+          <a class="btn primary" href="hotseat.html?style=whoami">One screen<small>Class or table, teams share a screen</small></a>
+          <a class="btn" href="online.html?game=whoami">Own devices<small>Everyone on their own phone, anywhere</small></a>
+        </span>
+      </div>
+    </div>
+    <p class="home-langs" data-only="nadu"><span class="lang-tag en">English</span> <span class="lang-tag ko">한국어</span> Every game works in English or Korean. On one screen each team picks the language it explains in; on your own devices each player does.</p>
+    <p class="home-langs" data-only="nadu"><a class="btn ghost" href="screen.html">📺 Main screen for a TV or projector</a><br><span class="muted">Shows an online game to the whole room; everyone plays on their phones.</span></p>
   </main>
   <script type="module">
-    import { allCards } from './js/core.js';
+    import { allCards, EDITION } from './js/core.js';
     import { openCardManager } from './js/cardmanager.js';
-    const count = () => { document.getElementById('home-count').textContent = `${allCards().length} words sorted by CEFR level, shared by every game.`; };
+    const count = () => { document.getElementById('home-count').textContent = EDITION.features.korean ? `${allCards().length} English and Korean words, shared by every game.` : `${allCards().length} words sorted by CEFR level, shared by every game.`; };
     count();
     // Already hosting a room? Say so on the button.
     try {

@@ -1,5 +1,8 @@
 // Hot Seat bits shared by the controller and the class view.
-import { makeSync, settingsStore, sum } from './core.js';
+import { makeSync, settingsStore, sum, EDITION } from './core.js';
+
+// In class Korean is off limits; in the Nadu edition both languages are in play.
+const MIX = EDITION.features.korean ? ['switch languages', 'switched languages'] : ['use Korean', 'used Korean'];
 
 export const sync = makeSync('hotseat.game.v1', 'hotseat-cefr');
 
@@ -32,8 +35,8 @@ export const STYLE = {
   hotseat: {
     name: 'Hot Seat',
     seat: 'Hot seat: sit facing away from the screen.',
-    rule: 'Describe the word. Don’t say it, spell it or use Korean.',
-    foul: 'said the word, spelled it or used Korean',
+    rule: `Describe the word. Don’t say it, spell it or ${MIX[0]}.`,
+    foul: `said the word, spelled it or ${MIX[1]}`,
   },
   whoami: {
     name: 'Who Am I?',

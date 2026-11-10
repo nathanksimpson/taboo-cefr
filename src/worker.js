@@ -1,4 +1,7 @@
-// Taboo CEFR — Worker entry.
+// Taboo CEFR / Nadu Taboo — Worker entry.
+import { DurableObject } from 'cloudflare:workers';
+import { newRoom, apply, viewFor as naduViewFor } from '../public/js/online-engine.js';
+
 // Static files in ./public are served as before. The only server code is the
 // online room: /api/rooms (create) and /api/rooms/CODE/ws (join, WebSocket),
 // each room being one Durable Object that relays the game between devices.
@@ -38,6 +41,16 @@ export default {
       if (request.headers.get('Upgrade') !== 'websocket') return json({ error: 'Expected a WebSocket' }, 426);
       const code = m[1].toUpperCase();
       return env.ROOMS.get(env.ROOMS.idFromName(code)).fetch(request);
+    }
+
+    // Nadu edition: "Own devices" rooms, run by the server (online.html, screen.html)
+    const n = url.pathname.match(/^\/api\/room\/([A-Za-z]{4})\/ws$/);
+    if (n) {
+      if (request.headers.get('Upgrade') !== 'websocket') return new Response('Expected a WebSocket', { status: 426 });
+      const code = n[1].toUpperCase();
+      const stub = env.NADU_ROOMS.get(env.NADU_ROOMS.idFromName(code));
+      const fwd = new URL(request.url); fwd.searchParams.set('code', code);
+      return stub.fetch(new Request(fwd, request));
     }
 
     if (url.pathname.startsWith('/api/')) return json({ error: 'Not found' }, 404);
@@ -251,5 +264,87 @@ export class Room {
       return;
     }
     await this.ctx.storage.deleteAll();
+  }
+}
+
+/* ---------------- Nadu edition: rooms the server runs ----------------
+   Everyone is equal: the game lives here (online-engine.js), not on anyone's screen. */
+const NADU_ROOM_TTL_MS = 3 * 24 * 60 * 60 * 1000; // rooms are wiped 3 days after the last action
+const NADU_CODE_RE = /^[A-Z]{4}$/;
+
+export class NaduRoom extends DurableObject {
+  constructor(ctx, env) {
+    super(ctx, env);
+    this.state = null;
+  }
+
+  async load(code) {
+    if (!this.state) this.state = (await this.ctx.storage.get('state')) || newRoom(code);
+    return this.state;
+  }
+
+  async fetch(request) {
+    const url = new URL(request.url);
+    const code = url.searchParams.get('code');
+    const pid = (url.searchParams.get('pid') || '').slice(0, 40);
+    const display = url.searchParams.get('display') === '1'; // a TV / projector showing the room, not a player
+    if (!NADU_CODE_RE.test(code || '') || !/^[a-z0-9]{8,40}$/.test(pid)) return new Response('Bad request', { status: 400 });
+    await this.load(code);
+    const pair = new WebSocketPair();
+    this.ctx.acceptWebSocket(pair[1]);
+    pair[1].serializeAttachment({ pid, code, display });
+    this.sendTo(pair[1]);
+    return new Response(null, { status: 101, webSocket: pair[0] });
+  }
+
+  async webSocketMessage(ws, raw) {
+    const { pid, code, display } = ws.deserializeAttachment() || {};
+    if (!pid) return;
+    let msg;
+    try { msg = JSON.parse(typeof raw === 'string' ? raw : new TextDecoder().decode(raw)); } catch { return; }
+    if (msg?.type === 'ping') { ws.send(JSON.stringify({ type: 'pong', now: Date.now() })); return; }
+    if (display) return; // the main screen only watches
+    const s = await this.load(code);
+    const err = apply(s, pid, msg || {}, Date.now());
+    if (err) { ws.send(JSON.stringify({ type: 'error', error: err, action: msg?.type })); this.sendTo(ws); return; }
+    await this.ctx.storage.put('state', s);
+    await this.ctx.storage.setAlarm(Date.now() + NADU_ROOM_TTL_MS);
+    this.broadcast();
+  }
+
+  async webSocketClose(ws) {
+    try { ws.close(); } catch { /* already closed */ }
+    this.broadcast(ws);
+  }
+
+  async webSocketError(ws) { this.broadcast(ws); }
+
+  async alarm() {
+    await this.ctx.storage.deleteAll();
+    this.state = null;
+  }
+
+  online(except) {
+    const ids = new Set();
+    let screens = 0;
+    for (const ws of this.ctx.getWebSockets()) {
+      if (ws === except) continue;
+      const a = ws.deserializeAttachment();
+      if (a?.display) screens += 1;
+      else if (a?.pid) ids.add(a.pid);
+    }
+    return { ids: [...ids], screens };
+  }
+
+  sendTo(ws, online = this.online()) {
+    const { pid, display } = ws.deserializeAttachment() || {};
+    if (!pid || !this.state) return;
+    try { ws.send(JSON.stringify({ type: 'state', state: naduViewFor(this.state, pid, { display }), online: online.ids, screens: online.screens, now: Date.now() })); } catch { /* socket gone */ }
+  }
+
+  broadcast(except) {
+    if (!this.state) return;
+    const online = this.online(except);
+    for (const ws of this.ctx.getWebSockets()) if (ws !== except) this.sendTo(ws, online);
   }
 }

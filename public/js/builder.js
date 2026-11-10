@@ -1,6 +1,6 @@
 // Deck builder: make your own named decks from units, single words and new cards.
 import {
-  BOOKS, LEVELS, LEVEL_ORDER, BOOK_BY_ID, SET_LABEL, store, allCards, deckCardIds, wordKey, esc, phraseProblem, singleWordInput,
+  BOOKS, LEVELS, KO_LEVELS, SET_NAME, LEVEL_ORDER, BOOK_BY_ID, SET_LABEL, store, allCards, deckCardIds, wordKey, esc, phraseProblem, singleWordInput,
 } from './core.js';
 
 const HTML = `
@@ -140,6 +140,7 @@ function build() {
   $('#bd-src').innerHTML =
     LEVEL_ORDER.map((lvl) => `<optgroup label="${lvl}">${BOOKS.filter((b) => b.level === lvl).map((b) => opt(b.id, b.name)).join('')}</optgroup>`).join('') +
     `<optgroup label="CEFR">${LEVELS.map((l) => opt(l, `CEFR ${l}`)).join('')}</optgroup>` +
+    (KO_LEVELS.length ? `<optgroup label="한국어 · TOPIK">${KO_LEVELS.map((l) => opt(l, SET_NAME(l))).join('')}</optgroup>` : '') +
     `<optgroup label="Your own">${opt('MY', 'My cards')}</optgroup>`;
 
   $('#bd-src').addEventListener('change', (e) => { src = e.target.value; unit = ''; $('#bd-q').value = ''; render(); $('#bd-src-list').scrollTop = 0; });

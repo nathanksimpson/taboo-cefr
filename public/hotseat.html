@@ -14,13 +14,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css">
+  <script>/* edition first, so the page never flashes the wrong one (details in js/edition.js) */
+    (function () { var d = document.documentElement, h = /nadu/i.test(location.hostname) ? 'nadu' : 'classroom';
+      try { var a = new URLSearchParams(location.search).get('edition'); if (a === 'nadu' || a === 'classroom') sessionStorage.setItem('edition', a); h = sessionStorage.getItem('edition') || h; } catch (e) {}
+      d.dataset.edition = h; })();</script>
   <script type="module" src="js/edition.js"></script>
 </head>
 <body class="explainer hotseat">
   <header class="topbar">
     <a class="brand" href="./"><span class="brand-mark hs">H</span> Hot Seat <span class="brand-sub">CEFR</span></a>
     <div class="topbar-actions">
-      <button class="btn ghost net-btn" id="online-btn" title="Play with phones or other computers">🌐 Online</button>
+      <button class="btn ghost net-btn" data-only="classroom" id="online-btn" title="Play with phones or other computers">🌐 Online</button>
       <button class="btn ghost" id="open-class" title="Open the class view in a new window for a second screen">⧉ Class view</button>
       <button class="btn ghost" id="manage-cards-top">Cards</button>
     </div>

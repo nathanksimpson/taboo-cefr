@@ -52,7 +52,22 @@ Both windows must be in the **same browser on the same computer** — they sync 
 One codebase, two front doors. `public/js/edition.js` holds each edition's name, colours and features, and the site picks one from the address it's opened at:
 
 - **Classroom** (default, e.g. `taboo-cefr.…workers.dev`) — for teaching: CEFR levels plus the Simson book decks.
-- **Nadu** (any address containing "nadu") — for playing at home: no book decks, its own name and colours. Nadu-Taboo's extras (Korean decks, choosing your language, co-op) move into this edition in later steps.
+- **Nadu** (any address containing "nadu") — for playing at home, in English and Korean:
+  - Korean TOPIK 1–6 decks next to the CEFR levels (no Simson book decks)
+  - On one screen, each team picks the language it explains in, and can have its own decks
+  - **Own devices** (`online.html`): rooms the server runs, everyone equal — co-op or teams, each player picks their language, team board. `screen.html` shows a room on a TV.
+  - EN / 한국어 switch for the menus (`i18n.js`), its own name, colours and icons (`public/nadu/`)
+  - Hot Seat's rule says "don't switch languages" instead of "don't use Korean"
+
+| Feature (`edition.js`) | Classroom | Nadu |
+|---|---|---|
+| `bookDecks` — Simson book decks | ✓ | |
+| `korean` — TOPIK decks, team languages | | ✓ |
+| `koreanMenus` — EN / 한국어 switch | | ✓ |
+| `teacherRooms` — 🌐 Online, phones join the teacher's room (`join.html`, `/api/rooms`) | ✓ | |
+| `playerRooms` — Own devices, server-run rooms (`online.html`, `/api/room`) | | ✓ |
+
+Markup for one edition only carries `data-only="classroom"` or `data-only="nadu"`; Nadu-only styles at the end of `app.css` are scoped to `html[data-edition="nadu"]`.
 
 Preview the other edition on any address with `?edition=nadu` or `?edition=classroom` (it sticks for that tab). To add a difference between editions, add a feature to both in `edition.js` and check `EDITION.features.…` where it matters.
 

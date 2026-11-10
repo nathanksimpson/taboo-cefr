@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taboo Online</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="Nadu Taboo">
+  <meta name="theme-color" content="#27c3c9">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+  <script>/* edition first, so the page never flashes the wrong one (details in js/edition.js) */
+    (function () { var d = document.documentElement, h = /nadu/i.test(location.hostname) ? 'nadu' : 'classroom';
+      try { var a = new URLSearchParams(location.search).get('edition'); if (a === 'nadu' || a === 'classroom') sessionStorage.setItem('edition', a); h = sessionStorage.getItem('edition') || h; } catch (e) {}
+      d.dataset.edition = h; })();</script>
+</head>
+<body class="online">
+  <header class="topbar">
+    <a class="brand" href="./" title="All games"><span class="brand-mark">T</span> <span data-t="title">Taboo Online</span></a>
+    <div class="topbar-actions">
+      <span class="conn" id="conn" hidden></span>
+      <div class="seg uilang" id="uilang" aria-label="Language">
+        <button data-ui="en">EN</button><button data-ui="ko">한국어</button>
+      </div>
+      <button class="btn ghost" id="manage-cards-top" data-t="cards">Cards</button>
+    </div>
+  </header>
+
+  <!-- JOIN -->
+  <main id="join" class="setup narrow">
+    <section class="panel">
+      <p class="eyebrow" data-t="eyebrow">English · 한국어</p>
+      <h2 class="join-title" data-t="sub">Play Taboo together on your own devices.</h2>
+      <label class="field"><span data-t="yourName">Your name</span>
+        <input id="my-name" maxlength="24" autocomplete="nickname"></label>
+      <div class="field"><span data-t="explainIn">I explain in</span>
+        <div class="seg" id="my-lang"><button data-lang="en">English</button><button data-lang="ko">한국어</button></div>
+        <span class="hint" data-t="explainInNote">The language you're practising. Your cards come from decks in this language.</span>
+      </div>
+      <div class="join-actions">
+        <button class="btn primary big" id="create" data-t="create">Create a room</button>
+        <div class="join-code">
+          <label class="sr" for="code-in" data-t="roomCode">Room code</label>
+          <input id="code-in" maxlength="4" placeholder="ABCD" autocomplete="off" autocapitalize="characters">
+          <button class="btn big" id="join-btn" data-t="join">Join</button>
+        </div>
+        <div id="rejoin" class="rejoin" hidden></div>
+      </div>
+      <div class="screen-link">
+        <a class="btn ghost" id="use-screen" href="screen.html" data-t="useScreen">📺 Use this device as the main screen</a>
+        <span class="hint" data-t="useScreenNote">For a TV, projector or laptop everyone can see. Players join on their phones.</span>
+      </div>
+      <p class="hint" id="join-err" role="alert"></p>
+    </section>
+  </main>
+
+  <!-- LOBBY -->
+  <main id="lobby" class="setup" hidden>
+    <section class="panel room-panel">
+      <div><p class="eyebrow" data-t="room">Room</p><div class="code-big" id="room-code"></div></div>
+      <div class="row-btns">
+        <button class="btn ghost small" id="copy-link" data-t="copyLink">Copy invite link</button>
+        <a class="btn ghost small" id="open-screen" target="_blank" rel="noopener" data-t="openScreen">📺 Open main screen</a>
+        <span class="screen-on" id="screen-on" data-t="scrScreens" hidden>📺 Main screen connected</span>
+        <button class="link small" id="leave" data-t="leave">Leave room</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2><span class="step">1</span> <span data-t="game">Game</span></h2></div>
+      <div class="seg activity-seg" id="style">
+        <button data-style="taboo" data-t="styleTaboo">Taboo</button><button data-style="hotseat" data-t="styleHotseat">Hot Seat</button><button data-style="whoami" data-t="styleWhoami">Who Am I?</button>
+      </div>
+      <p class="hint" id="style-desc"></p>
+      <div class="seg mode-seg" id="mode">
+        <button data-mode="coop" data-t="coop">Co-op</button><button data-mode="teams" data-t="teams">Teams</button>
+      </div>
+      <p class="hint" id="mode-desc"></p>
+      <div class="rule" id="teams-rule">
+        <div class="rule-label" data-t="teamCount">Teams</div>
+        <div class="rule-body">
+          <div class="stepper">
+            <button class="btn ghost small" id="team-minus" aria-label="Fewer teams">−</button>
+            <span id="team-count">2</span>
+            <button class="btn ghost small" id="team-plus" aria-label="More teams">+</button>
+          </div>
+          <div class="team-names" id="team-name-inputs"></div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-label" data-t="timer">Turn timer</div>
+        <div class="rule-body"><div class="seg" id="timer-presets"></div></div>
+      </div>
+      <div class="rule">
+        <div class="rule-label" data-t="skips">Skips</div>
+        <div class="rule-body">
+          <div class="seg" id="skip-modes">
+            <button data-skip="free" data-t="skipFree">Free</button>
+            <button data-skip="limited" data-t="skipLimited">Some free, then −1</button>
+            <button data-skip="penalty" data-t="skipPenalty">Always −1</button>
+          </div>
+          <label class="inline" id="free-skips-wrap"><input type="number" id="free-skips" min="0" max="20"> <span data-t="freePerTurn">free per turn</span></label>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-label" id="pen-label">Taboo word said</div>
+        <div class="rule-body"><label class="check"><input type="checkbox" id="taboo-penalty"> <span data-t="tabooPen">Costs 1 point</span></label></div>
+      </div>
+      <div class="rule" id="avoid-rule">
+        <div class="rule-label" data-t="avoidLabel">Words to avoid</div>
+        <div class="rule-body"><label class="check"><input type="checkbox" id="show-avoid"> <span data-t="showAvoid">Show the card's taboo words as extra words to avoid</span></label></div>
+      </div>
+      <div class="rule">
+        <div class="rule-label" data-t="rounds">Rounds</div>
+        <div class="rule-body"><label class="inline"><input type="number" id="rounds" min="0" max="20"> <span class="muted" id="rounds-note"></span></label></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2><span class="step">2</span> <span data-t="players">Players</span></h2></div>
+      <div id="players" class="players"></div>
+      <div id="team-board" class="team-board"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2><span class="step">3</span> <span data-t="myDecks">My cards</span></h2>
+        <button class="btn ghost small" id="manage-cards" data-t="manageCards">Manage cards…</button></div>
+      <p class="hint" data-t="myDecksNote">When it's your turn to explain, your cards come from these decks. Everyone picks their own.</p>
+      <div id="deck-picker"></div>
+      <p class="hint" id="deck-count"></p>
+    </section>
+
+    <div class="setup-actions">
+      <label class="check"><input type="checkbox" id="sounds"> <span data-t="sounds">Sound effects</span></label>
+      <span class="setup-summary" id="start-note"></span>
+      <button class="btn primary big" id="start" data-t="start">Start game ▶</button>
+    </div>
+  </main>
+
+  <!-- PLAY -->
+  <main id="play" class="play" hidden>
+    <div class="playbar">
+      <div class="team-chip" id="cur-team"></div>
+      <div class="timer" id="timer"></div>
+      <div class="playbar-actions">
+        <button class="btn ghost small" id="teams-btn" hidden>👥 <span data-t="teamCount">Teams</span></button>
+        <button class="btn ghost small" id="pause" data-t="pause">Pause</button>
+        <button class="btn ghost small" id="end-game" data-t="endGame">End game</button>
+      </div>
+    </div>
+    <div id="stage" class="stage"></div>
+    <div id="scoreboard" class="scoreboard"></div>
+  </main>
+
+  <dialog id="teams-dlg" class="dlg online-dlg">
+    <div class="dlg-head"><h2 data-t="teamCount">Teams</h2><button class="btn primary small" id="teams-done" type="button">OK</button></div>
+    <div class="online-body"><div id="team-board-game" class="team-board"></div></div>
+  </dialog>
+  <script type="module" src="js/online-play.js"></script>
+  <script type="module" src="js/i18n.js"></script>
+</body>
+</html>
