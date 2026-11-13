@@ -56,7 +56,7 @@ function render() {
   } else if (p === 'review') {
     const total = turnTotal(game.log, s);
     const words = s.revealWords && game.log.length
-      ? `<div class="cv-words">${game.log.map((e) => `<span class="cv-word ${{ correct: 'correct', pass: 'skip', foul: 'taboo' }[e.result]}">${esc(e.card.word)}</span>`).join('')}</div>` : '';
+      ? `<div class="cv-words">${game.log.map((e) => `<span class="cv-word ${{ correct: 'correct', pass: 'skip', foul: 'taboo', timeup: 'timeup' }[e.result]}">${esc(e.card.word)}</span>`).join('')}</div>` : '';
     main = `<div class="cv-center"><p class="cv-eyebrow">Time's up! Hot seat, turn around</p><h1 class="cv-team">${esc(team.name)}</h1>
       <p class="cv-turn-pts">${total >= 0 ? '+' : '−'}${Math.abs(total)} point${Math.abs(total) === 1 ? '' : 's'}</p>${words}</div>`;
   } else if (p === 'over' && game.coop) {

@@ -255,9 +255,9 @@ function hsPhaseHtml() {
   if (p === 'review') {
     const pts = scoreHS(g.log, s);
     const edit = hsOnTeam();
-    const sym = { correct: '✓', pass: '↷', foul: '✕' };
-    const cls = { correct: 'correct', pass: 'skip', foul: 'taboo' };
-    const rows = g.log.map((e, i) => `<div class="rv-row"><span class="rv-word">${esc(e.card?.word || '—')}</span>
+    const sym = { correct: '✓', pass: '↷', foul: '✕', timeup: '⏱' };
+    const cls = { correct: 'correct', pass: 'skip', foul: 'taboo', timeup: 'timeup' };
+    const rows = g.log.map((e, i) => `<div class="rv-row"><span class="rv-word">${esc(e.card?.word || '—')}${e.result === 'timeup' ? ' <span class="rv-timeup">⏱ time ran out</span>' : ''}</span>
       <span class="rv-btns">${edit ? ['correct', 'pass', 'foul'].map((r) => `<button class="rv ${cls[r]} ${e.result === r ? 'on' : ''}" data-rv="${i}" data-r="${r}">${sym[r]}</button>`).join('')
         : `<span class="rv ${cls[e.result]} on">${sym[e.result]}</span>`}</span>
       <span class="rv-pts">${pts[i] > 0 ? '+' : ''}${pts[i]}</span></div>`).join('');
@@ -320,10 +320,10 @@ function phaseHtml() {
     const total = sum(pts);
     const edit = iExplain();
     const rows = g.log.map((e, i) => `<div class="rv-row">
-      <span class="rv-word">${esc(e.card?.word || '—')}</span>
+      <span class="rv-word">${esc(e.card?.word || '—')}${e.result === 'timeup' ? ' <span class="rv-timeup">⏱ time ran out</span>' : ''}</span>
       <span class="rv-btns">${edit
         ? ['correct', 'taboo', 'skip'].map((r) => `<button class="rv ${r} ${e.result === r ? 'on' : ''}" data-rv="${i}" data-r="${r}">${{ correct: '✓', taboo: '✕', skip: '↷' }[r]}</button>`).join('')
-        : `<span class="rv ${e.result} on">${{ correct: '✓', taboo: '✕', skip: '↷' }[e.result]}</span>`}</span>
+        : `<span class="rv ${e.result} on">${{ correct: '✓', taboo: '✕', skip: '↷', timeup: '⏱' }[e.result]}</span>`}</span>
       <span class="rv-pts">${pts[i] > 0 ? '+' : ''}${pts[i]}</span></div>`).join('');
     return `<div class="review"><p class="eyebrow">Time's up</p>
       <h2>${esc(team.name)}: <span class="${total < 0 ? 'neg' : ''}">${total >= 0 ? '+' : ''}${total}</span></h2>

@@ -940,3 +940,9 @@ html[data-edition="classroom"] .lang-pick { display: none !important; }
 html:is([data-edition="nadu"], .room-ui) .room-panel .row-btns { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
 html:is([data-edition="nadu"], .room-ui) .room-panel .row-btns .btn { white-space: nowrap; border-radius: 999px; text-decoration: none; color: var(--ink); }
 @media (max-width: 560px) { html:is([data-edition="nadu"], .room-ui) .room-panel > div:first-child { flex-basis: 100%; } }
+
+/* the card still on screen when time ran out (0 points unless changed to ✓) */
+.rv-timeup { display: inline-block; font: 700 .72rem/1 var(--body, inherit); color: var(--muted); background: var(--soft, #f1eee6); border: 1.5px dashed currentColor; border-radius: 999px; padding: .2em .55em; vertical-align: middle; white-space: nowrap; }
+.rv.timeup { color: var(--muted); }
+.cv-word.timeup { background: var(--paper); color: var(--muted); border-style: dashed; }
+html:is([data-edition="nadu"], .room-ui) .scr-words li.timeup { background: var(--soft); opacity: .8; }

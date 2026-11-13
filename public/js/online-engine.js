@@ -102,6 +102,9 @@ function cleanCard(c) {
 
 function finishTurn(s) {
   s.phase = 'review';
+  // time ran out on a card: keep it in the summary (0 points; it can be fixed to ✓ if it was guessed at the buzzer)
+  const left = s.turn.cards[s.turn.idx];
+  if (left) s.turn.log.push({ card: left, result: 'timeup' });
   s.turn.remaining = 0;
 }
 

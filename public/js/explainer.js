@@ -237,6 +237,8 @@ function pause() {
 
 function timeUp() {
   game.phase = 'review';
+  // the card still on screen goes into the summary (0 points; it can be changed to ✓ if it was guessed at the buzzer)
+  if (game.card) game.log.push({ card: game.card, result: 'timeup' });
   game.card = null; // a word that was shown counts as played, even if time ran out
   game.flash = { type: 'timeup', at: Date.now() };
   play('timeUp');
@@ -351,7 +353,7 @@ function renderStage() {
   } else if (game.phase === 'review') {
     const pts = scoreTurn(game.log, game.settings);
     const rows = game.log.map((e, i) => `<div class="rv-row">
-        <span class="rv-word">${esc(e.card.word)} <span class="level-tag small">${SET_LABEL(e.card.level)}</span></span>
+        <span class="rv-word">${esc(e.card.word)} <span class="level-tag small">${SET_LABEL(e.card.level)}</span>${e.result === 'timeup' ? ' <span class="rv-timeup">⏱ time ran out</span>' : ''}</span>
         <span class="rv-btns">
           ${['correct', 'taboo', 'skip'].map((r) => `<button class="rv ${r} ${e.result === r ? 'on' : ''}" data-rv="${i}" data-r="${r}">${{ correct: '✓', taboo: '✕', skip: '↷' }[r]}</button>`).join('')}
         </span>

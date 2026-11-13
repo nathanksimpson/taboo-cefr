@@ -342,7 +342,7 @@ const myRole = () => {
 };
 const label = (r) => {
   const taboo = state.settings.style === 'taboo';
-  return { correct: t('correct'), taboo: taboo ? t('taboo') : t('foul'), skip: taboo ? t('skip') : t('pass') }[r];
+  return { correct: t('correct'), taboo: taboo ? t('taboo') : t('foul'), skip: taboo ? t('skip') : t('pass'), timeup: t('timeRanOut') }[r];
 };
 
 let prev = { phase: null, logLen: 0 };
@@ -492,7 +492,7 @@ function renderPlay() {
     const pts = scoreLog(tr.log, s.settings);
     const sumPts = pts.reduce((a, b) => a + b, 0);
     const rows = tr.log.map((e, i) => `<div class="rv-row">
-        <span class="rv-word" lang="${e.card?.lang || 'en'}">${esc(e.card?.word || '')} <span class="level-tag small">${esc(SET_LABEL(e.card?.level) || '')}</span></span>
+        <span class="rv-word" lang="${e.card?.lang || 'en'}">${esc(e.card?.word || '')} <span class="level-tag small">${esc(SET_LABEL(e.card?.level) || '')}</span>${e.result === 'timeup' ? ` <span class="rv-timeup">⏱ ${esc(t('timeRanOut'))}</span>` : ''}</span>
         <span class="rv-btns">${['correct', 'taboo', 'skip'].map((r) => `<button class="rv ${r} ${e.result === r ? 'on' : ''}" data-rv="${i}" data-r="${r}">${{ correct: '✓', taboo: '✕', skip: '↷' }[r]}</button>`).join('')}</span>
         <span class="rv-pts">${pts[i] > 0 ? '+' : ''}${pts[i]}</span>
       </div>`).join('');

@@ -68,7 +68,7 @@ const people = () => {
 };
 const label = (r) => {
   const taboo = state.settings.style === 'taboo';
-  return { correct: t('correct'), taboo: taboo ? t('taboo') : t('foul'), skip: taboo ? t('skip') : t('pass') }[r];
+  return { correct: t('correct'), taboo: taboo ? t('taboo') : t('foul'), skip: taboo ? t('skip') : t('pass'), timeup: t('timeRanOut') }[r];
 };
 function roundText() {
   const per = state.settings.mode === 'coop' ? Math.max(1, state.order.length) : teamCount(state);
@@ -199,7 +199,7 @@ function renderGame() {
       <p class="eyebrow">${esc(tr.cardsLeft > 0 ? t('timesUp') : t('outOfCards'))}</p>
       <h1 class="scr-big">${esc(s.players[tr.explainer]?.name || '?')} <span class="${sum < 0 ? 'neg' : ''}">${sum >= 0 ? '+' : ''}${sum}</span></h1>
       <p class="scr-sub">${esc(t('scrWords'))}</p>
-      <ul class="scr-words">${tr.log.map((e, i) => `<li class="${e.result}" lang="${e.card?.lang || 'en'}"><span>${{ correct: '✓', taboo: '✕', skip: '↷' }[e.result]}</span><b>${esc(e.card?.word || '')}</b><em>${esc(label(e.result))}</em><i>${pts[i] > 0 ? '+' : ''}${pts[i]}</i></li>`).join('') || `<li class="muted">${esc(t('noCardsPlayed'))}</li>`}</ul>
+      <ul class="scr-words">${tr.log.map((e, i) => `<li class="${e.result}" lang="${e.card?.lang || 'en'}"><span>${{ correct: '✓', taboo: '✕', skip: '↷', timeup: '⏱' }[e.result]}</span><b>${esc(e.card?.word || '')}</b><em>${esc(label(e.result))}</em><i>${pts[i] > 0 ? '+' : ''}${pts[i]}</i></li>`).join('') || `<li class="muted">${esc(t('noCardsPlayed'))}</li>`}</ul>
     </div>`;
   } else if (s.phase === 'over') {
     if (s.settings.mode === 'coop') {
