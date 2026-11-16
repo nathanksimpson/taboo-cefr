@@ -2,9 +2,10 @@
 // Format: one card per line ->  단어: 금지어, 금지어, 금지어
 // Levels are approximate — move any card you disagree with.
 
-export const KO_LEVELS = ['K1', 'K2', 'K3', 'K4', 'K5', 'K6'];
+// K1X / K2X: the 'Extra' decks — more words at TOPIK 1 and 2, kept apart from the original decks.
+export const KO_LEVELS = ['K1', 'K1X', 'K2', 'K2X', 'K3', 'K4', 'K5', 'K6'];
 export const KO_INFO = {
-  K1: 'TOPIK 1 · 초급', K2: 'TOPIK 2 · 초급', K3: 'TOPIK 3 · 중급',
+  K1: 'TOPIK 1 · 초급', K1X: 'TOPIK 1 추가 · 초급', K2: 'TOPIK 2 · 초급', K2X: 'TOPIK 2 추가 · 초급', K3: 'TOPIK 3 · 중급',
   K4: 'TOPIK 4 · 중급', K5: 'TOPIK 5 · 고급', K6: 'TOPIK 6 · 고급',
 };
 
@@ -192,6 +193,8 @@ K1: `
 채소: 야채, 당근, 건강
 당근: 주황색, 토끼, 채소
 감자: 감자튀김, 땅, 채소
+`,
+K1X: `
 오렌지: 과일, 주황색, 주스
 복숭아: 과일, 분홍색, 여름
 참외: 노란색, 과일, 여름
@@ -704,6 +707,8 @@ PC방: 컴퓨터, 게임, 라면
 녹차: 차, 초록색, 마시다
 소풍: 김밥, 공원, 도시락
 축제: 행사, 즐기다, 지역
+`,
+K2X: `
 대학원: 대학교, 석사, 공부
 학기: 방학, 수업, 봄
 과목: 수학, 영어, 수업

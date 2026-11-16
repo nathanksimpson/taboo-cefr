@@ -139,7 +139,7 @@ function build() {
   const opt = (v, t) => `<option value="${v}">${esc(t)}</option>`;
   $('#bd-src').innerHTML =
     LEVEL_ORDER.map((lvl) => `<optgroup label="${lvl}">${BOOKS.filter((b) => b.level === lvl).map((b) => opt(b.id, b.name)).join('')}</optgroup>`).join('') +
-    `<optgroup label="CEFR">${LEVELS.map((l) => opt(l, `CEFR ${l}`)).join('')}</optgroup>` +
+    `<optgroup label="CEFR">${LEVELS.map((l) => opt(l, SET_NAME(l))).join('')}</optgroup>` +
     (KO_LEVELS.length ? `<optgroup label="한국어 · TOPIK">${KO_LEVELS.map((l) => opt(l, SET_NAME(l))).join('')}</optgroup>` : '') +
     `<optgroup label="Your own">${opt('MY', 'My cards')}</optgroup>`;
 

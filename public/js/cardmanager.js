@@ -49,7 +49,7 @@ let open = null; // the deck being viewed, or null for the deck list
 let hooks = {};
 const $ = (s) => document.querySelector(s);
 
-const CEFR_C = { A1: '#ffc61a', A2: '#ffa24d', B1: '#ff8577', B2: '#6b9bff', C1: '#9a6cff', C2: '#27c3c9' };
+const CEFR_C = { A1: '#ffc61a', A1X: '#ffc61a', A2: '#ffa24d', A2X: '#ffa24d', B1: '#ff8577', B2: '#6b9bff', C1: '#9a6cff', C2: '#27c3c9' };
 const colorOf = (s) => (BOOK_BY_ID[s] ? LEVEL_COLORS[BOOK_BY_ID[s].level] : CEFR_C[s] || (SET_GROUP(s) === 'Korean' ? '#ff8fb0' : '#d8cfff'));
 
 function deckCards(s) {

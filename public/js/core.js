@@ -9,7 +9,10 @@ const BOOKS = EDITION.features.bookDecks ? ALL_BOOKS : [];
 const LEVEL_ORDER = EDITION.features.bookDecks ? ALL_LEVEL_ORDER : [];
 const KO_LEVELS = EDITION.features.korean ? ALL_KO_LEVELS : [];
 export { BOOKS, LEVEL_ORDER, LEVEL_COLORS, KO_LEVELS, EDITION };
-export const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+// A1X / A2X: the 'Extra' decks — more words at the same level, kept apart so the original decks stay as they were.
+export const LEVELS = ['A1', 'A1X', 'A2', 'A2X', 'B1', 'B2', 'C1', 'C2'];
+/** 'A1X' -> 'A1 Extra' (Korean: 'K1X' -> '1 Extra'). */
+const extra = (s) => s.replace(/X$/, ' Extra');
 export const BOOK_IDS = BOOKS.map((b) => b.id);
 export const BOOK_BY_ID = Object.fromEntries(BOOKS.map((b) => [b.id, b]));
 // SETS also holds your own decks (ids start with "D:"); refreshSets() keeps it up to date in place.
@@ -49,15 +52,15 @@ export function bringLang(deck, pos, want, map) {
 /** Language a card set is in: 'ko' for the TOPIK decks, otherwise 'en'. */
 export const SET_LANG = (s) => (isKorean(s) ? 'ko' : 'en');
 export const SET_INFO = {
-  A1: 'Beginner', A2: 'Elementary', B1: 'Intermediate',
+  A1: 'Beginner', A1X: 'Beginner', A2: 'Elementary', A2X: 'Elementary', B1: 'Intermediate',
   B2: 'Upper-intermediate', C1: 'Advanced', C2: 'Proficiency', MY: 'My cards',
   ...Object.fromEntries(BOOKS.map((b) => [b.id, `${b.level} level`])),
   ...(KO_LEVELS.length ? KO_INFO : {}),
 };
 /** Short label, used on cards and tabs: "WN 3 · Navy", "B1", "My cards". */
-export const SET_LABEL = (s) => (s === 'MY' ? 'My cards' : BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].short} · ${BOOK_BY_ID[s].level}` : isKorean(s) ? `TOPIK ${s.slice(1)}` : isDeck(s) ? (deckById(s)?.name || 'Deck') : s);
+export const SET_LABEL = (s) => (s === 'MY' ? 'My cards' : BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].short} · ${BOOK_BY_ID[s].level}` : isKorean(s) ? `TOPIK ${extra(s.slice(1))}` : isDeck(s) ? (deckById(s)?.name || 'Deck') : extra(s));
 /** Full deck name: "Write Now 3 · Navy". */
-export const SET_NAME = (s) => (BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].name} · ${BOOK_BY_ID[s].level}` : s === 'MY' ? 'My cards' : isKorean(s) ? `한국어 ${KO_INFO[s]}` : isDeck(s) ? (deckById(s)?.name || 'Deck') : `CEFR ${s}`);
+export const SET_NAME = (s) => (BOOK_BY_ID[s] ? `${BOOK_BY_ID[s].name} · ${BOOK_BY_ID[s].level}` : s === 'MY' ? 'My cards' : isKorean(s) ? `한국어 ${KO_INFO[s]}` : isDeck(s) ? (deckById(s)?.name || 'Deck') : `CEFR ${extra(s)}`);
 /** Which filter group a set belongs to: a Rainbow level, 'CEFR', 'Korean' or 'MY'. */
 export const SET_GROUP = (s) => (BOOK_BY_ID[s] ? BOOK_BY_ID[s].level : s === 'MY' || isDeck(s) ? 'MY' : isKorean(s) ? 'Korean' : 'CEFR');
 export const TEAM_COLORS = ['#ef4b3f', '#2f6df6', '#13a35f', '#e29a0f', '#8b4ef0', '#e5428f'];

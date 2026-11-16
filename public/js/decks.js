@@ -1,11 +1,11 @@
 // Deck picker shared by both games: filter by level, search, sort, select.
 import {
-  SETS, SET_INFO, SET_NAME, SET_GROUP, BOOK_BY_ID, LEVEL_ORDER, LEVEL_COLORS, KO_LEVELS, allCards, store, esc, isDeck, deckCardIds,
+  SETS, SET_INFO, SET_NAME, SET_LABEL, SET_GROUP, BOOK_BY_ID, LEVEL_ORDER, LEVEL_COLORS, KO_LEVELS, allCards, store, esc, isDeck, deckCardIds,
 } from './core.js';
 import { openDeckBuilder } from './builder.js';
 
 const VIEW_KEY = 'decks.view.v1';
-const CEFR_COLORS = { A1: '#ffc61a', A2: '#ffa24d', B1: '#ff8577', B2: '#6b9bff', C1: '#9a6cff', C2: '#27c3c9',
+const CEFR_COLORS = { A1: '#ffc61a', A1X: '#ffc61a', A2: '#ffa24d', A2X: '#ffa24d', B1: '#ff8577', B2: '#6b9bff', C1: '#9a6cff', C2: '#27c3c9',
   K1: '#ffd6e0', K2: '#ffb3c7', K3: '#ff8fb0', K4: '#f06a99', K5: '#d94d84', K6: '#b8336a' };
 const KO = KO_LEVELS.length ? ['Korean'] : []; // Korean decks: Nadu edition only
 const FILTERS = ['All', ...LEVEL_ORDER, 'CEFR', ...KO, 'MY', 'Selected'];
@@ -65,7 +65,7 @@ export function setupDeckPicker({ settings, save, root = document.getElementById
     const book = BOOK_BY_ID[s];
     const deck = isDeck(s);
     const ko = SET_GROUP(s) === 'Korean';
-    const title = book ? book.name : s === 'MY' ? 'My cards' : deck ? SET_NAME(s) : ko ? `TOPIK ${s.slice(1)}` : s;
+    const title = book ? book.name : s === 'MY' ? 'My cards' : deck ? SET_NAME(s) : SET_LABEL(s);
     const sub = book ? `<span class="lvl-chip" style="--lc:${colorOf(s)}">${book.level}</span>` : `<span class="set-name">${s === 'MY' ? 'Cards you added' : deck ? 'Your deck' : ko ? `한국어 · ${SET_INFO[s].split('· ')[1]}` : `CEFR · ${SET_INFO[s]}`}</span>`;
     const btn = `<button type="button" class="set-tile ${on ? 'on' : ''} ${book || deck ? 'book' : ''} ${darkTile(s) ? 'dark' : ''}" style="--c:${colorOf(s)}" data-set="${s}" aria-pressed="${on}" title="${esc(SET_NAME(s))}">
       <span class="set-code">${esc(title)}</span>
