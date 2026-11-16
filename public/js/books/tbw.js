@@ -29,13 +29,13 @@ doctor: hospital, sick, nurse
 family: mom, dad, home
 housewife: home, mom, cook
 kind: nice, help, friendly
-office worker: office, computer, work
-police officer: police, catch, car
+worker: office, computer, job
+police: catch, car, thief
 # Unit 3 My Things
 backpack: school, bag, carry
 computer: screen, keyboard, mouse
 glasses: eyes, see, wear
-pencil case: pencils, box, school
+case: pencils, box, school
 shoes: feet, wear, walk
 smartphone: phone, call, apps
 blue: color, sky, sea
@@ -73,20 +73,20 @@ white: color, snow, milk
 chips: potato, salty, snack
 chocolate: brown, sweet, candy
 cookies: bake, sweet, snack
-hot dogs: sausage, bread, ketchup
-ice cream: cold, sweet, cone
+hotdogs: sausage, bread, ketchup
+dessert: cold, sweet, cone
 popcorn: movie, corn, butter
-butter cookies: butter, cookies, sweet
+butter: cookies, yellow, bread
 candies: sweet, sugar, lollipop
-chocolate chip cookies: chocolate, cookies, chips
-mint ice cream: mint, green, cone
-potato chips: potato, chips, salty
+biscuits: chocolate, cookies, sweet
+mint: green, cone, toothpaste
+potato: chips, salty, fries
 sandwiches: bread, ham, lunch
 snacks: chips, eat, cookies
-vanilla ice cream: vanilla, white, cone
+vanilla: white, cone, flavor
 # Unit 6 Birthday Invitation
 house: home, live, family
-ice rink: ice, skate, cold
+rink: ice, skate, cold
 park: trees, play, slide
 pool: swim, water, summer
 restaurant: eat, food, waiter
@@ -131,7 +131,7 @@ clothes: wear, shirt, pants
 doll: toy, girl, play
 picture: photo, draw, wall
 slippers: feet, home, soft
-teddy bear: toy, soft, bear
+teddy: toy, soft, bear
 toy: play, kids, fun
 board: write, teacher, wall
 books: read, pages, library
@@ -143,30 +143,30 @@ wall: room, paint, house
 
 { id: 'TBW2', name: 'The Best Writing Starter 2', short: 'TBW 2', level: 'Blue', raw: `
 # Unit 1 Fun at the Playground
-jungle gym: climb, playground, bars
+jungle: climb, playground, bars
 merry-go-round: spin, around, playground
-monkey bars: hang, climb, monkey
+monkey: hang, climb, bars
 seesaw: up, down, playground
 slide: down, playground, slip
 swing: playground, push, sit
 bar: metal, hold, long
-climb up: up, climb, high
+climb: up, high, tree
 hang: hold, hands, down
 play: fun, game, toys
 playground: slide, swing, play
 stand: up, feet, sit
-upside down: head, down, flip
+upside: head, down, flip
 # Unit 2 Morning Routine
-brush my teeth: teeth, toothbrush, toothpaste
-eat breakfast: breakfast, morning, eat
-get dressed: clothes, wear, shirt
-get up: bed, wake, morning
-take a class: class, learn, lesson
-walk to school: walk, school, feet
-wash my face: face, water, soap
+toothbrush: teeth, brush, toothpaste
+breakfast: morning, eat, food
+dressed: clothes, wear, shirt
+wake: bed, morning, alarm
+class: learn, lesson, teacher
+walk: school, feet, legs
+wash: face, water, soap
 begin: start, first, end
-be ready for: ready, prepare, before
-meet my friend: friend, meet, see
+ready: prepare, before, set
+meet: friend, see, hello
 # Unit 3 To My Teacher
 dream: sleep, night, wish
 drone: fly, camera, remote
@@ -177,7 +177,7 @@ tent: camping, sleep, outside
 apartment: building, home, live
 camping: tent, outside, fire
 live: home, house, stay
-mobile game: phone, game, play
+mobile: phone, game, play
 teach: teacher, learn, school
 town: city, small, village
 # Unit 4 My Favorite Things
@@ -188,17 +188,17 @@ handsome: pretty, man, cool
 happy: smile, glad, sad
 pretty: beautiful, cute, nice
 art: draw, paint, picture
-catching a ball: catch, ball, hands
-kicking a ball: kick, ball, foot
+catch: ball, hands, throw
+kick: ball, foot, soccer
 math: numbers, add, class
-running fast: run, fast, race
+run: fast, race, legs
 sport: soccer, game, play
 subject: class, school, math
-throwing a ball: throw, ball, arm
+throw: ball, arm, catch
 badminton: racket, birdie, net
 gift: present, birthday, give
 hospital: doctor, nurse, sick
-ice skating: ice, skate, rink
+skating: ice, skate, rink
 library: books, read, quiet
 lollipop: candy, stick, sweet
 park: trees, play, slide
@@ -210,42 +210,40 @@ glad: happy, pleased, smile
 sad: cry, unhappy, tears
 scared: afraid, fear, ghost
 tired: sleepy, yawn, bed
-eating out: restaurant, eat, out
+restaurant: eat, out, food
 farewell: goodbye, leave, bye
-having no friends: alone, lonely, friends
+lonely: alone, friends, sad
 homework: school, study, teacher
-losing a game: lose, game, win
-loud music: music, loud, noisy
-school holiday: holiday, vacation, break
+lose: game, win, sad
+loud: music, noisy, quiet
+holiday: vacation, break, school
 # Unit 6 At the Fair
-buy some snacks: buy, snacks, money
-drive a bumper car: bump, car, drive
-ride a water ride: water, ride, wet
-take pictures: camera, photo, pictures
-watch a clown show: clown, show, funny
-watch a parade: parade, march, street
+snacks: buy, money, chips
+bump: car, drive, crash
+ride: water, wet, park
+pictures: camera, photo, take
+clown: show, funny, circus
+parade: march, street, music
 balloon: air, pop, party
 churros: sugar, long, fried
-cool off: cold, cool, hot
-cotton candy: pink, sweet, fluffy
-Ferris wheel: wheel, ride, high
+candyfloss: pink, sweet, fluffy
+Ferris: wheel, ride, high
 hear: ears, listen, sound
 remember: forget, memory, think
-roller coaster: ride, fast, scary
+rollercoaster: ride, fast, scary
 # Unit 7 My Favorite Places
 cafeteria: lunch, eat, school
 classroom: class, desk, teacher
 gym: sports, exercise, ball
-music room: music, sing, room
-science lab: experiment, science, room
-do an experiment: science, test, lab
-have lunch: lunch, eat, noon
-play basketball: basketball, hoop, ball
-play catch: catch, throw, ball
-play hide-and-seek: hide, seek, find
-play tag: tag, run, chase
-read storybooks: story, books, read
-study English: English, study, learn
+music: sing, room, songs
+lab: experiment, science, room
+experiment: science, test, lab
+lunch: eat, noon, food
+basketball: hoop, ball, bounce
+hide-and-seek: hide, seek, find
+tag: run, chase, game
+storybooks: story, books, read
+English: study, learn, language
 # Unit 8 To My Classmate
 dancing: dance, music, move
 drawing: draw, pencil, picture
@@ -262,7 +260,7 @@ polite: please, thanks, nice
 quiet: loud, silent, shh
 baseball: bat, ball, hit
 golf: ball, club, hole
-passing a ball: pass, ball, teammate
+pass: ball, teammate, kick
 soccer: ball, kick, goal
 ` },
 
@@ -270,18 +268,18 @@ soccer: ball, kick, goal
 # Unit 1 Dream Jobs
 actor: movie, TV, act
 artist: paint, draw, art
-content creator: YouTube, videos, make
+YouTuber: videos, make, camera
 musician: music, play, band
-police officer: police, catch, car
+police: catch, car, thief
 vet: animals, doctor, sick
-cook for others: cook, food, others
+chef: cook, food, kitchen
 dance: music, move, party
-make videos: camera, YouTube, film
-play the guitar: guitar, strings, music
+videos: camera, YouTube, film
+guitar: strings, music, play
 sing: song, voice, music
-take care of animals: animals, care, help
-try new foods: new, food, taste
-write songs: songs, write, music
+zookeeper: animals, care, zoo
+foods: new, taste, eat
+songs: write, music, sing
 # Unit 2 Tastes of Food
 fresh: new, clean, old
 salty: salt, chips, taste
@@ -300,22 +298,22 @@ tacos: Mexico, shell, meat
 tasty: yummy, delicious, good
 tomato: red, ketchup, vegetable
 # Unit 3 My Daily Routine
-go to sleep: sleep, bed, night
-have dinner: dinner, eat, evening
-have lunch: lunch, eat, noon
-take classes: class, learn, lesson
-wake up: morning, eyes, bed
-write a diary: diary, write, day
-at night: dark, moon, sleep
-come home: home, back, school
-do my homework: homework, study, teacher
-eat breakfast: breakfast, morning, eat
-in the afternoon: lunch, after, sun
-in the evening: dinner, night, sunset
-in the morning: wake, early, breakfast
-practice the piano: piano, practice, keys
-spend time with family: family, together, time
-take the school bus: bus, school, ride
+sleep: bed, night, tired
+dinner: eat, evening, food
+lunch: eat, noon, food
+classes: class, learn, lesson
+wake: morning, eyes, bed
+diary: write, day, secret
+night: dark, moon, sleep
+home: back, school, house
+homework: study, teacher, school
+breakfast: morning, eat, food
+afternoon: lunch, after, sun
+evening: dinner, night, sunset
+morning: wake, early, breakfast
+piano: practice, keys, music
+family: together, time, home
+bus: school, ride, yellow
 # Unit 4 Animals vs. Humans
 arms: hands, body, legs
 fins: fish, swim, shark
@@ -335,63 +333,63 @@ water: drink, sea, wet
 basketball: hoop, ball, bounce
 bookstore: books, buy, store
 buy: shop, money, pay
-hang out: friends, together, chill
-shopping mall: shops, buy, big
-sports shop: sports, buy, store
-stationery store: pencils, paper, store
+hangout: friends, together, chill
+mall: shops, buy, big
+sports: buy, store, ball
+stationery: pencils, paper, store
 # Unit 5 Fun Time with My Family
-go on a picnic: picnic, basket, park
-make a snowman: snow, snowman, carrot
-make cookies: bake, cookies, oven
-play a board game: board, dice, game
-take a walk: walk, outside, park
-watch TV: TV, watch, show
-go out: outside, leave, house
+picnic: basket, park, food
+snowman: snow, carrot, winter
+cookies: bake, oven, sweet
+boardgame: board, dice, game
+stroll: walk, outside, park
+TV: watch, show, screen
+out: outside, leave, house
 hot: cold, sun, summer
 sandwich: bread, ham, lunch
 snowy: snow, white, cold
-stay home: home, inside, house
+indoors: home, inside, house
 warm: hot, cold, nice
 windy: wind, blow, kite
 # Unit 6 My Busy Weekend
-buy some books: books, buy, store
-go to a party: party, birthday, fun
-help around the house: help, chores, clean
-play soccer: soccer, ball, kick
-see a movie: movie, cinema, watch
-walk my dog: dog, walk, leash
-play with friends: friends, play, fun
+books: buy, store, read
+party: birthday, fun, cake
+chores: help, clean, house
+soccer: ball, kick, goal
+movie: cinema, watch, film
+dog: walk, leash, pet
+friends: play, fun, together
 # Unit 7 Packing List
 drone: fly, camera, remote
-RC car: remote, car, toy
+RC: remote, car, toy
 sundress: dress, summer, sun
-swimming goggles: eyes, swim, pool
+goggles: eyes, swim, pool
 swimsuit: swim, wear, pool
 tablet: screen, iPad, computer
 block: toy, build, Lego
 cap: hat, head, baseball
 laptop: computer, screen, keyboard
-play video games: games, controller, screen
-shoot a video: camera, video, film
+gaming: games, controller, screen
+filming: camera, video, record
 shorts: pants, summer, short
-watch animations: cartoons, watch, TV
+animations: cartoons, watch, TV
 work: job, office, money
 # Unit 8 Gifts for Friends
-baseball mitt: glove, baseball, catch
-flower pot: flower, plant, pot
+mitt: glove, baseball, catch
+pot: flower, plant, soil
 gloves: hands, winter, warm
 scarf: neck, warm, winter
 socks: feet, shoes, pair
-tuna can: tuna, can, fish
-chocolate bar: chocolate, sweet, bar
-colored pencil: color, draw, pencil
+can: tuna, fish, metal
+chocolate: sweet, bar, candy
+pencil: color, draw, write
 flower: rose, garden, pretty
 small: big, little, tiny
 tuna: fish, can, sandwich
 child: kid, young, adult
-clean up: clean, tidy, mess
+cleanup: clean, tidy, mess
 feed: food, give, eat
-give a bath: bath, wash, water
+bath: wash, water, tub
 iguana: lizard, green, reptile
 kitten: cat, baby, meow
 parrot: bird, talk, colorful

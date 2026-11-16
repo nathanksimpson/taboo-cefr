@@ -24,9 +24,9 @@ horse: ride, farm, run
 sheep: wool, white, baa
 # Unit 4 In the Park
 bench: sit, park, chair
-bike path: ride, road, park
+path: walk, road, park
 flower: rose, garden, smell
-picnic table: eat, outside, park
+picnic: eat, outside, basket
 playground: slide, swing, play
 pond: water, duck, fish
 tree: green, leaves, tall
@@ -58,10 +58,10 @@ circle: round, shape, ball
 square: shape, four, box
 triangle: shape, three, pizza
 # Unit 8 At the Store
-glue sticks: stick, paper, school
+glue: stick, paper, sticky
 markers: color, draw, pen
 notebooks: write, paper, school
-pencil cases: pencils, box, bag
+case: pencils, box, bag
 rulers: line, long, measure
 scissors: cut, paper, sharp
 # Unit 9 My Family
@@ -75,7 +75,7 @@ sister: girl, family, brother
 doctor: hospital, sick, nurse
 nurse: hospital, doctor, help
 pilot: airplane, fly, sky
-police officer: police, car, help
+police: car, help, thief
 singer: sing, song, music
 teacher: school, student, class
 # Unit 11 Our Feelings
@@ -93,7 +93,7 @@ fish: water, swim, pet
 rabbits: ears, carrot, hop
 turtles: slow, shell, water
 # School Links
-bamboo trees: panda, green, tall
+bamboo: panda, green, tall
 boat: water, sea, ride
 rainbow: colors, rain, sky
 robots: machine, metal, toy
@@ -135,11 +135,11 @@ tie: shirt, dad, neck
 # School Link 1
 clothes: wear, shirt, pants
 wear: clothes, dress, shoes
-special day: birthday, party, holiday
+holiday: birthday, party, vacation
 # Unit 3 Lunch Time
 chicken: meat, fried, bird
 fish: sea, swim, eat
-fried rice: rice, egg, pan
+fry: oil, pan, cook
 pasta: noodles, Italy, sauce
 rice: white, bowl, Korea
 salad: vegetables, green, healthy
@@ -148,23 +148,23 @@ soup: hot, bowl, spoon
 spaghetti: noodles, pasta, sauce
 # Unit 4 Art Class
 clay: make, soft, art
-colored pencil: color, draw, pencil
+pencil: color, draw, write
 glue: stick, paper, bottle
 paint: color, brush, picture
 paper: write, white, draw
 tape: stick, roll, sticky
 drawing: pencil, picture, art
-clay art: clay, make, art
+sculpture: clay, make, art
 painting: brush, picture, color
 origami: paper, fold, Japan
 # School Link 2
-coloring book: color, crayon, book
+coloring: color, crayon, book
 easel: paint, stand, art
 picture: draw, photo, look
 sketchbook: draw, book, paper
 # Unit 5 In the Living Room
 armchair: sit, soft, chair
-coffee table: table, sofa, cup
+table: sofa, cup, legs
 fireplace: fire, warm, wood
 lamp: light, bright, table
 plant: green, grow, pot
@@ -183,7 +183,7 @@ wall: room, paint, picture
 bathroom: toilet, bath, wash
 bedroom: bed, sleep, room
 kitchen: cook, food, room
-living room: sofa, TV, room
+lounge: sofa, TV, room
 # Unit 7 Wild Animals
 eleven: number, ten, twelve
 twelve: number, eleven, thirteen
@@ -202,19 +202,19 @@ kangaroo: jump, Australia, pocket
 lion: king, roar, cat
 orangutan: monkey, orange, tree
 panda: black, white, bamboo
-sea lion: sea, swim, fish
+seal: sea, swim, fish
 tiger: orange, stripes, cat
 zebra: black, white, stripes
 # Unit 8 Fun Things
 bike: ride, wheels, pedal
 camera: picture, photo, take
-game player: games, play, screen
-jump rope: jump, rope, play
-kick scooter: ride, kick, wheels
+gamer: games, play, screen
+rope: jump, play, skip
+scooter: ride, kick, wheels
 kite: fly, wind, string
 skateboard: ride, wheels, board
-soccer ball: kick, ball, goal
-wave board: ride, board, wheels
+soccer: kick, ball, goal
+skateboarding: ride, board, wheels
 yo-yo: string, up, down
 # Unit 9 Doing Things Outside
 dancing: music, move, dance
@@ -223,41 +223,38 @@ running: fast, legs, run
 singing: song, music, sing
 sleeping: bed, night, sleep
 walking: legs, slow, walk
-doing yoga: stretch, mat, exercise
-jumping rope: jump, rope, play
-playing hopscotch: jump, numbers, game
-playing tag: run, catch, game
+yoga: stretch, mat, exercise
+skipping: jump, rope, play
+hopscotch: jump, numbers, game
+tag: run, catch, game
 # Unit 10 Doing Things Inside
 drinking: water, juice, cup
 reading: book, read, story
 talking: say, mouth, speak
 writing: pen, pencil, write
-collecting stamps: stamps, letter, collect
-drawing pictures: draw, pencil, picture
-flying kites: kite, wind, sky
-taking photos: camera, picture, photo
+stamps: letter, collect, post
+photos: camera, picture, take
 # School Link 5
 climbing: up, tree, climb
 kicking: ball, foot, kick
 throwing: ball, hand, throw
 # Unit 11 Favorite Activities
-climb a tree: tree, up, climb
+tree: up, climb, leaves
 dance: music, move, party
-fly a kite: kite, wind, sky
-play hopscotch: jump, numbers, game
-play soccer: ball, kick, goal
-play the drum: drum, music, hit
-play the flute: flute, music, blow
-play the guitar: guitar, music, strings
-play the piano: piano, music, keys
-ride a bike: bike, wheels, ride
+flying: kite, wind, sky
+football: ball, kick, goal
+drum: music, hit, beat
+flute: music, blow, pipe
+guitar: music, strings, play
+piano: music, keys, play
+riding: bike, wheels, ride
 # Unit 12 Favorite Snacks
 apples: red, fruit, tree
-candy bar: chocolate, sweet, candy
+candy: chocolate, sweet, bar
 cheese: yellow, mouse, milk
 chips: potato, snack, salty
 cookie: sweet, bake, snack
-ice cream: cold, sweet, cone
+dessert: cold, sweet, cone
 juice: drink, orange, fruit
 nuts: small, hard, snack
 popcorn: movie, corn, snack
@@ -270,23 +267,23 @@ milk: white, cow, drink
 
 { id: 'HIH3', name: 'Hand in Hand 3', short: 'HiH 3', level: 'Yellow', raw: `
 # Unit 1 In the Morning
-in the morning: wake, breakfast, early
-brush her teeth: teeth, toothbrush, toothpaste
-eat breakfast: morning, food, eat
-get dressed: clothes, wear, shirt
-get up: bed, morning, wake
-go to school: school, bus, walk
-wash his face: face, water, soap
+morning: wake, breakfast, early
+toothbrush: teeth, brush, toothpaste
+breakfast: morning, food, eat
+dressed: clothes, wear, shirt
+wake: bed, morning, alarm
+school: bus, walk, class
+wash: face, water, soap
 # Unit 2 At Home
-in the afternoon: lunch, after, school
-in the evening: dinner, night, sun
-at night: dark, sleep, moon
-do homework: homework, teacher, write
-eat dinner: dinner, food, night
-go to bed: sleep, bed, night
-have a snack: snack, eat, cookie
-read a book: book, read, story
-watch TV: TV, watch, show
+afternoon: lunch, after, school
+evening: dinner, night, sun
+night: dark, sleep, moon
+homework: teacher, write, school
+dinner: food, night, eat
+bedtime: sleep, bed, night
+snack: eat, cookie, hungry
+reading: book, read, story
+television: TV, watch, show
 # Unit 3 Favorite Clothes
 dress: girl, wear, skirt
 jeans: pants, blue, wear
@@ -296,30 +293,30 @@ sneakers: shoes, run, feet
 sweatshirt: warm, top, wear
 T-shirt: shirt, top, summer
 # Unit 4 Fun Activities
-drawing pictures: draw, pencil, picture
-in-line skating: skate, wheels, roll
-listening to music: music, ears, song
-playing badminton: racket, birdie, net
-riding a bike: bike, wheels, ride
-taking pictures: camera, photo, picture
+drawing: draw, pencil, picture
+rollerblading: skate, wheels, roll
+listening: music, ears, song
+badminton: racket, birdie, net
+cycling: bike, wheels, ride
+photography: camera, photo, picture
 # Unit 5 Going Places
 bank: money, save, ATM
 hospital: doctor, nurse, sick
 library: books, read, quiet
-post office: letter, mail, stamp
+post: letter, mail, stamp
 restaurant: eat, food, waiter
-shopping mall: shop, buy, stores
+mall: shop, buy, stores
 # Unit 6 Going Shopping
-across from: street, opposite, front
+opposite: street, across, front
 behind: back, front, hide
 between: middle, two, center
-in front of: behind, before, back
+front: behind, before, back
 bakery: bread, cake, bake
 bookstore: books, buy, store
-clothing store: clothes, buy, store
-pet store: dog, cat, buy
-shoe store: shoes, buy, store
-parking lot: car, park, space
+clothing: clothes, buy, store
+pets: dog, cat, buy
+shoes: buy, store, feet
+parking: car, park, space
 # Unit 7 School Subjects
 Sunday: day, weekend, Monday
 Monday: day, week, Sunday
@@ -333,25 +330,25 @@ math: numbers, add, class
 music: sing, song, class
 PE: gym, sports, class
 science: experiment, lab, class
-social studies: history, map, class
+history: map, class, past
 # Unit 8 On the Weekend
-go shopping: buy, store, mall
-go swimming: swim, pool, water
-go to the movies: movie, cinema, popcorn
-practice the piano: piano, music, play
-take a nap: sleep, short, afternoon
-take a walk: walk, outside, park
-walk the dog: dog, walk, leash
-write stories: write, story, book
+shopping: buy, store, mall
+swimming: swim, pool, water
+movies: cinema, popcorn, film
+piano: music, play, keys
+nap: sleep, short, afternoon
+walk: outside, park, legs
+dog: walk, leash, pet
+stories: write, story, book
 # Unit 9 My House
 backyard: yard, outside, grass
 bathroom: toilet, bath, wash
 bedroom: bed, sleep, room
-dining room: eat, table, room
+dining: eat, table, room
 kitchen: cook, food, room
-living room: sofa, TV, room
+lounge: sofa, TV, room
 bathtub: bath, water, wash
-dining table: eat, table, dinner
+table: eat, dinner, chairs
 dresser: clothes, drawers, bedroom
 mirror: look, face, glass
 refrigerator: cold, food, kitchen
@@ -359,20 +356,19 @@ sink: water, wash, kitchen
 stove: cook, hot, kitchen
 toilet: bathroom, flush, paper
 # Unit 10 Doing Things
-cleaning the desk: clean, desk, tidy
-feeding the dog: dog, food, feed
-making dinner: cook, dinner, food
-taking a bath: bath, water, wash
-talking on the phone: phone, call, talk
-working on the computer: computer, work, keyboard
+cleaning: clean, desk, tidy
+feeding: dog, food, feed
+cooking: cook, dinner, food
+bath: water, wash, tub
+phone: call, talk, mobile
+computer: work, keyboard, screen
 # Unit 11 At Different Places
-at home: house, family, home
-at school: school, teacher, class
-at work: job, office, work
+home: house, family, live
+work: job, office, boss
 airport: airplane, fly, travel
-amusement park: rides, rollercoaster, fun
+rides: rollercoaster, fun, park
 beach: sand, sea, swim
-movie theater: movie, popcorn, screen
+theater: movie, popcorn, screen
 museum: old, art, visit
 zoo: animals, lion, visit
 # Unit 12 Different Weather

@@ -29,13 +29,13 @@ introduce: name, meet, hello
 tell: say, talk, story
 story: book, read, tell
 color: red, blue, rainbow
-help people: help, people, kind
-play the piano: piano, keys, music
-do homework: homework, study, teacher
+helpful: help, people, kind
+piano: keys, music, play
+homework: study, teacher, school
 # Unit 3 School Market Day
 umbrella: rain, wet, open
-soccer ball: soccer, kick, ball
-teddy bear: toy, soft, bear
+soccer: kick, ball, goal
+teddy: toy, soft, bear
 sneakers: shoes, run, sports
 hairband: hair, head, girl
 marble: glass, round, small
@@ -46,7 +46,7 @@ shoes: feet, wear, walk
 jacket: coat, wear, cold
 market: buy, sell, store
 buy: shop, money, pay
-old things: old, used, things
+antiques: old, used, things
 sweater: warm, winter, wool
 # Unit 4 What a Messy Room!
 chair: sit, desk, legs
@@ -64,7 +64,7 @@ mess: messy, dirty, clean
 backpack: school, bag, carry
 clean: dirty, wash, tidy
 # Unit 5 My Favorite Thing
-toy truck: truck, toy, wheels
+truck: toy, wheels, big
 bike: ride, wheels, pedal
 robot: machine, metal, toy
 seat: sit, chair, car
@@ -75,104 +75,103 @@ driver: drive, car, bus
 arm: hand, body, leg
 leg: walk, foot, body
 # Unit 6 Welcome to My Town!
-toy store: toys, buy, store
+store: toys, buy, shop
 library: books, read, quiet
-fire station: fire, firefighters, truck
+fire: firefighters, truck, hot
 supermarket: food, buy, store
 playground: slide, swing, play
 restaurant: eat, food, waiter
-train station: train, ticket, ride
+station: train, ticket, ride
 museum: art, old, visit
 building: tall, house, floors
 town: city, small, village
-look around: look, see, around
+look: see, around, eyes
 firefighter: fire, truck, water
 painting: paint, picture, art
 statue: stone, stand, park
 vegetable: carrot, healthy, green
 # Unit 7 Different but Together
-eat ice cream: cold, sweet, cone
-paint pictures: paint, brush, art
-ride a bike: bike, wheels, ride
-play with blocks: blocks, build, Lego
-grow plants: plants, water, garden
-watch TV: TV, watch, show
-drink coffee: coffee, cup, adults
-fly kites: kite, wind, sky
-listen to music: music, ears, songs
-drive a car: car, drive, road
+dessert: cold, sweet, cone
+paint: brush, art, color
+riding: wheels, ride, pedal
+blocks: build, Lego, toy
+gardening: water, garden, grow
+TV: watch, show, screen
+coffee: cup, adults, drink
+kite: wind, sky, string
+music: ears, songs, listen
+car: drive, road, wheels
 cousin: aunt, uncle, family
 walk: legs, feet, slow
-read comics: comics, cartoon, read
+comics: cartoon, read, book
 # Unit 8 My Busy Day
-have violin lessons: violin, lesson, music
-feed my dog: dog, food, feed
-get up: bed, wake, morning
-jog with my dad: jog, run, dad
-study math: math, numbers, study
-eat dinner: dinner, eat, night
+violin: lesson, music, strings
+dog: food, feed, pet
+wake: bed, morning, alarm
+jog: run, dad, exercise
+math: numbers, study, plus
+dinner: eat, night, food
 busy: work, schedule, free
-do my homework: homework, study, teacher
-take a shower: shower, water, wash
-water my plant: plant, water, grow
-eat breakfast: breakfast, morning, eat
+shower: water, wash, bathroom
+plant: water, grow, green
+breakfast: morning, eat, food
 evening: night, dinner, sunset
-pack my backpack: backpack, pack, school
+pack: backpack, school, bag
 ` },
 
 { id: 'WN2', name: 'Write Now 2', short: 'WN 2', level: 'Blue', raw: `
 # Unit 1 I Can Do It by Myself
-do the laundry: clothes, wash, machine
-set the table: table, plates, dinner
-pack my backpack: backpack, pack, school
-wash the dishes: dishes, wash, sink
-make my bed: bed, blanket, pillow
-take a bath: bath, water, wash
-brush my teeth: teeth, toothbrush, toothpaste
-walk to school: walk, school, feet
-cook dinner: cook, dinner, kitchen
-clean my room: clean, room, tidy
-comb my hair: comb, hair, brush
-mop the floor: mop, floor, wet
-wipe the windows: wipe, windows, clean
-fold towels: fold, towels, laundry
-match socks: socks, pair, same
+laundry: clothes, wash, machine
+table: plates, dinner, chairs
+backpack: pack, school, bag
+dishes: wash, sink, plates
+bed: blanket, pillow, sleep
+bath: water, wash, tub
+toothbrush: teeth, brush, toothpaste
+walk: school, feet, legs
+cook: dinner, kitchen, food
+clean: room, tidy, messy
+comb: hair, brush, teeth
+mop: floor, wet, clean
+wipe: windows, clean, cloth
+towels: fold, laundry, dry
+socks: pair, same, feet
 # Unit 2 We’re on a Picnic
-play frisbee: Frisbee, throw, catch
-take pictures: camera, photo, pictures
-ride a bike: bike, wheels, ride
-blow bubbles: bubbles, blow, soap
-make a campfire: fire, camp, wood
-lie in the sun: sun, relax, beach
-write a letter: letter, write, mail
-play volleyball: volleyball, net, ball
-have a party: party, birthday, fun
-bake muffins: muffins, bake, oven
+Frisbee: throw, catch, disc
+pictures: camera, photo, take
+bike: wheels, ride, pedal
+bubbles: blow, soap, pop
+campfire: fire, camp, wood
+sunbathe: sun, relax, beach
+letter: write, mail, envelope
+volleyball: net, ball, hands
+party: birthday, fun, cake
+muffins: bake, oven, cupcakes
 picnic: basket, park, eat
 shine: sun, bright, light
 relax: rest, calm, chill
 jog: run, slow, exercise
 # Unit 3 What Do You Do After School?
-play catch: catch, throw, ball
-take lessons: lesson, learn, class
-practice dancing: dance, practice, music
-do housework: housework, clean, chores
-go rollerblading: skates, wheels, roll
-play chess: chess, king, board
-after school: school, after, afternoon
+catch: throw, ball, hands
+lessons: teacher, learn, class
+dancing: dance, practice, music
+housework: clean, chores, home
+rollerblading: skates, wheels, roll
+chess: king, board, queen
+afternoon: school, after, evening
 plants: green, grow, water
 breakfast: morning, eat, meal
-have fun: fun, enjoy, play
+fun: enjoy, play, happy
 # Unit 4 When I Grow Up
 singer: sing, songs, music
 chef: cook, kitchen, restaurant
-police officer: police, catch, car
+police: catch, car, thief
 astronaut: space, rocket, moon
 teacher: school, student, class
 firefighter: fire, truck, water
 famous: star, popular, TV
 exercise: sports, gym, run
-grow up: adult, older, big
+adult: older, big, grown
 future: tomorrow, later, past
 save: help, rescue, money
 danger: dangerous, safe, careful
@@ -184,14 +183,14 @@ cap: hat, head, baseball
 glove: hand, baseball, catch
 drone: fly, camera, remote
 trophy: win, prize, cup
-game cards: cards, game, play
+cards: game, play, deck
 racket: tennis, hit, ball
 secret: tell, hide, nobody
 closet: clothes, door, hang
 soft: hard, pillow, gentle
 top: bottom, high, up
 shelf: books, wall, put
-travel bag: bag, travel, suitcase
+suitcase: bag, travel, pack
 # Unit 6 My Favorite Food
 yogurt: milk, cup, spoon
 popcorn: movie, corn, butter
@@ -225,18 +224,18 @@ classmate: class, friend, school
 bright: light, sun, color
 gloomy: dark, sad, cloudy
 # Unit 8 My Robot Friend
-move the boxes: boxes, move, carry
-turn off the light: light, switch, off
-play a song: song, music, play
-recycle cans: recycle, cans, bin
-solve a math problem: math, problem, answer
+boxes: move, carry, heavy
+light: switch, off, lamp
+song: music, play, sing
+cans: recycle, bin, metal
+math: problem, answer, numbers
 hallway: hall, walk, door
 shout: yell, loud, voice
-put away: tidy, put, away
+tidy: put, away, clean
 regular: normal, usual, daily
 ask: question, answer, why
 garage: car, park, house
-take out: trash, out, carry
+trash: out, carry, garbage
 ` },
 
 { id: 'WN3', name: 'Write Now 3', short: 'WN 3', level: 'Navy', raw: `
@@ -246,37 +245,37 @@ submarine: underwater, sea, boat
 Earth: planet, world, globe
 sunrise: morning, sun, sunset
 safari: Africa, animals, jeep
-balloon ride: balloon, fly, basket
-on a ship: ship, sea, sail
-rode a dog sled: dogs, sled, snow
-on a plane: airplane, fly, airport
-on a boat: boat, water, sail
-making an igloo: ice, snow, house
-slept in a tent: tent, sleep, camping
-walked in the forest: forest, walk, trees
-polar bears: white, bear, ice
-the night sky: night, stars, dark
-the bird sounds: birds, sing, sound
+balloon: fly, basket, air
+ship: sea, sail, big
+sled: dogs, snow, pull
+plane: airplane, fly, airport
+boat: water, sail, small
+igloo: ice, snow, house
+tent: sleep, camping, outside
+forest: walk, trees, animals
+bears: white, ice, Arctic
+sky: night, stars, dark
+birdsong: birds, sing, sound
 camels: desert, hump, ride
-the aurora: sky, lights, green
-the oasis: desert, water, trees
+aurora: sky, lights, green
+oasis: desert, water, trees
 butterflies: wings, colorful, fly
-the big waterfall: water, fall, river
+waterfall: water, fall, river
 # Unit 2 My Sick Day
 cough: throat, cold, sick
 stomachache: stomach, pain, belly
-runny nose: nose, tissue, cold
-sore throat: throat, hurt, swallow
+nose: tissue, cold, sneeze
+throat: hurt, swallow, neck
 toothache: tooth, dentist, pain
 headache: head, pain, hurt
 medicine: sick, pill, doctor
 fever: hot, temperature, sick
 vomited: puke, sick, stomach
-felt a sharp pain: pain, sharp, hurt
-had a high temperature: fever, hot, temperature
-stayed warm: warm, blanket, cold
-got enough rest: rest, sleep, enough
-ate soft food: soft, food, porridge
+pain: sharp, hurt, ouch
+temperature: hot, thermometer, sick
+warm: blanket, cold, cozy
+rest: sleep, enough, relax
+porridge: soft, food, sick
 # Unit 3 Let’s Cook Together!
 pickles: cucumber, sour, green
 spinach: green, vegetable, Popeye
@@ -293,46 +292,45 @@ forget: remember, memory, lose
 clean: dirty, wash, tidy
 # Unit 5 Fun Vacation Plans
 surfing: waves, board, sea
-ice skating: ice, skate, rink
+skating: ice, rink, cold
 campfire: fire, camp, marshmallows
-roller coaster: ride, fast, scary
-snow sledding: snow, sled, hill
+rollercoaster: ride, fast, scary
+sledding: snow, hill, winter
 seashells: beach, sea, shell
 vacation: holiday, trip, travel
 camping: tent, outside, fire
 lake: water, fish, pond
 cousin: aunt, uncle, family
-take a walk: walk, outside, park
-go fishing: fish, rod, catch
+fishing: fish, rod, catch
 ride: bike, horse, sit
 swim: water, pool, fish
-bumper cars: cars, bump, ride
-collect eggs: eggs, chicken, farm
-play beach games: beach, games, sand
+bump: cars, crash, ride
+eggs: chicken, farm, collect
+beach: games, sand, sea
 # Unit 6 School Manners
-raise your hand: hand, up, question
-sit up straight: sit, straight, back
-make noise: loud, noise, sound
-line up: line, wait, order
-keep your hands to yourself: hands, touch, keep
-take turns: turn, wait, share
+hand: up, question, raise
+sit: straight, back, chair
+noise: loud, sound, quiet
+line: wait, order, queue
+touch: hands, keep, fingers
+turns: wait, share, next
 manners: polite, rules, behave
 walk: legs, feet, slow
 bring: take, carry, come
-cross the road: road, cross, street
-clean your desk: desk, clean, tidy
+cross: road, street, crosswalk
+desk: clean, tidy, table
 push: pull, hands, shove
-stay in your seat: seat, sit, stay
-throw things: throw, things, catch
-talk in class: talk, class, chat
-wait your turn: wait, turn, line
+seat: sit, stay, chair
+throw: things, catch, ball
+talk: class, chat, speak
+wait: turn, line, patient
 # Unit 7 Finding the Perfect Toy
 dollhouse: doll, house, toy
-action figure: toy, hero, doll
-spinning top: spin, toy, round
-building blocks: blocks, build, Lego
-water gun: water, gun, shoot
-teddy bear: toy, soft, bear
+figure: toy, hero, doll
+spin: toy, round, turn
+blocks: build, Lego, toy
+gun: water, shoot, squirt
+teddy: toy, soft, bear
 fast: quick, slow, run
 large: big, small, huge
 slow: fast, turtle, snail
@@ -344,29 +342,29 @@ light: heavy, bright, feather
 softer: soft, hard, more
 cool: awesome, great, cold
 toy: play, kids, fun
-beach ball: beach, ball, colorful
+ball: beach, colorful, bounce
 long: short, hair, snake
 young: old, baby, kid
 choose: pick, decide, choice
 # Unit 8 Come to My Party!
-jump into the pool: pool, jump, splash
-watch a movie: movie, cinema, watch
-dress up: costume, clothes, wear
-paint faces: face, paint, color
-play inside: inside, play, home
-have a game: game, play, win
-birthday party: birthday, party, cake
+pool: jump, splash, swim
+movie: cinema, watch, film
+costume: clothes, wear, Halloween
+facepaint: face, paint, color
+inside: play, home, house
+game: play, win, lose
+birthday: party, cake, candles
 superhero: hero, cape, fly
 pizza: cheese, slice, Italy
 chips: potato, salty, snack
 soda: Coke, drink, bubbles
-ice cream: cold, sweet, cone
+dessert: cold, sweet, cone
 hamburgers: burger, bread, meat
 drinks: juice, water, cup
 rainy: rain, umbrella, wet
 sunny: sun, hot, bright
-soccer field: soccer, grass, goal
-water park: water, slides, swim
+field: soccer, grass, goal
+waterpark: water, slides, swim
 party: birthday, fun, friends
 invitation: invite, card, party
 wear: clothes, dress, shoes
@@ -374,8 +372,7 @@ skate: skates, ice, wheels
 dance: music, move, party
 snack: chips, eat, cookies
 drink: water, juice, cup
-make cookies: bake, cookies, oven
+cookies: bake, oven, sweet
 umbrella: rain, wet, open
-have dessert: dessert, sweet, dinner
 ` },
 ];
