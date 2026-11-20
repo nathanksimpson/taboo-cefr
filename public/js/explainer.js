@@ -145,7 +145,8 @@ const hostControls = () => hostRole() === 'teacher' || hostExplains() || explain
 function onRemote(m) {
   if (!game) return;
   const p = game.phase;
-  const isExp = !!m.from && m.from === game.explainerId;
+  // The judge (teacher's phone) can do everything the explainer can.
+  const isExp = m.judge || (!!m.from && m.from === game.explainerId);
   const sameCard = m.cardId && m.cardId === game.card?.id;
   if (m.act === 'start' && p === 'ready' && isExp) startTurn();
   else if ((m.act === 'correct' || m.act === 'skip') && p === 'playing' && isExp && sameCard) mark(m.act);

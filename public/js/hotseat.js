@@ -152,16 +152,17 @@ const hostInSeat = () => net.active && game.seatId === 'host';
 function onRemote(m) {
   if (!game) return;
   const p = game.phase;
-  const seat = !!m.from && m.from === game.seatId;
-  const onTeam = m.team != null && m.team === teamId();
+  // The judge (teacher's phone) is never in the seat and can do everything the seat's team can.
+  const seat = !m.judge && !!m.from && m.from === game.seatId;
+  const onTeam = m.judge || (m.team != null && m.team === teamId());
   const sameCard = m.cardId && m.cardId === game.card?.id;
   // Hot Seat: the seat's teammates describe and score. Who Am I?: everyone else answers, so anyone but the seat can score.
   // If nobody else from the seat's team is online, anyone else may score for them.
   const helpers = net.players(teamId()).filter((x) => x.id !== game.seatId).length;
-  const runs = !seat && (onTeam || game.settings.style === 'whoami' || !helpers);
+  const runs = m.judge || (!seat && (onTeam || game.settings.style === 'whoami' || !helpers));
   if (m.act === 'start' && p === 'ready' && (onTeam || seat)) startTurn();
   else if ((m.act === 'correct' || m.act === 'pass') && p === 'playing' && runs && sameCard) mark(m.act);
-  else if (m.act === 'foul' && p === 'playing' && !seat && sameCard) mark('foul', m.name);
+  else if (m.act === 'foul' && p === 'playing' && !seat && sameCard) mark('foul', m.judge ? undefined : m.name);
   else if (m.act === 'undo' && p === 'playing' && runs) undo();
   else if (m.act === 'pause' && (p === 'playing' || p === 'paused') && (onTeam || seat)) pause();
   else if (m.act === 'rv' && p === 'review' && (onTeam || seat) && game.log[m.i] && ['correct', 'pass', 'foul'].includes(m.r)) { game.log[m.i].result = m.r; commit(); }

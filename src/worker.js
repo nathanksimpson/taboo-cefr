@@ -62,7 +62,8 @@ export default {
 
 /** Whether this connection may see the current card and the turn's words. */
 export function canSeeCard(game, a) {
-  if (a.role === 'host') return true;
+  // The judge (the teacher on a phone) runs every turn, so sees every card.
+  if (a.role === 'host' || a.role === 'judge') return true;
   // The card screen (card.html): a monitor facing the student who explains, so it always shows the card.
   if (a.role === 'screen' && a.cards) return true;
   if (game?.kind === 'hotseat') {
@@ -133,7 +134,7 @@ export class Room {
       return new Response(null, { status: 101, webSocket: client });
     };
     if (!hostKey) return fail('no-room', 'That room code doesn’t exist (or the room has closed).');
-    const role = ['host', 'player', 'screen'].includes(p.get('role')) ? p.get('role') : 'player';
+    const role = ['host', 'player', 'screen', 'judge'].includes(p.get('role')) ? p.get('role') : 'player';
     if (role === 'host' && p.get('key') !== hostKey) return fail('bad-key', 'Only the teacher’s screen can host this room.');
 
     let id = /^[a-z0-9]{6,24}$/.test(p.get('id') || '') ? p.get('id') : randomId();
@@ -146,7 +147,7 @@ export class Room {
       }
     }
     const cards = role === 'screen' && p.get('view') === 'cards';
-    const att = { id, role, cards, name: clean(p.get('name'), 24) || (cards ? 'Card screen' : role === 'screen' ? 'Big screen' : 'Player'), team: teamOf(p.get('team')) };
+    const att = { id, role, cards, name: clean(p.get('name'), 24) || (cards ? 'Card screen' : role === 'screen' ? 'Big screen' : role === 'judge' ? 'Judge' : 'Player'), team: role === 'player' ? teamOf(p.get('team')) : null };
     server.serializeAttachment(att);
 
     await this.load();
@@ -243,12 +244,13 @@ export class Room {
 
     if (msg.type === 'profile') {
       a.name = clean(msg.name, 24) || a.name;
-      if ('team' in msg) a.team = teamOf(msg.team);
+      if ('team' in msg && a.role === 'player') a.team = teamOf(msg.team);
       ws.serializeAttachment(a);
       this.broadcastRoster();
       if (this.game) ws.send(JSON.stringify({ type: 'state', game: viewFor(this.game, a) }));
-    } else if (msg.type === 'act' && a.role === 'player') {
-      const out = JSON.stringify({ ...msg, type: 'act', from: a.id, name: a.name, team: a.team });
+    } else if (msg.type === 'act' && (a.role === 'player' || a.role === 'judge')) {
+      // judge is set here, by the server, so a player can't claim it
+      const out = JSON.stringify({ ...msg, type: 'act', from: a.id, name: a.name, team: a.team, judge: a.role === 'judge' });
       for (const s of this.live()) if (s.deserializeAttachment().role === 'host') try { s.send(out); } catch { /* gone */ }
     }
   }

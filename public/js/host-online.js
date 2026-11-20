@@ -194,6 +194,7 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi, 
     const teams = getTeams();
     const players = roster.filter((p) => p.role === 'player');
     const screens = roster.filter((p) => p.role === 'screen').length;
+    const judges = roster.filter((p) => p.role === 'judge');
     const resize = teamsApi?.canResize();
     const chip = (p) => `<li class="ro-player" data-pid="${esc(p.id)}" tabindex="0" title="Drag to another team (or use the arrow keys)">
       <span class="ro-grip" aria-hidden="true">⠿</span><span class="ro-name">${esc(p.name)}</span>
@@ -223,7 +224,7 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi, 
           <a class="btn ghost small" href="${copy.bigScreen}?room=${esc(saved.code)}" target="_blank" rel="noopener">⧉ Big screen on another device</a>
         </div>
       </div>
-      <p class="hint room-computer">🖥 On the class computer, open <b>${esc(location.host)}/display</b> and type <b>${esc(saved.code)}</b>: the projector shows the timer and scores, and a second monitor can show the cards. <a href="card.html?room=${esc(saved.code)}" target="_blank" rel="noopener">Card screen</a></p>
+      <p class="hint room-computer">⚖ <b>Run it from your phone:</b> open <b>${esc(shortJoinHost())}</b>, type <b>${esc(saved.code)}</b> and choose <b>Judge</b>. You'll see every card and can start turns, mark Correct / Skip / Taboo and confirm results.${judges.length ? ` <span class="judge-on">Judge connected: ${judges.map((j) => esc(j.name)).join(', ')}</span>` : ''}</p>
       ${error ? `<p class="online-err">${esc(error)}</p>` : ''}
       ${status === 'taken' ? `<p class="online-err">This room is being run from another tab or page (the other game, perhaps). <button class="btn ghost small" id="take-back">Run it from here</button></p>` : ''}
       <div class="rule"><div class="rule-label">This screen is</div><div class="rule-body">

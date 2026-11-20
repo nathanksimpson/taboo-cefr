@@ -11,7 +11,8 @@ guest.ids ||= {}; guest.team ||= {};
 
 let code = cleanCode(new URLSearchParams(location.search).get('room') || '');
 let conn = null;
-let me = { id: null, name: guest.name, team: null };
+guest.judge ||= {}; // room code -> true when this device joined that room as the judge
+let me = { id: null, name: guest.name, team: null, judge: false };
 let game = null;
 let lobby = null;
 let roster = [];
@@ -28,6 +29,17 @@ $('#name').value = guest.name || '';
 if (code && guest.name) $('#name').focus(); else if (code) $('#name').focus(); else $('#code').focus();
 $('#code').addEventListener('input', (e) => { e.target.value = cleanCode(e.target.value); });
 
+/* Player or Judge. The judge is the teacher on a phone: not on a team, sees every card,
+   and runs every turn (start, Correct / Skip / Taboo, undo, pause, fix and confirm results). */
+let joinAs = 'player';
+function setJoinAs(v) {
+  joinAs = v;
+  $('#join-as').querySelectorAll('[data-as]').forEach((b) => { const on = b.dataset.as === v; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
+  $('#join-as-hint').textContent = v === 'judge' ? 'For the teacher: see every card and run each turn from this phone.' : 'Pick a team and play.';
+}
+$('#join-as').addEventListener('click', (e) => { const b = e.target.closest('[data-as]'); if (b) setJoinAs(b.dataset.as); });
+if (code && guest.judge[code]) setJoinAs('judge');
+
 $('#join-form').addEventListener('submit', (e) => {
   e.preventDefault();
   code = cleanCode($('#code').value);
@@ -35,7 +47,9 @@ $('#join-form').addEventListener('submit', (e) => {
   if (code.length !== 4 || !name) return;
   guest.name = name; saveJSON(GUEST_KEY, guest);
   me.name = name;
-  me.team = guest.team[code] ?? null;
+  me.judge = joinAs === 'judge';
+  guest.judge[code] = me.judge; saveJSON(GUEST_KEY, guest);
+  me.team = me.judge ? null : guest.team[code] ?? null;
   history.replaceState(null, '', `?room=${code}`);
   sfx.tick(); // unlock audio on this tap (iPhone)
   join();
@@ -47,7 +61,7 @@ function join() {
   $('#join-btn').textContent = 'Joining…';
   conn?.close();
   conn = connect({
-    code, role: 'player', id: guest.ids[code], name: me.name, team: me.team,
+    code, role: me.judge ? 'judge' : 'player', id: guest.ids[code], name: me.name, team: me.team,
     on: {
       status: (s) => { status = s; renderNet(); },
       welcome: (m) => {
@@ -60,7 +74,7 @@ function join() {
         roster = m.players; hostOnline = m.hostOnline;
         // The teacher may have moved us to another team.
         const mine = roster.find((p) => p.id === me.id);
-        if (mine && mine.team !== me.team) {
+        if (mine && !me.judge && mine.team !== me.team) {
           me.team = mine.team; guest.team[code] = mine.team; saveJSON(GUEST_KEY, guest);
           if (mine.team != null) picking = false;
         }
@@ -93,7 +107,8 @@ function teams() {
 const myTeam = () => teams().find((t) => t.id === me.team) || null;
 const curTeam = () => (game?.teams ? game.teams[game.current] : null);
 const curTeamId = () => (game?.teams ? tid(curTeam(), game.current) : null);
-const iExplain = () => !!game && !!me.id && game.explainerId === me.id;
+/** This device runs the turn: the explainer, or the judge (who runs every turn). */
+const iExplain = () => !!game && (me.judge || (!!me.id && game.explainerId === me.id));
 const explainer = () => game?.explainerName || 'The teacher';
 const play = (name) => { if (guest.sound !== false && game?.settings?.sounds !== false) sfx[name]?.(); };
 
@@ -129,8 +144,8 @@ function render() {
   if ($('#room').hidden) return;
   renderNet();
   const t = myTeam();
-  $('#me-chip').innerHTML = `${t ? `<span class="dot" style="background:${t.color}"></span>` : ''}<span class="chip-text">${esc(me.name)}</span>`;
-  $('#me-chip').title = t ? `${me.name} · ${t.name} — tap to change` : 'Pick a team';
+  $('#me-chip').innerHTML = me.judge ? `<span class="chip-text">⚖ ${esc(me.name)}</span>` : `${t ? `<span class="dot" style="background:${t.color}"></span>` : ''}<span class="chip-text">${esc(me.name)}</span>`;
+  $('#me-chip').title = me.judge ? `${me.name} · Judge` : t ? `${me.name} · ${t.name} — tap to change` : 'Pick a team';
   $('#sound-btn').textContent = guest.sound === false ? '🔇' : '🔊';
 
   const team = curTeam();
@@ -144,8 +159,9 @@ function render() {
 
   const st = $('#pstage');
   // Whole-class co-op (one team): no need to pick, just join it.
-  if (!t && !picking && teams().length === 1 && conn) { setTeam(teams()[0].id); return; }
-  if (picking || !t) st.innerHTML = pickerHtml();
+  if (!me.judge && !t && !picking && teams().length === 1 && conn) { setTeam(teams()[0].id); return; }
+  if (me.judge) st.innerHTML = game?.teams ? phaseHtml() : judgeLobbyHtml();
+  else if (picking || !t) st.innerHTML = pickerHtml();
   else if (!game?.teams) st.innerHTML = lobbyHtml();
   else st.innerHTML = phaseHtml();
   // The guessing screen has its own big timer, so hide the small one.
@@ -170,6 +186,15 @@ function pickerHtml() {
     <label class="field narrow">Your name <input id="rename" maxlength="24" value="${esc(me.name)}"></label>
     <a class="link" href="class.html?room=${esc(code)}">This device is the projector / big screen →</a>
     ${me.team != null && myTeam() ? '<button class="btn ghost" data-act="close-picker">Back to the game</button>' : ''}
+  </div>`;
+}
+
+function judgeLobbyHtml() {
+  return `<div class="ready">
+    <p class="eyebrow">Room ${esc(code)} · Judge</p>
+    <h1 class="ready-team">⚖ You're the judge</h1>
+    <p class="muted">${hostOnline ? 'Waiting for the game to start on the class computer…' : 'The class computer is offline — waiting for it to come back…'}</p>
+    <p class="muted">You'll see every card and run each turn from here: start, Correct / Skip / Taboo, undo, pause, then fix and confirm the results.</p>
   </div>`;
 }
 
@@ -199,10 +224,10 @@ function cardHtml(c) {
 const isHS = () => game?.kind === 'hotseat';
 const inSeat = () => isHS() && !!me.id && game.seatId === me.id;
 /** Hot Seat: may this device press Correct / Pass / Undo? (the seat's teammates; in Who Am I? anyone but the seat) */
-const hsRuns = () => isHS() && !inSeat() && (me.team === curTeamId() || game.settings.style === 'whoami'
+const hsRuns = () => isHS() && !inSeat() && (me.judge || me.team === curTeamId() || game.settings.style === 'whoami'
   // nobody else from the seat's team is online: anyone else may score for them
   || !roster.some((p) => p.role === 'player' && p.team === curTeamId() && p.id !== game.seatId));
-const hsOnTeam = () => me.team === curTeamId() || inSeat();
+const hsOnTeam = () => me.judge || me.team === curTeamId() || inSeat();
 
 function hsPhaseHtml() {
   const g = game;
@@ -280,6 +305,11 @@ function phaseHtml() {
 
   if (p === 'ready') {
     if (iExplain()) {
+      if (me.judge) {
+        return `<div class="ready"><p class="eyebrow">Up next · judge</p><h1 class="ready-team">${esc(team.name)}</h1>
+          <p class="muted">${g.explainerName ? `${esc(g.explainerName)} explains` : 'The next student comes up to explain'} · ${s.seconds} seconds · ${esc(skipRuleText(s))}${s.tabooPenalty ? ' · Taboo −1' : ''}</p>
+          <button class="btn primary huge" data-act="start">Start turn <kbd>Space</kbd></button></div>`;
+      }
       return `<div class="ready"><p class="eyebrow">Your turn to explain!</p><h1 class="ready-team">${esc(team.name)}</h1>
         <p class="muted">${s.seconds} seconds · ${esc(skipRuleText(s))}${s.tabooPenalty ? ' · Taboo −1' : ''}</p>
         <p class="muted">Describe the word without saying it or any of the taboo words.</p>
