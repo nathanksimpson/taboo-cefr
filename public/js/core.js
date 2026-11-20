@@ -290,7 +290,12 @@ export function shortcutKey(e) {
   if (/^Key[A-Z]$/.test(c)) return c.slice(3).toLowerCase();
   if (c === 'Space') return ' ';
   if (c === 'Enter' || c === 'NumpadEnter') return 'enter';
+  // arrows work like the letter keys (handy with a presenter remote):
+  // → correct · ← skip / pass · ↓ taboo / rule broken · ↑ undo
   if (c === 'ArrowRight') return 'arrowright';
+  if (c === 'ArrowLeft') return 's';
+  if (c === 'ArrowDown') return 'x';
+  if (c === 'ArrowUp') return 'z';
   const k = (e.key || '').toLowerCase();
   return JAMO[k] || k;
 }

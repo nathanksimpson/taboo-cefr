@@ -338,12 +338,12 @@ function renderStage() {
       </div>
       ${tallyHtml(game.log)}
       <div class="act">
-        <button class="btn act-taboo" data-act="taboo">Taboo! <kbd>X</kbd></button>
-        <button class="btn act-skip" data-act="skip">Skip <kbd>S</kbd></button>
-        <button class="btn act-correct" data-act="correct">Correct <kbd>Space</kbd></button>
+        <button class="btn act-taboo" data-act="taboo">Taboo! <kbd>X</kbd><kbd>↓</kbd></button>
+        <button class="btn act-skip" data-act="skip">Skip <kbd>S</kbd><kbd>←</kbd></button>
+        <button class="btn act-correct" data-act="correct">Correct <kbd>Space</kbd><kbd>→</kbd></button>
       </div>
       <div class="act-minor">
-        <button class="link" data-act="undo" ${game.log.length ? '' : 'disabled'}>↶ Undo last <kbd>Z</kbd></button>
+        <button class="link" data-act="undo" ${game.log.length ? '' : 'disabled'}>↶ Undo last <kbd>Z</kbd><kbd>↑</kbd></button>
         <button class="link" data-act="exclude">Too hard — remove this card for good</button>
       </div>
     </div>`;
@@ -415,7 +415,7 @@ function watchHtml() {
       <div class="target">${esc(c.word)}</div><div class="taboo-label">Don't say</div>
       <ul class="taboo-list">${c.taboo.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>
     ${tallyHtml(game.log)}
-    <button class="btn act-taboo buzz" data-act="taboo">Taboo! <kbd>X</kbd></button>
+    <button class="btn act-taboo buzz" data-act="taboo">Taboo! <kbd>X</kbd><kbd>↓</kbd></button>
   </div>`;
 }
 
@@ -478,6 +478,7 @@ document.addEventListener('keydown', (e) => {
   if (e.repeat) return; // holding a key shouldn't score twice
   const k = shortcutKey(e);
   const p = game.phase;
+  if (p === 'playing' && /^Arrow/.test(e.code)) e.preventDefault(); // arrows are shortcuts here, not scrolling
   if (p === 'ready' && (k === ' ' || k === 'enter')) { e.preventDefault(); startTurn(); }
   else if (p === 'playing' && !hostControls()) {
     if (k === 'x' && hostSees()) mark('taboo');

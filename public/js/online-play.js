@@ -463,16 +463,16 @@ function renderPlay() {
     if (tr.card && canRun(s, pid, tr)) {
       st.innerHTML = `<div class="card-wrap">${cardHtml(tr.card)}${tallyHtml(tr.log, true)}
         <div class="act">
-          <button class="btn act-taboo" data-act="taboo">${esc(label('taboo'))} <kbd>X</kbd></button>
-          <button class="btn act-skip" data-act="skip">${esc(label('skip'))} <kbd>S</kbd></button>
-          <button class="btn act-correct" data-act="correct">${esc(t('correct'))} <kbd>Space</kbd></button>
+          <button class="btn act-taboo" data-act="taboo">${esc(label('taboo'))} <kbd>X</kbd><kbd>↓</kbd></button>
+          <button class="btn act-skip" data-act="skip">${esc(label('skip'))} <kbd>S</kbd><kbd>←</kbd></button>
+          <button class="btn act-correct" data-act="correct">${esc(t('correct'))} <kbd>Space</kbd><kbd>→</kbd></button>
         </div>
         ${role === 'helper' && style === 'whoami' ? `<p class="hint center">${esc(t('youAnswer'))}</p>` : ''}
-        <div class="act-minor"><button class="link" data-act="undo" ${tr.log.length ? '' : 'disabled'}>${esc(t('undo'))} <kbd>Z</kbd></button></div>
+        <div class="act-minor"><button class="link" data-act="undo" ${tr.log.length ? '' : 'disabled'}>${esc(t('undo'))} <kbd>Z</kbd><kbd>↑</kbd></button></div>
       </div>`;
     } else if (tr.card) {
       st.innerHTML = `<div class="card-wrap">${cardHtml(tr.card)}${tallyHtml(tr.log, false)}
-        <div class="act act-single"><button class="btn act-taboo buzz" data-act="taboo">${esc(label('taboo'))} <kbd>X</kbd></button></div>
+        <div class="act act-single"><button class="btn act-taboo buzz" data-act="taboo">${esc(label('taboo'))} <kbd>X</kbd><kbd>↓</kbd></button></div>
         <p class="hint center">${esc(style === 'taboo' ? t('buzzNote', { name: nm(ex) }) : style === 'whoami' ? t('waRule') : t('hsRule'))}</p>
       </div>`;
     } else {
@@ -577,6 +577,7 @@ document.addEventListener('keydown', (e) => {
   const k = shortcutKey(e);
   const ph = state.phase;
   const tr = state.turn;
+  if (ph === 'playing' && /^Arrow/.test(e.code)) e.preventDefault(); // arrows are shortcuts here, not scrolling
   let a = null;
   if (ph === 'ready' && turnPeople().lead === pid && (k === ' ' || k === 'enter')) a = 'begin';
   else if (ph === 'playing' && tr?.card && canRun(state, pid, tr)) a = { ' ': 'correct', enter: 'correct', arrowright: 'correct', x: 'taboo', s: 'skip', z: 'undo' }[k];

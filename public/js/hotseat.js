@@ -358,12 +358,12 @@ function renderStage() {
       </div>
       ${tallyHtml(game.log)}
       <div class="act">
-        <button class="btn act-taboo" data-act="foul">Rule broken <kbd>X</kbd></button>
-        <button class="btn act-skip" data-act="pass">Pass <kbd>S</kbd></button>
-        <button class="btn act-correct" data-act="correct">Correct <kbd>Space</kbd></button>
+        <button class="btn act-taboo" data-act="foul">Rule broken <kbd>X</kbd><kbd>↓</kbd></button>
+        <button class="btn act-skip" data-act="pass">Pass <kbd>S</kbd><kbd>←</kbd></button>
+        <button class="btn act-correct" data-act="correct">Correct <kbd>Space</kbd><kbd>→</kbd></button>
       </div>
       <div class="act-minor">
-        <button class="link" data-act="undo" ${game.log.length ? '' : 'disabled'}>↶ Undo last <kbd>Z</kbd></button>
+        <button class="link" data-act="undo" ${game.log.length ? '' : 'disabled'}>↶ Undo last <kbd>Z</kbd><kbd>↑</kbd></button>
         <button class="link" data-act="exclude">Too hard — remove this card for good</button>
       </div>
     </div>`;
@@ -456,6 +456,7 @@ document.addEventListener('keydown', (e) => {
   if (e.repeat) return; // holding a key shouldn't score twice
   const k = shortcutKey(e);
   const p = game.phase;
+  if (p === 'playing' && /^Arrow/.test(e.code)) e.preventDefault(); // arrows are shortcuts here, not scrolling
   if (p === 'ready' && (k === ' ' || k === 'enter')) { e.preventDefault(); startTurn(); }
   else if (p === 'playing' && hostInSeat()) {
     if (k === 'p') pause();

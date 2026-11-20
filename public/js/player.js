@@ -245,9 +245,9 @@ function hsPhaseHtml() {
         ${s.showAvoid ? `<div class="hs-avoid"><span>Don’t say</span>${w.taboo.map((t) => `<b>${esc(t)}</b>`).join('')}</div>` : ''}</div>
       ${tallyHS}
       ${runs ? `<div class="act">
-        <button class="btn act-taboo" data-act="foul">Rule broken <kbd>X</kbd></button>
-        <button class="btn act-skip" data-act="pass">Pass <kbd>S</kbd></button>
-        <button class="btn act-correct" data-act="correct">Correct <kbd>Space</kbd></button></div>
+        <button class="btn act-taboo" data-act="foul">Rule broken <kbd>X</kbd><kbd>↓</kbd></button>
+        <button class="btn act-skip" data-act="pass">Pass <kbd>S</kbd><kbd>←</kbd></button>
+        <button class="btn act-correct" data-act="correct">Correct <kbd>Space</kbd><kbd>→</kbd></button></div>
         <div class="act-minor"><button class="link" data-act="undo" ${g.log.length ? '' : 'disabled'}>↶ Undo last</button>
           <button class="link" data-act="pause">Pause</button></div>`
         : '<button class="btn act-taboo buzz" data-act="foul">Rule broken!</button>'}</div>`;
@@ -297,9 +297,9 @@ function phaseHtml() {
     if (iExplain() && g.card) {
       return `<div class="card-wrap">${cardHtml(g.card)}${tally(g.log, s)}
         <div class="act">
-          <button class="btn act-taboo" data-act="taboo">Taboo! <kbd>X</kbd></button>
-          <button class="btn act-skip" data-act="skip">Skip <kbd>S</kbd></button>
-          <button class="btn act-correct" data-act="correct">Correct <kbd>Space</kbd></button>
+          <button class="btn act-taboo" data-act="taboo">Taboo! <kbd>X</kbd><kbd>↓</kbd></button>
+          <button class="btn act-skip" data-act="skip">Skip <kbd>S</kbd><kbd>←</kbd></button>
+          <button class="btn act-correct" data-act="correct">Correct <kbd>Space</kbd><kbd>→</kbd></button>
         </div>
         <div class="act-minor"><button class="link" data-act="undo" ${g.log.length ? '' : 'disabled'}>↶ Undo last</button>
           <button class="link" data-act="pause">Pause</button></div></div>`;
@@ -416,6 +416,7 @@ $('#sound-btn').onclick = () => { guest.sound = guest.sound === false; saveJSON(
 document.addEventListener('keydown', (e) => {
   if (!game || e.target.matches('input, textarea, select') || e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
   const k = shortcutKey(e);
+  if (game.phase === 'playing' && /^Arrow/.test(e.code)) e.preventDefault(); // arrows are shortcuts here, not scrolling
   if (isHS()) {
     if (game.phase !== 'playing' || !game.card) return;
     if (hsRuns() && (k === ' ' || k === 'enter' || k === 'arrowright')) { e.preventDefault(); act('correct'); }
