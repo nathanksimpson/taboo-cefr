@@ -63,6 +63,8 @@ export default {
 /** Whether this connection may see the current card and the turn's words. */
 export function canSeeCard(game, a) {
   if (a.role === 'host') return true;
+  // The card screen (card.html): a monitor facing the student who explains, so it always shows the card.
+  if (a.role === 'screen' && a.cards) return true;
   if (game?.kind === 'hotseat') {
     // Hot Seat / Who Am I?: everyone sees the word except the player in the hot seat.
     // The big screen shows it too (in class, the hot seat faces away from it).
@@ -143,7 +145,8 @@ export class Room {
         try { ws.close(4002, 'replaced'); } catch { /* already closed */ }
       }
     }
-    const att = { id, role, name: clean(p.get('name'), 24) || (role === 'screen' ? 'Big screen' : 'Player'), team: teamOf(p.get('team')) };
+    const cards = role === 'screen' && p.get('view') === 'cards';
+    const att = { id, role, cards, name: clean(p.get('name'), 24) || (cards ? 'Card screen' : role === 'screen' ? 'Big screen' : 'Player'), team: teamOf(p.get('team')) };
     server.serializeAttachment(att);
 
     await this.load();

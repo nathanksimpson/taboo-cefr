@@ -44,7 +44,7 @@ export function connect(opts) {
   let offset = 0; // server clock − this device's clock
   let bestRtt = Infinity;
   let pingTimer = null;
-  let params = { role: opts.role, key: opts.key, id: opts.id, name: opts.name, team: opts.team };
+  let params = { role: opts.role, key: opts.key, id: opts.id, name: opts.name, team: opts.team, view: opts.view };
 
   const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
   const status = (s) => on.status?.(s);

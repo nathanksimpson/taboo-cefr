@@ -214,6 +214,7 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi, 
           <a class="btn ghost small" href="${copy.bigScreen}?room=${esc(saved.code)}" target="_blank" rel="noopener">⧉ Big screen on another device</a>
         </div>
       </div>
+      <p class="hint room-computer">🖥 On the class computer, open <b>${esc(location.host)}/display</b> and type <b>${esc(saved.code)}</b>: the projector shows the timer and scores, and a second monitor can show the cards. <a href="card.html?room=${esc(saved.code)}" target="_blank" rel="noopener">Card screen</a></p>
       ${error ? `<p class="online-err">${esc(error)}</p>` : ''}
       ${status === 'taken' ? `<p class="online-err">This room is being run from another tab or page (the other game, perhaps). <button class="btn ghost small" id="take-back">Run it from here</button></p>` : ''}
       <div class="rule"><div class="rule-label">This screen is</div><div class="rule-body">
