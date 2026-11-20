@@ -102,7 +102,7 @@ if (room) {
     on: {
       state: (g) => {
         // The teacher switched this room to Hot Seat: follow it.
-        if (g?.kind === 'hotseat') { location.replace(`hotseat-class.html?room=${room}`); return; }
+        if (g?.kind === 'hotseat') { location.replace(`hotseat-class.html${location.search}`); return; }
         game = g; render(); maybeFlash();
       },
       error: (m) => { roomError = m.message; game = null; render(); },

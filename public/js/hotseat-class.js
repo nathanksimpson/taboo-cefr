@@ -117,7 +117,7 @@ if (room) {
     code: room, role: 'screen',
     on: {
       state: (g) => {
-        if (g && g.kind !== 'hotseat') { location.replace(`class.html?room=${room}`); return; }
+        if (g && g.kind !== 'hotseat') { location.replace(`class.html${location.search}`); return; }
         game = g; render(); maybeFlash();
       },
       error: (m) => { roomError = m.message; game = null; render(); },

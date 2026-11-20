@@ -39,6 +39,15 @@ const COPY = {
   },
 };
 
+/* This device runs the game for the room (often the teacher's phone, used as a remote): keep its screen
+   on, or a locked phone would stop turns ending on time. Browsers drop the lock when the page is hidden. */
+let wake = null;
+async function keepAwake() {
+  if (wake || !navigator.wakeLock || document.visibilityState !== 'visible') return;
+  try { wake = await navigator.wakeLock.request('screen'); wake.addEventListener('release', () => { wake = null; }); } catch { /* not allowed here */ }
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && loadJSON(ROOM_KEY, null)?.code) keepAwake(); });
+
 export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi, kind = 'taboo' }) {
   const copy = COPY[kind];
   document.body.insertAdjacentHTML('beforeend', HTML);
@@ -109,7 +118,7 @@ export function setupHostOnline({ getGame, getTeams, onAct, onChange, teamsApi, 
     conn = connect({
       code: saved.code, role: 'host', key: saved.hostKey,
       on: {
-        status: (s) => { status = s; net.render(); },
+        status: (s) => { status = s; if (s === 'online') keepAwake(); net.render(); },
         welcome: () => { net.sendLobby(); net.publish(getGame()); },
         roster: (m) => { roster = m.players; net.render(); onChange(); },
         act: (m) => onAct(m),
