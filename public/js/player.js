@@ -244,23 +244,23 @@ function hsPhaseHtml() {
     if (inSeat()) {
       return `<div class="ready"><p class="eyebrow">${esc(style.name)} · your turn</p><h1 class="ready-team">You're in the hot seat!</h1>
         <p class="muted">${s.style === 'whoami' ? 'Ask yes/no questions to work out the word.' : 'Your team describes the word — you guess.'} Don't look at anyone else's screen!</p>
-        <button class="btn primary huge" data-act="start">Start turn</button></div>`;
+        <button class="btn primary huge" data-act="start">Start turn <kbd>Space</kbd></button></div>`;
     }
     return `<div class="ready"><p class="eyebrow">${esc(style.name)} · up next</p><h1 class="ready-team">${esc(team.name)}</h1>
       <p class="seat-note">🪑 ${esc(seatName)} ${g.seatName || g.seatId === 'host' ? 'is in the hot seat' : 'sits in the hot seat'}</p>
       <p class="muted">${esc(style.rule)}<br>${s.seconds} seconds · ${esc(passRuleText(s))}${s.foulPenalty ? ' · Rule broken −1' : ''}</p>
-      ${hsOnTeam() ? '<button class="btn primary huge" data-act="start">Start turn</button>' : ''}</div>`;
+      ${hsOnTeam() ? '<button class="btn primary huge" data-act="start">Start turn <kbd>Space</kbd></button>' : ''}</div>`;
   }
   if (p === 'paused') {
     return `<div class="ready"><p class="eyebrow">Paused</p><h1 class="ready-team">Word hidden</h1>
-      ${hsOnTeam() ? '<button class="btn primary huge" data-act="pause">Resume</button>' : ''}</div>`;
+      ${hsOnTeam() ? '<button class="btn primary huge" data-act="pause">Resume <kbd>P</kbd></button>' : ''}</div>`;
   }
   if (p === 'playing') {
     if (inSeat() || !g.card) {
       return `<div class="ready guess"><p class="eyebrow">${inSeat() ? 'You’re in the hot seat' : `${esc(team.name)} is playing`}</p>
         <h1 class="ready-team">${inSeat() ? (s.style === 'whoami' ? 'Ask yes/no questions!' : 'Listen and guess!') : 'Watch and wait'}</h1>
         <div class="big-timer" id="big-timer"></div>${tallyHS}
-        ${inSeat() ? '<button class="link" data-act="pause">Pause</button>' : ''}</div>`;
+        ${inSeat() ? '<button class="link" data-act="pause">Pause <kbd>P</kbd></button>' : ''}</div>`;
     }
     const w = g.card;
     const runs = hsRuns();
@@ -273,9 +273,9 @@ function hsPhaseHtml() {
         <button class="btn act-taboo" data-act="foul">Rule broken <kbd>X</kbd><kbd>↓</kbd></button>
         <button class="btn act-skip" data-act="pass">Pass <kbd>S</kbd><kbd>←</kbd></button>
         <button class="btn act-correct" data-act="correct">Correct <kbd>Space</kbd><kbd>→</kbd></button></div>
-        <div class="act-minor"><button class="link" data-act="undo" ${g.log.length ? '' : 'disabled'}>↶ Undo last</button>
-          <button class="link" data-act="pause">Pause</button></div>`
-        : '<button class="btn act-taboo buzz" data-act="foul">Rule broken!</button>'}</div>`;
+        <div class="act-minor"><button class="link" data-act="undo" ${g.log.length ? '' : 'disabled'}>↶ Undo last <kbd>Z</kbd><kbd>↑</kbd></button>
+          <button class="link" data-act="pause">Pause <kbd>P</kbd></button></div>`
+        : '<button class="btn act-taboo buzz" data-act="foul">Rule broken! <kbd>X</kbd><kbd>↓</kbd></button>'}</div>`;
   }
   if (p === 'review') {
     const pts = scoreHS(g.log, s);
@@ -290,7 +290,7 @@ function hsPhaseHtml() {
       <h2>${esc(team.name)}: <span class="${total < 0 ? 'neg' : ''}">${total >= 0 ? '+' : ''}${total}</span></h2>
       ${edit ? '<p class="muted">Fix any mis-taps, then confirm.</p>' : '<p class="muted">Waiting for the scores to be confirmed…</p>'}
       <div class="rv-list">${rows || '<p class="muted">No words played this turn.</p>'}</div>
-      ${edit ? `<button class="btn primary huge" data-act="confirm">${g.coop ? 'Confirm &amp; next turn' : 'Confirm &amp; next team'}</button>` : ''}</div>`;
+      ${edit ? `<button class="btn primary huge" data-act="confirm">${g.coop ? 'Confirm &amp; next turn' : 'Confirm &amp; next team'} <kbd>Enter</kbd></button>` : ''}</div>`;
   }
   return null;
 }
@@ -313,7 +313,7 @@ function phaseHtml() {
       return `<div class="ready"><p class="eyebrow">Your turn to explain!</p><h1 class="ready-team">${esc(team.name)}</h1>
         <p class="muted">${s.seconds} seconds · ${esc(skipRuleText(s))}${s.tabooPenalty ? ' · Taboo −1' : ''}</p>
         <p class="muted">Describe the word without saying it or any of the taboo words.</p>
-        <button class="btn primary huge" data-act="start">Start turn</button></div>`;
+        <button class="btn primary huge" data-act="start">Start turn <kbd>Space</kbd></button></div>`;
     }
     return `<div class="ready"><p class="eyebrow">Up next</p><h1 class="ready-team">${esc(team.name)}</h1>
       <p class="muted">${esc(explainer())} ${g.explainerName ? 'explains' : 'starts the turn'}${mine ? ' — get ready to guess!' : ' — your team watches for taboo words.'}</p></div>`;
@@ -322,7 +322,7 @@ function phaseHtml() {
   if (p === 'playing' || p === 'paused') {
     if (p === 'paused') {
       return `<div class="ready"><p class="eyebrow">Paused</p><h1 class="ready-team">Card hidden</h1>
-        ${iExplain() ? '<button class="btn primary huge" data-act="pause">Resume</button>' : ''}</div>`;
+        ${iExplain() ? '<button class="btn primary huge" data-act="pause">Resume <kbd>P</kbd></button>' : ''}</div>`;
     }
     if (iExplain() && g.card) {
       return `<div class="card-wrap">${cardHtml(g.card)}${tally(g.log, s)}
@@ -331,13 +331,13 @@ function phaseHtml() {
           <button class="btn act-skip" data-act="skip">Skip <kbd>S</kbd><kbd>←</kbd></button>
           <button class="btn act-correct" data-act="correct">Correct <kbd>Space</kbd><kbd>→</kbd></button>
         </div>
-        <div class="act-minor"><button class="link" data-act="undo" ${g.log.length ? '' : 'disabled'}>↶ Undo last</button>
-          <button class="link" data-act="pause">Pause</button></div></div>`;
+        <div class="act-minor"><button class="link" data-act="undo" ${g.log.length ? '' : 'disabled'}>↶ Undo last <kbd>Z</kbd><kbd>↑</kbd></button>
+          <button class="link" data-act="pause">Pause <kbd>P</kbd></button></div></div>`;
     }
     if (g.card) {
       return `<div class="card-wrap"><p class="remote-note">${esc(team.name)} is guessing — ${esc(explainer())} is explaining. Call it if they say a taboo word!</p>
         ${cardHtml(g.card)}${tally(g.log, s)}
-        <button class="btn act-taboo buzz" data-act="taboo">Taboo!</button></div>`;
+        <button class="btn act-taboo buzz" data-act="taboo">Taboo! <kbd>X</kbd><kbd>↓</kbd></button></div>`;
     }
     return `<div class="ready guess"><p class="eyebrow">${mine ? 'Your team is guessing' : `${esc(team.name)} is guessing`}</p>
       <h1 class="ready-team">${mine ? 'Guess the word!' : 'Watch and wait'}</h1>
@@ -359,7 +359,7 @@ function phaseHtml() {
       <h2>${esc(team.name)}: <span class="${total < 0 ? 'neg' : ''}">${total >= 0 ? '+' : ''}${total}</span></h2>
       ${edit ? '<p class="muted">Fix any mis-taps, then confirm.</p>' : '<p class="muted">Waiting for the scores to be confirmed…</p>'}
       <div class="rv-list">${rows || '<p class="muted">No cards played this turn.</p>'}</div>
-      ${edit ? `<button class="btn primary huge" data-act="confirm">${g.coop ? 'Confirm &amp; next turn' : 'Confirm &amp; next team'}</button>` : ''}</div>`;
+      ${edit ? `<button class="btn primary huge" data-act="confirm">${g.coop ? 'Confirm &amp; next turn' : 'Confirm &amp; next team'} <kbd>Enter</kbd></button>` : ''}</div>`;
   }
 
   if (p === 'over' && g.coop) {
@@ -443,24 +443,28 @@ $('#pstage').addEventListener('change', (e) => {
 $('#me-chip').onclick = () => { picking = !picking; render(); };
 $('#sound-btn').onclick = () => { guest.sound = guest.sound === false; saveJSON(GUEST_KEY, guest); render(); };
 
+// Every button on the phone has a key (the same keys as the teacher's screen), for a keyboard or presenter remote:
+// Space / Enter start the turn · → / Space correct · ← / S skip or pass · ↓ / X taboo or rule broken · ↑ / Z undo
+// P pause and resume · Enter confirm the results. A key only works when its button is showing.
 document.addEventListener('keydown', (e) => {
-  if (!game || e.target.matches('input, textarea, select') || e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (!game || $('#room').hidden || e.target.matches('input, textarea, select') || e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
   const k = shortcutKey(e);
-  if (game.phase === 'playing' && /^Arrow/.test(e.code)) e.preventDefault(); // arrows are shortcuts here, not scrolling
-  if (isHS()) {
-    if (game.phase !== 'playing' || !game.card) return;
-    if (hsRuns() && (k === ' ' || k === 'enter' || k === 'arrowright')) { e.preventDefault(); act('correct'); }
-    else if (hsRuns() && k === 's') act('pass');
-    else if (hsRuns() && k === 'z') act('undo');
-    else if (k === 'x' && !inSeat()) act('foul');
-    return;
+  const p = game.phase;
+  if (p === 'playing' && /^Arrow/.test(e.code)) e.preventDefault(); // arrows are shortcuts here, not scrolling
+  const hs = isHS();
+  const runs = hs ? hsRuns() : iExplain(); // may press Correct / Skip / Undo
+  const leads = hs ? hsOnTeam() : iExplain(); // may start, resume, fix and confirm
+  const go = (a) => { e.preventDefault(); act(a); };
+  if (p === 'ready' && leads && (k === ' ' || k === 'enter')) go('start');
+  else if (p === 'playing' && k === 'p' && (runs || (hs && inSeat()))) go('pause');
+  else if (p === 'paused' && k === 'p' && leads) go('pause');
+  else if (p === 'review' && k === 'enter' && leads) go('confirm');
+  else if (p === 'playing' && game.card) {
+    if (runs && (k === ' ' || k === 'enter' || k === 'arrowright')) go('correct');
+    else if (runs && k === 's') go(hs ? 'pass' : 'skip');
+    else if (runs && k === 'z') go('undo');
+    else if (k === 'x' && !inSeat()) go(hs ? 'foul' : 'taboo');
   }
-  if (game.phase === 'playing' && game.card) {
-    if (iExplain() && (k === ' ' || k === 'enter' || k === 'arrowright')) { e.preventDefault(); act('correct'); }
-    else if (iExplain() && k === 's') act('skip');
-    else if (iExplain() && k === 'z') act('undo');
-    else if (k === 'x') act('taboo');
-  } else if (game.phase === 'ready' && iExplain() && (k === ' ' || k === 'enter')) { e.preventDefault(); act('start'); }
 });
 
 // Coming back to a room we were already in (reload, or the phone slept): rejoin straight away.

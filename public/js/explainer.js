@@ -277,7 +277,7 @@ function render() {
   $('#cur-team').innerHTML = `<span class="dot" style="background:${team.color}"></span><span class="chip-text">${esc(team.name)}</span>`;
   $('#cur-team').style.setProperty('--team', team.color);
   $('#pause').hidden = !['playing', 'paused'].includes(game.phase);
-  $('#pause').textContent = game.phase === 'paused' ? 'Resume' : 'Pause';
+  $('#pause').innerHTML = `${game.phase === 'paused' ? 'Resume' : 'Pause'} <kbd>P</kbd>`;
   $('#play').dataset.phase = game.phase;
   renderTimer();
   renderStage();

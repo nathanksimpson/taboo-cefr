@@ -511,12 +511,14 @@ body.is-dragging, body.is-dragging * { cursor: grabbing !important; user-select:
 /* =========================================================
    Phones (and touch screens)
    ========================================================= */
-/* No keyboard on a touch screen: hide the shortcut hints. */
-@media (hover: none) { kbd { display: none; } }
+/* Phones and tablets show the shortcut hints too (a keyboard, a presenter remote or a laptop may be driving them), just smaller. */
 
 @media (max-width: 560px) {
   html, body { overflow-x: clip; }
-  kbd { display: none; }
+  kbd { font-size: .58em; padding: .05em .32em; margin-left: .28em; border-width: 1px; border-radius: 4px; }
+  /* the three action buttons: key hints on their own line under the label */
+  .act .btn { flex-wrap: wrap; justify-content: center; row-gap: .15rem; }
+  .act .btn kbd:first-of-type { margin-left: 0; }
 
   /* top bar: one tidy row */
   .topbar { padding: .55rem 12px; gap: .5rem; }
@@ -786,7 +788,6 @@ html:is([data-edition="nadu"], .room-ui) body.online .team-chip, html:is([data-e
 @media (max-width: 560px) {
   html:is([data-edition="nadu"], .room-ui) body.online .team-chip { font-size: .85rem; padding: .35rem .7rem; }
   html:is([data-edition="nadu"], .room-ui) body.online .timer { font-size: 1.9rem; }
-  html:is([data-edition="nadu"], .room-ui) body.online kbd { display: none; }
 }
 html:is([data-edition="nadu"], .room-ui) .act.act-single { grid-template-columns: 1fr; }
 html:is([data-edition="nadu"], .room-ui) .small-names { margin-left: .4rem; }

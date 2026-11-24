@@ -425,7 +425,7 @@ function renderPlay() {
     : `<span class="dot" style="background:${colorOf(team)}"></span><span class="chip-text">${esc(s.settings.mode === 'coop' ? t('coopChip') : teamName(s, team))} · ${esc(roundText())}</span>`;
   $('#play').style.setProperty('--team', colorOf(team));
   $('#pause').hidden = !(s.phase === 'playing' || s.phase === 'paused');
-  $('#pause').textContent = s.phase === 'paused' ? t('resume') : t('pause');
+  $('#pause').innerHTML = `${esc(s.phase === 'paused' ? t('resume') : t('pause'))} <kbd>P</kbd>`;
   $('#end-game').hidden = s.phase === 'over';
   tick();
 
