@@ -7,7 +7,7 @@ const MIX = EDITION.features.korean ? ['switch languages', 'switched languages']
 export const sync = makeSync('hotseat.game.v1', 'hotseat-cefr');
 
 const baseSettings = settingsStore('hotseat.settings.v1', {
-  style: 'hotseat', // 'hotseat' | 'whoami'
+  style: 'hotseat', // 'hotseat' | 'whoami' | 'charades'
   sets: ['A2', 'B1'],
   seconds: 90,
   passMode: 'limited', // 'free' | 'limited' | 'penalty'
@@ -44,7 +44,16 @@ export const STYLE = {
     rule: 'Ask yes/no questions. Class: answer only yes, no or maybe.',
     foul: 'gave more than yes, no or maybe',
   },
+  // Charades is Hot Seat turned around: the player whose turn it is (the "seat") is the only one who sees
+  // the word, and acts it out; their team guesses. The class view never shows the word while a turn runs.
+  charades: {
+    name: 'Charades',
+    seat: 'Actor: come up, read the word, then act it out.',
+    rule: 'Act out the word. No talking, no sounds, no mouthing words.',
+    foul: 'talked, made a sound or mouthed the word',
+  },
 };
+export const isCharades = (s) => s?.style === 'charades';
 
 export function scoreHS(log, s) {
   let passes = 0;

@@ -14,7 +14,7 @@ const isHS = () => game.kind === 'hotseat';
 
 function cardHtml(c) {
   // Hot Seat shows the words to avoid only when the teacher turned that on; Taboo always shows them.
-  const avoid = !isHS() || game.settings?.showAvoid;
+  const avoid = !isHS() || (game.settings?.showAvoid && game.settings.style !== 'charades');
   const list = avoid && c.taboo?.length
     ? `<div class="taboo-label">${isHS() ? 'Try not to say' : 'Don’t say'}</div><ul class="taboo-list">${c.taboo.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
   return `<div class="card cs-card"><div class="card-top"><span class="level-tag">${esc(c.label || SET_LABEL(c.level) || '')}</span></div>
@@ -34,7 +34,8 @@ function render() {
   const team = game.teams[game.current];
   if (team) document.body.style.setProperty('--team', team.color);
   const p = game.phase;
-  const who = isHS() ? (game.seatName ? `🪑 ${game.seatName} is in the hot seat` : '') : (game.explainerName ? `${game.explainerName} explains` : '');
+  const ch = isHS() && game.settings?.style === 'charades';
+  const who = isHS() ? (game.seatName ? (ch ? `🎭 ${game.seatName} acts it out` : `🪑 ${game.seatName} is in the hot seat`) : '') : (game.explainerName ? `${game.explainerName} explains` : '');
   if (p === 'ready') el.innerHTML = message('Get ready', teamName(), who || 'The card appears here when the turn starts.');
   else if (p === 'paused') el.innerHTML = message('Paused', teamName(), 'The card comes back when the game resumes.');
   else if (p === 'playing') {

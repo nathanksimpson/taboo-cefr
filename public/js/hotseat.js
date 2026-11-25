@@ -8,7 +8,7 @@ import { setupDeckPicker, deckSummary } from './decks.js';
 let renderDecks = () => {};
 const seen = seenStore('hotseat');
 import { openCardManager, cardManagerOpen } from './cardmanager.js';
-import { sync, hsSettings, STYLE, scoreHS, turnTotal, passRuleText } from './hotseat-shared.js';
+import { sync, hsSettings, STYLE, isCharades, scoreHS, turnTotal, passRuleText } from './hotseat-shared.js';
 
 const $ = (s) => document.querySelector(s);
 let settings = hsSettings.get();
@@ -18,7 +18,7 @@ let game = sync.load();
 
 {
   const want = new URLSearchParams(location.search).get('style');
-  if (want === 'whoami' || want === 'hotseat') { settings.style = want; hsSettings.set(settings); }
+  if (want === 'whoami' || want === 'hotseat' || want === 'charades') { settings.style = want; hsSettings.set(settings); }
 }
 function saveSettings() { hsSettings.set(settings); renderSetup(); net?.sendLobby(); }
 const clampNum = (v, lo, hi, d) => { const n = parseInt(v, 10); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
@@ -53,6 +53,7 @@ function renderSetup() {
   $('#foul-hint').textContent = `(someone ${STYLE[settings.style].foul})`;
   $('#turns-per-team').value = settings.turnsPerTeam;
   $('#show-avoid').checked = settings.showAvoid;
+  $('#show-avoid').closest('label').hidden = isCharades(settings); // nothing to avoid saying when nobody talks
   $('#reveal-words').checked = settings.revealWords;
   $('#sounds').checked = settings.sounds;
   $('#resume-banner').hidden = !(game && game.teams && game.phase !== 'over');
@@ -146,7 +147,7 @@ function updateSeat() {
   game.seatName = pick.id === 'host' ? '' : pick.name;
 }
 /** This screen is the one in the hot seat, so it must not show the word. */
-const hostInSeat = () => net.active && game.seatId === 'host';
+const hostInSeat = () => net.active && game.seatId === 'host' && !isCharades(game.settings);
 
 /** A button pressed on a player's device. */
 function onRemote(m) {
@@ -159,10 +160,11 @@ function onRemote(m) {
   // Hot Seat: the seat's teammates describe and score. Who Am I?: everyone else answers, so anyone but the seat can score.
   // If nobody else from the seat's team is online, anyone else may score for them.
   const helpers = net.players(teamId()).filter((x) => x.id !== game.seatId).length;
-  const runs = m.judge || (!seat && (onTeam || game.settings.style === 'whoami' || !helpers));
+  const ch = isCharades(game.settings);
+  const runs = ch ? m.judge || seat : m.judge || (!seat && (onTeam || game.settings.style === 'whoami' || !helpers));
   if (m.act === 'start' && p === 'ready' && (onTeam || seat)) startTurn();
   else if ((m.act === 'correct' || m.act === 'pass') && p === 'playing' && runs && sameCard) mark(m.act);
-  else if (m.act === 'foul' && p === 'playing' && !seat && sameCard) mark('foul', m.judge ? undefined : m.name);
+  else if (m.act === 'foul' && p === 'playing' && (ch ? m.judge : !seat) && sameCard) mark('foul', m.judge ? undefined : m.name);
   else if (m.act === 'undo' && p === 'playing' && runs) undo();
   else if (m.act === 'pause' && (p === 'playing' || p === 'paused') && (onTeam || seat)) pause();
   else if (m.act === 'rv' && p === 'review' && (onTeam || seat) && game.log[m.i] && ['correct', 'pass', 'foul'].includes(m.r)) { game.log[m.i].result = m.r; commit(); }
@@ -172,11 +174,12 @@ function onRemote(m) {
 function seatPicker() {
   if (!net.active) return '';
   const list = seatCandidates();
-  if (!list.length) return `<p class="remote-note">Nobody from ${esc(game.teams[game.current].name)} has joined online — the hot seat is in the room.</p>`;
+  if (!list.length) return `<p class="remote-note">Nobody from ${esc(game.teams[game.current].name)} has joined online — ${isCharades(game.settings) ? 'the actor comes up to this screen' : 'the hot seat is in the room'}.</p>`;
   const opts = [{ id: '', name: 'Someone in the room (no device)' }, ...list];
-  return `<label class="explainer-pick">In the hot seat
+  const ch = isCharades(game.settings);
+  return `<label class="explainer-pick">${ch ? 'Acting' : 'In the hot seat'}
     <select id="seat-select">${opts.map((c) => `<option value="${esc(c.id)}" ${(c.id || null) === (game.seatId ?? null) ? 'selected' : ''}>${esc(c.name)}${c.id && c.id !== 'host' ? ' 📱' : ''}</option>`).join('')}</select></label>
-    ${game.seatId && game.seatId !== 'host' ? `<p class="remote-note">The word is hidden on ${esc(game.seatName)}'s device.</p>` : ''}`;
+    ${game.seatId && game.seatId !== 'host' ? `<p class="remote-note">${ch ? `The word shows on ${esc(game.seatName)}'s device (and this screen).` : `The word is hidden on ${esc(game.seatName)}'s device.`}</p>` : ''}`;
 }
 function showPlay() { document.activeElement?.blur?.(); $('#setup').hidden = true; $('#play').hidden = false; render(); }
 function showSetup() { $('#play').hidden = true; $('#setup').hidden = false; renderSetup(); }
@@ -337,7 +340,7 @@ function renderStage() {
       <p class="eyebrow">${esc(style.name)} · up next</p>
       <h1 class="ready-team">${esc(team.name)}</h1>
       ${team.lang ? `<p class="muted"><span class="lang-tag ${team.lang}">${LANG_NAME[team.lang]}</span> Explain in ${team.lang === 'ko' ? 'Korean' : 'English'}</p>` : ''}
-      <p class="seat-note">🪑 ${game.seatName ? `${esc(game.seatName)} is in the hot seat` : game.seatId === 'host' ? 'You’re in the hot seat — turn away from the screen!' : esc(style.seat)}</p>
+      <p class="seat-note">${isCharades(s) ? `🎭 ${game.seatName ? `${esc(game.seatName)} acts it out` : esc(style.seat)}` : `🪑 ${game.seatName ? `${esc(game.seatName)} is in the hot seat` : game.seatId === 'host' ? 'You’re in the hot seat — turn away from the screen!' : esc(style.seat)}`}</p>
       <p class="muted">${esc(style.rule)}<br>${s.seconds} seconds · ${esc(passRuleText(s))}${s.foulPenalty ? ' · Rule broken −1' : ''}</p>
       ${last}
       ${seatPicker()}
@@ -351,11 +354,11 @@ function renderStage() {
   } else if (game.phase === 'playing' && game.card) {
     const c = game.card;
     st.innerHTML = `<div class="card-wrap hs-wrap">
-      ${game.seatName ? `<p class="remote-note">🪑 ${esc(game.seatName)} is in the hot seat</p>` : ''}
+      ${isCharades(s) ? `<p class="remote-note">🎭 ${game.seatName ? `${esc(game.seatName)} is acting` : 'Act it out'} — no talking!</p>` : game.seatName ? `<p class="remote-note">🪑 ${esc(game.seatName)} is in the hot seat</p>` : ''}
       <div class="hs-card">
         <span class="level-tag">${SET_LABEL(c.level)}</span>
         <div class="hs-word">${esc(c.word)}</div>
-        ${s.showAvoid ? `<div class="hs-avoid"><span>Don’t say</span>${c.taboo.map((t) => `<b>${esc(t)}</b>`).join('')}</div>` : ''}
+        ${s.showAvoid && !isCharades(s) ? `<div class="hs-avoid"><span>Don’t say</span>${c.taboo.map((t) => `<b>${esc(t)}</b>`).join('')}</div>` : ''}
       </div>
       ${tallyHtml(game.log)}
       <div class="act">
@@ -383,7 +386,7 @@ function renderStage() {
       </div>`).join('');
     const total = turnTotal(game.log, s);
     st.innerHTML = `<div class="review">
-      <p class="eyebrow">Time's up — the hot seat can turn around</p>
+      <p class="eyebrow">${isCharades(s) ? 'Time’s up!' : 'Time’s up — the hot seat can turn around'}</p>
       <h2>${esc(team.name)}: <span class="${total < 0 ? 'neg' : ''}">${total >= 0 ? '+' : ''}${total}</span></h2>
       <p class="muted">Fix any mistakes before confirming — tap a symbol to change it.</p>
       <div class="rv-list">${rows || '<p class="muted">No words played this turn.</p>'}</div>
@@ -540,10 +543,14 @@ const net = setupHostOnline({
     },
   },
 });
-if (location.hash === '#online') {
+// (also when only the #online part of the address changes, which doesn't reload the page)
+const hostFromHash = () => {
+  if (location.hash !== '#online') return;
   history.replaceState(null, '', location.pathname + location.search);
   setTimeout(() => net.host(), 0);
-}
+};
+hostFromHash();
+window.addEventListener('hashchange', hostFromHash);
 renderDecks = setupDeckPicker({ settings, save: saveSettings });
 ensureColors(settings);
 const renderTeamList = setupTeams({

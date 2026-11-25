@@ -1,5 +1,5 @@
 import { SET_LABEL, remainingMs, fmtTime, esc, shortcutKey } from './core.js';
-import { sync, STYLE, turnTotal, passRuleText } from './hotseat-shared.js';
+import { sync, STYLE, isCharades, turnTotal, passRuleText } from './hotseat-shared.js';
 import { connect, loadJSON, ROOM_KEY, cleanCode, joinCardHtml } from './online.js';
 import { coopOver } from './coop.js';
 
@@ -40,8 +40,17 @@ function render() {
   if (p === 'ready') {
     const last = game.lastTurn ? `<p class="cv-sub">${esc(game.teams[game.lastTurn.team].name)} scored ${game.lastTurn.pts >= 0 ? '+' : ''}${game.lastTurn.pts} last turn</p>` : '';
     main = `<div class="cv-center"><p class="cv-eyebrow">${esc(style.name)} · get ready</p><h1 class="cv-team">${esc(team.name)}</h1>
-      <p class="cv-seat">🪑 ${game.seatName ? `${esc(game.seatName)}: sit facing away from the screen.` : esc(style.seat)}</p>
+      <p class="cv-seat">${isCharades(s) ? `🎭 ${game.seatName ? `${esc(game.seatName)}: come up and read the word.` : esc(style.seat)}` : `🪑 ${game.seatName ? `${esc(game.seatName)}: sit facing away from the screen.` : esc(style.seat)}`}</p>
       <p class="cv-sub">${esc(style.rule)}<br>${s.seconds} seconds · ${esc(passRuleText(s))}${s.foulPenalty ? ' · Rule broken = −1' : ''}</p>${last}${joinBanner()}</div>`;
+  } else if (p === 'playing' && isCharades(s)) {
+    // Charades: the whole class is guessing, so this screen never shows the word — just who is acting, the time and the score.
+    const n = game.log.filter((e) => e.result === 'correct').length;
+    main = `<div class="cv-hs cv-charades">
+      <div class="cv-hs-top"><span class="cv-hs-team">${esc(team.name)}</span><span class="cv-hs-timer" id="cv-timer"></span><span class="cv-hs-got">✓ ${n}</span></div>
+      <div class="cv-hs-word-wrap"><div class="cv-hs-word cv-act">🎭 ${game.seatName ? esc(game.seatName) : 'Act it out!'}</div>
+        <p class="cv-sub">${game.seatName ? 'is acting — ' : ''}${esc(team.name)}, guess the word!</p></div>
+      <p class="cv-hs-rule">${esc(style.rule)}</p>
+    </div>`;
   } else if (p === 'playing' && game.card) {
     const c = game.card;
     const n = game.log.filter((e) => e.result === 'correct').length;
@@ -57,7 +66,7 @@ function render() {
     const total = turnTotal(game.log, s);
     const words = s.revealWords && game.log.length
       ? `<div class="cv-words">${game.log.map((e) => `<span class="cv-word ${{ correct: 'correct', pass: 'skip', foul: 'taboo', timeup: 'timeup' }[e.result]}">${esc(e.card.word)}</span>`).join('')}</div>` : '';
-    main = `<div class="cv-center"><p class="cv-eyebrow">Time's up! Hot seat, turn around</p><h1 class="cv-team">${esc(team.name)}</h1>
+    main = `<div class="cv-center"><p class="cv-eyebrow">${isCharades(s) ? 'Time’s up!' : 'Time’s up! Hot seat, turn around'}</p><h1 class="cv-team">${esc(team.name)}</h1>
       <p class="cv-turn-pts">${total >= 0 ? '+' : '−'}${Math.abs(total)} point${Math.abs(total) === 1 ? '' : 's'}</p>${words}</div>`;
   } else if (p === 'over' && game.coop) {
     const o = coopOver(game, { big: true });

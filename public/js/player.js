@@ -2,7 +2,7 @@
 // then explain, watch for taboo words, or guess — depending on the turn.
 import { scoreTurn, sum, remainingMs, fmtTime, esc, skipRuleText, sfx, shortcutKey } from './core.js';
 import { connect, loadJSON, saveJSON, GUEST_KEY, cleanCode } from './online.js';
-import { STYLE, scoreHS, turnTotal, passRuleText } from './hotseat-shared.js';
+import { STYLE, isCharades, scoreHS, turnTotal, passRuleText } from './hotseat-shared.js';
 import { coopOver } from './coop.js';
 
 const $ = (s) => document.querySelector(s);
@@ -224,9 +224,10 @@ function cardHtml(c) {
 const isHS = () => game?.kind === 'hotseat';
 const inSeat = () => isHS() && !!me.id && game.seatId === me.id;
 /** Hot Seat: may this device press Correct / Pass / Undo? (the seat's teammates; in Who Am I? anyone but the seat) */
-const hsRuns = () => isHS() && !inSeat() && (me.judge || me.team === curTeamId() || game.settings.style === 'whoami'
+const ch = () => isHS() && isCharades(game.settings); // Charades: the 'seat' is the actor, the only player who sees the word
+const hsRuns = () => isHS() && (ch() ? me.judge || inSeat() : !inSeat() && (me.judge || me.team === curTeamId() || game.settings.style === 'whoami'
   // nobody else from the seat's team is online: anyone else may score for them
-  || !roster.some((p) => p.role === 'player' && p.team === curTeamId() && p.id !== game.seatId));
+  || !roster.some((p) => p.role === 'player' && p.team === curTeamId() && p.id !== game.seatId)));
 const hsOnTeam = () => me.judge || me.team === curTeamId() || inSeat();
 
 function hsPhaseHtml() {
@@ -242,12 +243,12 @@ function hsPhaseHtml() {
 
   if (p === 'ready') {
     if (inSeat()) {
-      return `<div class="ready"><p class="eyebrow">${esc(style.name)} · your turn</p><h1 class="ready-team">You're in the hot seat!</h1>
-        <p class="muted">${s.style === 'whoami' ? 'Ask yes/no questions to work out the word.' : 'Your team describes the word — you guess.'} Don't look at anyone else's screen!</p>
+      return `<div class="ready"><p class="eyebrow">${esc(style.name)} · your turn</p><h1 class="ready-team">${ch() ? 'You’re acting!' : 'You’re in the hot seat!'}</h1>
+        <p class="muted">${ch() ? 'The word appears on this phone. Act it out for your team — no talking, no sounds!' : `${s.style === 'whoami' ? 'Ask yes/no questions to work out the word.' : 'Your team describes the word — you guess.'} Don't look at anyone else's screen!`}</p>
         <button class="btn primary huge" data-act="start">Start turn <kbd>Space</kbd></button></div>`;
     }
     return `<div class="ready"><p class="eyebrow">${esc(style.name)} · up next</p><h1 class="ready-team">${esc(team.name)}</h1>
-      <p class="seat-note">🪑 ${esc(seatName)} ${g.seatName || g.seatId === 'host' ? 'is in the hot seat' : 'sits in the hot seat'}</p>
+      <p class="seat-note">${ch() ? `🎭 ${esc(seatName)} ${g.seatName || g.seatId === 'host' ? 'acts it out' : 'comes up to act it out'}` : `🪑 ${esc(seatName)} ${g.seatName || g.seatId === 'host' ? 'is in the hot seat' : 'sits in the hot seat'}`}</p>
       <p class="muted">${esc(style.rule)}<br>${s.seconds} seconds · ${esc(passRuleText(s))}${s.foulPenalty ? ' · Rule broken −1' : ''}</p>
       ${hsOnTeam() ? '<button class="btn primary huge" data-act="start">Start turn <kbd>Space</kbd></button>' : ''}</div>`;
   }
@@ -256,21 +257,21 @@ function hsPhaseHtml() {
       ${hsOnTeam() ? '<button class="btn primary huge" data-act="pause">Resume <kbd>P</kbd></button>' : ''}</div>`;
   }
   if (p === 'playing') {
-    if (inSeat() || !g.card) {
+    if ((inSeat() && !ch()) || !g.card) {
       return `<div class="ready guess"><p class="eyebrow">${inSeat() ? 'You’re in the hot seat' : `${esc(team.name)} is playing`}</p>
-        <h1 class="ready-team">${inSeat() ? (s.style === 'whoami' ? 'Ask yes/no questions!' : 'Listen and guess!') : 'Watch and wait'}</h1>
+        <h1 class="ready-team">${inSeat() ? (s.style === 'whoami' ? 'Ask yes/no questions!' : 'Listen and guess!') : ch() ? (me.team === curTeamId() ? `Watch ${esc(seatName)} and guess!` : `${esc(seatName)} is acting`) : 'Watch and wait'}</h1>
         <div class="big-timer" id="big-timer"></div>${tallyHS}
         ${inSeat() ? '<button class="link" data-act="pause">Pause <kbd>P</kbd></button>' : ''}</div>`;
     }
     const w = g.card;
     const runs = hsRuns();
     return `<div class="card-wrap hs-wrap">
-      <p class="remote-note">🪑 ${esc(seatName)} ${seatName === 'You' ? 'are' : 'is'} in the hot seat${runs ? '' : ' — call it if a rule is broken!'}</p>
+      <p class="remote-note">${ch() ? `🎭 ${seatName === 'You' ? 'You’re acting — no talking!' : `${esc(seatName)} is acting`}` : `🪑 ${esc(seatName)} ${seatName === 'You' ? 'are' : 'is'} in the hot seat${runs ? '' : ' — call it if a rule is broken!'}`}</p>
       <div class="hs-card"><span class="level-tag">${esc(w.label || w.level)}</span><div class="hs-word">${esc(w.word)}</div>
-        ${s.showAvoid ? `<div class="hs-avoid"><span>Don’t say</span>${w.taboo.map((t) => `<b>${esc(t)}</b>`).join('')}</div>` : ''}</div>
+        ${s.showAvoid && !ch() ? `<div class="hs-avoid"><span>Don’t say</span>${w.taboo.map((t) => `<b>${esc(t)}</b>`).join('')}</div>` : ''}</div>
       ${tallyHS}
-      ${runs ? `<div class="act">
-        <button class="btn act-taboo" data-act="foul">Rule broken <kbd>X</kbd><kbd>↓</kbd></button>
+      ${runs ? `<div class="act ${ch() && inSeat() ? 'act-two' : ''}">
+        ${ch() && inSeat() ? '' : '<button class="btn act-taboo" data-act="foul">Rule broken <kbd>X</kbd><kbd>↓</kbd></button>'}
         <button class="btn act-skip" data-act="pass">Pass <kbd>S</kbd><kbd>←</kbd></button>
         <button class="btn act-correct" data-act="correct">Correct <kbd>Space</kbd><kbd>→</kbd></button></div>
         <div class="act-minor"><button class="link" data-act="undo" ${g.log.length ? '' : 'disabled'}>↶ Undo last <kbd>Z</kbd><kbd>↑</kbd></button>
@@ -286,7 +287,7 @@ function hsPhaseHtml() {
       <span class="rv-btns">${edit ? ['correct', 'pass', 'foul'].map((r) => `<button class="rv ${cls[r]} ${e.result === r ? 'on' : ''}" data-rv="${i}" data-r="${r}">${sym[r]}</button>`).join('')
         : `<span class="rv ${cls[e.result]} on">${sym[e.result]}</span>`}</span>
       <span class="rv-pts">${pts[i] > 0 ? '+' : ''}${pts[i]}</span></div>`).join('');
-    return `<div class="review"><p class="eyebrow">Time's up — the hot seat can look</p>
+    return `<div class="review"><p class="eyebrow">${ch() ? 'Time’s up!' : 'Time’s up — the hot seat can look'}</p>
       <h2>${esc(team.name)}: <span class="${total < 0 ? 'neg' : ''}">${total >= 0 ? '+' : ''}${total}</span></h2>
       ${edit ? '<p class="muted">Fix any mis-taps, then confirm.</p>' : '<p class="muted">Waiting for the scores to be confirmed…</p>'}
       <div class="rv-list">${rows || '<p class="muted">No words played this turn.</p>'}</div>

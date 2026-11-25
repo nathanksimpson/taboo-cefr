@@ -66,6 +66,11 @@ export function canSeeCard(game, a) {
   if (a.role === 'host' || a.role === 'judge') return true;
   // The card screen (card.html): a monitor facing the student who explains, so it always shows the card.
   if (a.role === 'screen' && a.cards) return true;
+  if (game?.kind === 'hotseat' && game.settings?.style === 'charades') {
+    // Charades: only the actor (plus the teacher, judge and card screen above) sees the word —
+    // never the big screen or the guessers.
+    return a.role === 'player' && !!game.seatId && a.id === game.seatId;
+  }
   if (game?.kind === 'hotseat') {
     // Hot Seat / Who Am I?: everyone sees the word except the player in the hot seat.
     // The big screen shows it too (in class, the hot seat faces away from it).

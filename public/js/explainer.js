@@ -563,10 +563,14 @@ const net = setupHostOnline({
 renderDecks = setupDeckPicker({ settings, save: saveSettings });
 ensureColors(settings);
 // taboo.html#online — "Host online" on the home page.
-if (location.hash === '#online') {
+// (also when only the #online part of the address changes, which doesn't reload the page)
+const hostFromHash = () => {
+  if (location.hash !== '#online') return;
   history.replaceState(null, '', location.pathname + location.search);
   setTimeout(() => net.host(), 0);
-}
+};
+hostFromHash();
+window.addEventListener('hashchange', hostFromHash);
 const renderTeamList = setupTeams({
   settings, min: 2, save: saveSettings,
   persist: () => { store.setSettings(settings); net.sendLobby(); net.render(); },
