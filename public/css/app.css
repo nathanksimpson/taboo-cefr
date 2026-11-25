@@ -969,6 +969,4 @@ html:is([data-edition="nadu"], .room-ui) .scr-words li.timeup { background: var(
 @media (max-width: 480px) { .disp-two { grid-template-columns: 1fr; } }
 .judge-on { display: inline-block; margin-top: .3rem; font-weight: 800; color: var(--good, #1fb36b); }
 
-/* Charades on the class view: who is acting, never the word */
-.cv-charades .cv-act { font-size: clamp(2.6rem, 9vmin, 7rem); }
 .act.act-two { grid-template-columns: 1fr 1.4fr; }

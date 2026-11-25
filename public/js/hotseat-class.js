@@ -42,14 +42,16 @@ function render() {
     main = `<div class="cv-center"><p class="cv-eyebrow">${esc(style.name)} · get ready</p><h1 class="cv-team">${esc(team.name)}</h1>
       <p class="cv-seat">${isCharades(s) ? `🎭 ${game.seatName ? `${esc(game.seatName)}: come up and read the word.` : esc(style.seat)}` : `🪑 ${game.seatName ? `${esc(game.seatName)}: sit facing away from the screen.` : esc(style.seat)}`}</p>
       <p class="cv-sub">${esc(style.rule)}<br>${s.seconds} seconds · ${esc(passRuleText(s))}${s.foulPenalty ? ' · Rule broken = −1' : ''}</p>${last}${joinBanner()}</div>`;
-  } else if (p === 'playing' && isCharades(s)) {
-    // Charades: the whole class is guessing, so this screen never shows the word — just who is acting, the time and the score.
-    const n = game.log.filter((e) => e.result === 'correct').length;
-    main = `<div class="cv-hs cv-charades">
-      <div class="cv-hs-top"><span class="cv-hs-team">${esc(team.name)}</span><span class="cv-hs-timer" id="cv-timer"></span><span class="cv-hs-got">✓ ${n}</span></div>
-      <div class="cv-hs-word-wrap"><div class="cv-hs-word cv-act">🎭 ${game.seatName ? esc(game.seatName) : 'Act it out!'}</div>
-        <p class="cv-sub">${game.seatName ? 'is acting — ' : ''}${esc(team.name)}, guess the word!</p></div>
-      <p class="cv-hs-rule">${esc(style.rule)}</p>
+  } else if ((p === 'playing' || p === 'paused') && isCharades(s)) {
+    // Charades: the whole class is guessing, so this screen never shows the word — a full-screen clock like Taboo's.
+    const c = (r) => game.log.filter((e) => e.result === r).length;
+    const total = turnTotal(game.log, s);
+    main = `<div class="cv-play">
+      <p class="cv-eyebrow">🎭 ${game.seatName ? `${esc(game.seatName)} is acting · ` : ''}${esc(team.name)} is guessing</p>
+      <div class="cv-timer-wrap"><svg class="cv-ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" class="ring-bg"/><circle cx="50" cy="50" r="45" class="ring-fg" id="ring" pathLength="100"/></svg>
+        <div class="cv-timer" id="cv-timer"></div></div>
+      ${p === 'paused' ? '<p class="cv-paused">Paused</p>' : ''}
+      <div class="cv-tally"><span class="t correct">✓ ${c('correct')}</span><span class="t skip">↷ ${c('pass')}</span><span class="t taboo">✕ ${c('foul')}</span><span class="t pts">${total >= 0 ? '+' : ''}${total}</span></div>
     </div>`;
   } else if (p === 'playing' && game.card) {
     const c = game.card;
@@ -118,6 +120,8 @@ function tick() {
   if (!el || !game) return;
   el.textContent = fmtTime(ms);
   el.classList.toggle('low', ms <= 10000 && game.phase === 'playing');
+  const ring = document.getElementById('ring'); // Charades' full-screen clock
+  if (ring) ring.style.strokeDashoffset = String(100 - (ms / (game.settings.seconds * 1000)) * 100);
 }
 setInterval(tick, 200);
 
